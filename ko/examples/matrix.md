@@ -1,0 +1,159 @@
+# 행렬 연산
+
+연산자 트레잇과 인덱스 트레잇을 구현한 작은 행렬 타입입니다. `a * b`, `a .* b`, `m[i, j]`처럼 쓸 수 있습니다.
+
+## 코드
+
+```nabi
+// A dense row-major matrix of f64.
+struct Matrix {
+    rows: usize;
+    cols: usize;
+    data: List<f64>;
+}
+
+impl Matrix {
+    fn zeros(rows: usize, cols: usize) -> Matrix {
+        Matrix { rows: rows, cols: cols, data: List::filled(rows * cols, 0.0) }
+    }
+
+    fn from_rows(rows: List<List<f64>>) -> Matrix {
+        let m = Matrix::zeros(rows.len(), rows[0].len());
+        for i in 0..m.rows {
+            for j in 0..m.cols { m[i, j] = rows[i][j]; }
+        }
+        m
+    }
+
+    fn identity(n: usize) -> Matrix {
+        let m = Matrix::zeros(n, n);
+        for i in 0..n { m[i, i] = 1.0; }
+        m
+    }
+
+    fn transpose(self) -> Matrix {
+        let t = Matrix::zeros(self.cols, self.rows);
+        for i in 0..self.rows {
+            for j in 0..self.cols { t[j, i] = self[i, j]; }
+        }
+        t
+    }
+}
+
+// m[i, j] reads an element ...
+impl index::Index<(usize, usize)> for Matrix {
+    type Output = f64;
+    fn index(self, (i, j): (usize, usize)) -> f64 {
+        self.data[i * self.cols + j]
+    }
+}
+
+// ... and m[i, j] = v writes one.
+impl index::IndexSet<(usize, usize), f64> for Matrix {
+    fn index_set(ref self, (i, j): (usize, usize), value: f64) {
+        self.data[i * self.cols + j] = value;
+    }
+}
+
+impl ops::Add for Matrix {
+    type Output = Matrix;
+    fn add(self, rhs: Matrix) -> Matrix {
+        Matrix { rows: self.rows, cols: self.cols, data: self.data .+ rhs.data }
+    }
+}
+
+impl ops::Mul for Matrix {
+    type Output = Matrix;
+    fn mul(self, rhs: Matrix) -> Matrix {
+        let out = Matrix::zeros(self.rows, rhs.cols);
+        for i in 0..self.rows {
+            for j in 0..rhs.cols {
+                let sum = 0.0;
+                for k in 0..self.cols { sum += self[i, k] * rhs[k, j]; }
+                out[i, j] = sum;
+            }
+        }
+        out
+    }
+}
+
+// Scalar scaling: Matrix * f64.
+impl ops::Mul<f64> for Matrix {
+    type Output = Matrix;
+    fn mul(self, k: f64) -> Matrix {
+        Matrix { rows: self.rows, cols: self.cols, data: self.data .* k }
+    }
+}
+
+// Element-wise (Hadamard) product: a .* b.
+impl ops::DotMul for Matrix {
+    type Output = Matrix;
+    fn dot_mul(self, rhs: Matrix) -> Matrix {
+        Matrix { rows: self.rows, cols: self.cols, data: self.data .* rhs.data }
+    }
+}
+
+impl Display for Matrix {
+    fn fmt(self, ref f: Formatter) throws (FmtError) {
+        for i in 0..self.rows {
+            try f.write_str("[");
+            for j in 0..self.cols {
+                try f.write_str(f"{self[i, j]:6.1}");
+            }
+            try f.write_str(" ]\n");
+        }
+    }
+}
+
+let a = Matrix::from_rows([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]);
+let b = Matrix::from_rows([[7.0, 8.0], [9.0, 10.0], [11.0, 12.0]]);
+
+println(f"A =\n{a}");
+println(f"A^T =\n{a.transpose()}");
+println(f"A * B =\n{a * b}");
+println(f"A + A =\n{a + a}");
+println(f"A .* A =\n{a .* a}");
+println(f"A * 0.5 =\n{a * 0.5}");
+
+let i3 = Matrix::identity(3);
+let same = a * i3;
+println(f"A * I == A: {same.data == a.data}");
+```
+
+```output
+A =
+[   1.0   2.0   3.0 ]
+[   4.0   5.0   6.0 ]
+
+A^T =
+[   1.0   4.0 ]
+[   2.0   5.0 ]
+[   3.0   6.0 ]
+
+A * B =
+[  58.0  64.0 ]
+[ 139.0 154.0 ]
+
+A + A =
+[   2.0   4.0   6.0 ]
+[   8.0  10.0  12.0 ]
+
+A .* A =
+[   1.0   4.0   9.0 ]
+[  16.0  25.0  36.0 ]
+
+A * 0.5 =
+[   0.5   1.0   1.5 ]
+[   2.0   2.5   3.0 ]
+
+A * I == A: true
+```
+
+## 설명
+
+- Nabi의 모든 연산자는 트레잇 메서드 호출입니다. `impl ops::Add for Matrix`가 있으면 `a + a`는 `ops::Add::add(a, a)`로 풀립니다([3.1 연산자 디스패치](../spec/refs-lang/003-expressions/301-operator-dispatch.html), [`Add`](../../std/core/ops.html#trait.Add), [`Mul`](../../std/core/ops.html#trait.Mul)).
+- 같은 연산자를 오른쪽 타입을 달리해서 여러 번 구현할 수 있습니다. `impl ops::Mul for Matrix`는 행렬 곱이고 `impl ops::Mul<f64> for Matrix`는 스칼라 곱입니다. 컴파일러는 피연산자 타입을 보고 구현을 고릅니다.
+- `.*`처럼 점이 앞에 붙은 연산자는 원소별 연산용 트레잇 계열로 따로 풀립니다([`DotMul`](../../std/core/ops.html#trait.DotMul)). 그래서 행렬 곱 `*`와 아다마르 곱 `.*`가 나란히 존재할 수 있습니다. 안에서 쓰는 `self.data .+ rhs.data`와 `self.data .* k`는 `List<f64>` 자체에 쓰는 같은 연산자로, 중간 리스트 없이 루프 하나로 돕니다([3.3 브로드캐스트 연산자](../spec/refs-lang/003-expressions/303-broadcast-operators.html)).
+- 쉼표로 구분한 인덱스는 튜플로 묶입니다. 그래서 `m[i, j]` 읽기는 [`Index<(usize, usize)>`](../../std/core/index/index.html#trait.Index)를, `m[i, j] = v` 쓰기는 [`IndexSet<(usize, usize), f64>`](../../std/core/index/index.html#trait.IndexSet)를 거칩니다. 두 번째 인자는 쓰는 값의 타입입니다. 쓰기 메서드는 행렬을 제자리에서 고치려고 `ref self`를 받습니다([3.6 인덱싱과 슬라이싱](../spec/refs-lang/003-expressions/306-indexing-and-slicing.html)).
+- `impl Display for Matrix` 덕분에 f-string의 `{a}`가 행렬 전체를 출력합니다. 각 원소의 폭과 정밀도는 `{x:6.1}`로 정합니다([struct, enum, 트레잇](../learn/06-structs-enums-traits.html)).
+- 이 예제는 직접 만든 타입을 연산자에 끼우는 방법을 보여 줍니다. 수치 계산에는 코어 라이브러리의 `Array<T, N>`이 이미 있습니다. 슬라이싱, 브로드캐스팅, 하나로 합쳐지는 점 연산식을 갖춘 n차원 배열입니다([배열과 수치](../learn/21-arrays-and-numerics.html)).

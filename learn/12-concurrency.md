@@ -1,0 +1,849 @@
+# 12. Concurrency
+
+The right way to do several things at once depends on the goal. Threads and `par` suit computations that use multiple CPUs, while `async` tasks suit I/O with lots of waiting. This chapter looks at each tool through short examples and also covers channels, `Mutex`, and `Atomic` for exchanging data safely.
+
+> [!TIP]
+> The output order of concurrently running code can differ from run to run. The examples in this chapter collect results with `join` or sort them before printing, so they always produce the same output.
+
+Which of these need a `use`? The prelude ([chapter 11](11-modules-packages.html)) has what this chapter uses from `core`: `task`, `par`, `channel`, `Mutex`, `Atomic`, `Duration`. Only the modules of `std`, which talk to the operating system, are imported by hand, so threads start with `use std::thread;` just as files start with `use std::fs;`.
+
+## Threads
+
+`std::thread::spawn` runs a closure on a new OS thread and returns a `JoinHandle`. `join()` waits for that thread to finish and takes out the closure's return value. If the thread ended in a panic, it throws `JoinError`, so the example adds `try`.
+
+```nabi
+use std::thread;
+
+let handles = [];
+for i in 1..=4 {
+    handles.push(thread::spawn(|| i * i));
+}
+
+let results = [];
+for h in handles {
+    results.push(try h.join());
+}
+println(f"{results:?}");
+
+let named = try thread::Builder::new().name("worker").spawn(|| {
+    thread::current().name() ?? "?"
+});
+println(try named.join());
+```
+
+```output
+[1, 4, 9, 16]
+worker
+```
+
+Because the example joins only after creating all the handles, the four threads run concurrently. Results are collected in handle order, so the output order is fixed.
+
+## Channels
+
+The simplest way to pass values between threads is a channel. `channel()` returns a sending `Sender` and a receiving `Receiver`. A `Sender` can be duplicated with `clone()`, and once every `Sender` is `close()`d, the `for` loop on the receiving side ends.
+
+```nabi
+use std::thread;
+
+let (tx, rx) = channel();
+let workers: List<thread::JoinHandle<()>> = [];
+for id in 0..3 {
+    let tx = tx.clone();
+    workers.push(thread::spawn(|| {
+        for j in 0..2 {
+            try! tx.send(f"w{id}-{j}");
+        }
+        tx.close();
+    }));
+}
+tx.close();
+
+let got = [];
+for msg in rx {
+    got.push(msg);
+}
+for w in workers { try w.join(); }
+
+got.sort();
+println(f"{got:?}");
+```
+
+```output
+["w0-0", "w0-1", "w1-0", "w1-1", "w2-0", "w2-1"]
+```
+
+A `Sender` has one owner: `let tx2 = tx` moves it (using `tx` afterwards is an error), and `clone()` makes another sender with its own owner. The compiler releases a sender where its last owner leaves scope, and a task releases the senders its `async` block captured when it ends; once every sender is closed or released, the receiver's loop ends. Call `close()` yourself when the receiver must see the end sooner: here `main` reads the channel in the same scope that made `tx`, and a thread does not release what its closure captured, so each worker closes its sender when it is done. To bound the channel's capacity, use `channel_bounded(n)`.
+
+## `Mutex` and `Atomic`
+
+When several threads modify the same value, you need synchronization. For a single integer counter use `Atomic`; wrap other values in a `Mutex`. The guard returned by `Mutex::lock()` must be bound with `using` so the lock is released when the block ends (the same rule as `using` in [chapter 10](10-errors.html)). For one short step, `m.with(|v| ..)` takes the lock, calls the closure with the value and releases the lock when it returns, as the example below does; `RwLock` has `read_with` and `write_with`.
+
+```nabi
+use std::thread;
+
+let counter = Atomic::new(0);
+let log = Mutex::new([]);
+
+let hs: List<thread::JoinHandle<()>> = [];
+for i in 1..=5 {
+    hs.push(thread::spawn(|| {
+        counter.fetch_add(i);
+        log.with(|v| v.push(i * 10));
+    }));
+}
+for h in hs { try h.join(); }
+
+let items = log.with(|v| v.clone());   // a copy: the list itself stays behind the lock
+items.sort();
+println(f"sum = {counter.load()}, items = {items:?}");
+```
+
+```output
+sum = 15, items = [10, 20, 30, 40, 50]
+```
+
+A list is shared, so `v.push(..)` changes the list behind the lock. A struct is a value: the closure and a guard's `get()` hand out a copy, and a field set on it is lost, which is an error ([E0057](../errors/E0057.html), [E0140](../errors/E0140.html)). Store the change through the guard with `update` or `set`: `using g = m.lock() { g.update(|v| { v.total += 1; v }); }`.
+
+Only `using` releases a guard, so the compiler refuses a guard that nothing releases: binding it with a plain `let` (or `if let`), or dropping the result of `lock()` on the floor. The same holds for the `read()` / `write()` guards of `RwLock`.
+
+```nabi norun
+let g = m.lock();
+```
+
+```text check=checks/12-guard-let.nabi
+error[E0065]: `g` holds a `MutexGuard` that is never released: only `using` releases a lock guard, so bind it with `using g = .. { .. }`
+```
+
+### Read-only data: `freeze`
+
+A collection that is made once and then only read, such as a lookup table or a list of names, needs no lock. `freeze()` turns a `List`, `Dict` or `Set` into a `FrozenList`, `FrozenDict` or `FrozenSet`, which nothing can change, so every thread reads the same one at once with no lock and no copy. A thread's closure, a `par` closure or a `static` can hold it.
+
+```nabi
+use std::thread;
+
+let words = ["apple", "bee", "cat", "dog"].freeze();
+let lens = {"apple": 5, "bee": 3}.freeze();
+
+let hs: List<thread::JoinHandle<i32>> = [];
+for i in 0..3 {
+    hs.push(thread::spawn(|| words[i].len() as i32 + lens.get_or(words[i], 0)));
+}
+let total = 0;
+for h in hs { total += try h.join(); }
+println(f"{total} {words.len()}");
+```
+
+```output
+19 4
+```
+
+`freeze` hands the collection over, like `Mutex::new`: the frozen value takes the elements, so using the list afterwards is an error ([E0105](../errors/E0105.html)). Read the frozen value instead, or freeze a `clone()` if you still need a list to change. A frozen collection has no `push`, `insert` or `xs[i] = v`; `to_list()` (`to_dict()`, `to_set()`) gives a copy that can change.
+
+Only collections of values that cannot change themselves freeze: numbers, `str`, structs of those, other frozen collections. A `List<List<i32>>` would hand every thread the same inner lists, which can change, so the compiler asks you to freeze the inner lists first (`List<FrozenList<i32>>`) or to use a `Mutex`.
+
+Data that is read a lot and changed now and then, such as a server's routing table, is a frozen snapshot behind a lock. A reader takes the current snapshot and reads it with no lock held; a writer makes a changed copy, freezes it and puts it in place. A frozen value may leave the lock because nothing can change it.
+
+```nabi
+static ROUTES: Mutex<FrozenDict<str, i32>> = Mutex::new(FrozenDict::new());
+
+fn lookup(path: str) -> i32 | none {
+    let routes = ROUTES.with(|r| r);     // the current snapshot
+    routes.get(path)
+}
+
+fn add_route(path: str, port: i32) {
+    using g = ROUTES.lock() {
+        let next = g.get().to_dict();
+        next[path] = port;
+        g.set(next.freeze());
+    }
+}
+
+add_route("/a", 8080);
+add_route("/b", 9090);
+println(f"{lookup("/a") ?? 0} {lookup("/c") ?? 0}");
+```
+
+```output
+8080 0
+```
+
+You can skip the rest of this subsection on a first read. For a value made of several parts, such as settings with a few small lists, there is also `Frozen<T>`. `Frozen::new` keeps its own copy, and `get()` gives each reader a copy of its own, so a reader that changes its copy changes nothing the others see.
+
+```nabi
+use std::thread;
+
+struct Settings {
+    name: str;
+    limits: List<i32>;
+}
+
+static SETTINGS: sync::Frozen<Settings> = sync::Frozen::new(Settings { name: "demo", limits: [10, 20, 30] });
+
+let hs: List<thread::JoinHandle<i32>> = [];
+for i in 0..3 {
+    hs.push(thread::spawn(|| {
+        let s = SETTINGS.get();      // this thread's own copy
+        s.limits.push(i);            // changes the copy only
+        s.limits[0] + s.limits.len() as i32
+    }));
+}
+let total = 0;
+for h in hs { total += try h.join(); }
+let s = SETTINGS.get();
+println(f"{s.name} {s.limits:?} {total}");
+```
+
+```output
+demo [10, 20, 30] 42
+```
+
+Each `get` copies the collections inside the value, so keep big read-only parts out of that copy: freeze them, as in `table: FrozenList<Entry>`. Frozen collections and other `Sync` parts, such as a `Mutex`, are shared, not copied.
+
+### Per-thread values: `thread::local`
+
+You can skip this subsection on a first read.
+
+`thread::local(init)` gives each thread its own value, made by `init` on the thread's first use. `with` lends this thread's value to a closure; what the closure returns comes out, but the value itself stays lent: returning it, storing it outside the closure, or sending it is an error, and the closure can't be `async`. `set`, `replace` and `take` move whole values in and out, and `get` copies a `Copy` value such as a number.
+
+```nabi
+use std::thread;
+
+static NOTES: thread::ThreadLocal<List<i32>> = thread::local(|| -> List<i32> { [] });
+
+fn note(x: i32) { NOTES.with(|l| l.push(x)); }
+
+note(1);
+note(2);
+let h = thread::spawn(|| { note(9); NOTES.with(|l| l.len()) });
+println(f"worker {try h.join()}, main {NOTES.with(|l| l.clone()):?}");
+let mine = NOTES.take();
+println(f"took {mine:?}, left {NOTES.with(|l| l.len())}");
+```
+
+```output
+worker 1, main [1, 2]
+took [1, 2], left 0
+```
+
+## Handing values to other threads
+
+This section is about the rule the compiler enforces when a value moves between threads. You can skim it on a first read and come back when the compiler points you here.
+
+`Mutex::new(xs)`, `RwLock::new(xs)` and `tx.send(xs)` *hand `xs` over*: from then on it belongs to the lock or to the receiver. Only `Drop` resources such as a `Sender` or a `File` move in Nabi ([chapter 10](10-errors.html)); for other values the compiler tracks hand-offs instead: using `xs` afterwards is a compile error, because it would race with whoever owns it now. The check follows the value through copies (`let ys = xs`), struct fields, the objects that hold it, the elements of collections, closure captures and function calls.
+
+```nabi norun
+let xs = [1, 2, 3];
+let ys = xs;                  // the same list
+let m = Mutex::new(xs);
+ys.push(4);
+```
+
+```text check=checks/12-handoff-copy.nabi
+error[E0105]: `ys` shares `xs`, which was moved into the `Mutex` at line 3
+  --> main.nabi:4:1
+   |
+ 3 | let m = Mutex::new(xs);
+   |         -------------- `xs` moved into the `Mutex` here
+ 4 | ys.push(4);
+   | ^^
+   |
+   = help: it belongs to the `Mutex` now; use it through the lock: `using g = m.lock() { g.get().push(4) }`, or hand over `xs.clone()` to keep a separate copy
+```
+
+Use the value through the lock, or hand over a `clone()` if you still need your own copy.
+
+Elements count too. What you read out of a collection and the collection itself are one value, so sending `rows` and then pushing to `first = rows[0]` is the same race:
+
+```text check=checks/12-handoff-element.nabi
+error[E0105]: `first` shares `rows`, which was sent through a channel at line 4
+  --> main.nabi:5:1
+   |
+ 4 | try! tx.send(rows);
+   |      ------------- `rows` sent here
+ 5 | first.push(9);
+   | ^^^^^
+   |
+   = help: the receiver owns it now; hand over `rows.clone()` to keep a separate copy, or give `first` a new value before using it again
+```
+
+To hand out the elements one by one, take each one out first. `pop` and `remove` take an element out of its collection, so the collection stays usable. This is the usual work queue:
+
+```nabi
+use std::thread;
+
+let jobs = [[3, 1, 2], [9, 7], [5, 4, 6]];
+let (tx, rx) = channel();
+let worker = thread::spawn(|| {
+    let total = 0;
+    for job in rx {
+        job.sort();
+        total += job[0];
+    }
+    total
+});
+while let job = jobs.pop() {
+    try! tx.send(job);         // `pop` took it out of `jobs`, so `jobs` stays usable
+}
+tx.close();
+println(f"smallest items add up to {try worker.join()}, jobs left: {jobs.len()}");
+```
+
+```output
+smallest items add up to 12, jobs left: 0
+```
+
+### Moving a value into a thread: `[move x]`
+
+A closure passed to `thread::spawn` or `task::spawn_blocking` shares its captures with the code that made it, so they must be `Sync`: a list is not. When only the new thread needs the list, move it into the closure with `[move rows]`. The closure gets its own copy, and the spawning code can no longer use `rows`:
+
+```nabi
+use std::thread;
+
+let rows = [3, 1, 2];
+let h = thread::spawn([move rows] || {
+    rows.sort();
+    rows[0]
+});
+println(f"smallest: {try! h.join()}");
+```
+
+```output
+smallest: 1
+```
+
+Using `rows` after the spawn is an error, as after a send; the help also names `[move x]` when you capture a list without it. For `task::spawn_blocking` you can pass the value as the argument instead: `task::spawn_blocking_with_arg(rows, |rows: List<i32>| rows.len())`.
+
+A `fn` value is captured the same way. A parameter `f: fn() + Send` is `Send` but not `Sync`, so a spawned closure that calls it must move it in, `[move f]`. To call it from several spawned closures, take `fn() + Send + Sync` instead.
+
+A closure that owns moved values is handed over once, however it gets there: through another variable, a field, a list, an `if` arm, or a function that returns it. Passing the same closure twice to one call, `par::join(f, f)`, is a second hand-over and an error too ([E0133](../errors/E0133.html)); make two closures, each moving in its own `.clone()`. An `async [move ..]` closure and the futures its calls make share one owner: you can await them here one after another, but handing one of them to `task::spawn` takes the others along.
+
+A lock guard's value works the same way. What `g.get()` returns is a view of the object the `Mutex` protects, so it can't leave the `using` block: once the block ends, the lock no longer guards it. Returning it, throwing it in an error, or sending it is an error, and so is carrying it out of the block as a `break` value, an `if` or `match` arm, a `catch`, or a closure's result.
+
+```text check=checks/12-lock-value.nabi
+error[E0106]: the value of `g`'s `using` block is what the `Mutex` protects, and the block releases the lock before it is used
+  --> main.nabi:2:10
+   |
+ 2 | let xs = using g = m.lock() { g.get() };
+   |          ^^^^^
+   |                               ------- taken out of the lock here
+   |
+   = help: use it inside the `using` block, or make the block's value `g.get_clone()`
+```
+
+Passing it to a function is fine while that function only uses it. A function that keeps it (in a `Cell`, a field, a closure, a thread-local) would let it outlive the lock, so that call is an error too. Keep a deep copy instead: `g.get_clone()` copies the value and everything in it, and the copy is yours.
+
+```nabi norun
+fn remember(c: Cell<List<i32>>, xs: List<i32>) { c.set(xs); }
+
+let m = Mutex::new([1, 2, 3]);
+let kept: Cell<List<i32>> = Cell::new([]);
+using g = m.lock() { remember(kept, g.get()); }
+```
+
+```text check=checks/12-lock-view-kept.nabi
+error[E0106]: `g.get()` is a view of what the `Mutex` behind `g` protects, and `remember` keeps it past the call
+  --> main.nabi:5:37
+   |
+ 5 | using g = m.lock() { remember(kept, g.get()); }
+   |                                     ^^^^^^^
+   |
+   = help: `g`'s `using` block releases the lock while `remember` still holds it; pass a deep copy, `g.get_clone()`
+```
+
+### What the receiver gets
+
+A hand-off also copies at run time: the new owner gets its own copy of every collection the value reaches (lists, dicts, deques, string buffers and the collections built on them, at any depth). So even a route the compiler can't see never leaves two threads with one list. You don't write anything for this, and in a program the compiler accepts you never notice it, except in two ways:
+
+- **It costs time in proportion to what it copies.** Numbers, `str` and structs without collections cost nothing extra; a list of plain numbers is one memory copy, so a list of a million numbers takes well under a millisecond. Send large data once, not piece by piece in a hot loop.
+- **The copy keeps its own sharing.** Two handles to one list in the sent value are still one list on the other side, and a slice keeps viewing the list it came from:
+
+```nabi
+let data = [1, 2, 3, 4];
+let (tx, rx) = channel();
+try! tx.send((data, data[0:2]));
+tx.close();
+
+if let (list, head) = rx.recv() {
+    list[0] = 10;           // the view still sees the list it came from
+    println(f"{list:?} {head:?}");
+}
+```
+
+```output
+[10, 2, 3, 4] [10, 2]
+```
+
+Values built at compile time, such as the default of a field (`log: Mutex<List<str>> = Mutex::new([])`), are not copied: nothing else can reach them yet.
+
+Two kinds of values can't cross threads at all, because a copy can't make them safe:
+
+- **`any Tr` needs a `Sync` bound.** Copies of an `any` share its box, so an `any Tr` is `Send` only when the trait has both `Send` and `Sync` as supertraits. The error says what to change: `an any crosses threads only when its bound has both Send and Sync, since copies share its box: give the trait Sync as a supertrait, or send the concrete type`.
+
+```nabi
+use std::thread;
+
+trait Shape: Send + Sync { fn area(self) -> f64; }
+struct Sq { s: f64; }
+impl Shape for Sq { fn area(self) -> f64 { self.s * self.s } }
+
+let (tx, rx) = channel::<any Shape>();
+let h = thread::spawn(|| {
+    if let s = rx.recv() { s.area() } else { 0.0 }
+});
+try! tx.send(Sq { s: 3.0 });
+tx.close();
+println(f"{try h.join()}");
+```
+
+```output
+9
+```
+
+- **A `Weak` stays on its thread.** A hand-off can't copy what a `Weak` (`bare::gc`) names, so `Weak<T>` is not `Send`; send the `GcPtr` instead.
+
+Inside `unsafe` the compiler stops checking hand-offs, so using a value after sending it is your responsibility; the run-time copy still happens. `Mutex::new_unshared` is the `unsafe` way to hand a value over *without* the copy, for a value you just made and nothing else can reach. A handle you keep from a guard past its `using` block, and `par` items that share one list, are never copied for you: there the compiler's check is the only guard, so don't switch it off with `unsafe` there.
+
+## `async` and tasks
+
+For work with long waits, such as I/O, `async` is better because it does not tie up a thread per job. Calling an `async fn` returns a Future immediately, and `await` waits for its result. Launching Futures as separate tasks with `task::spawn` lets several make progress at once, and `task::join` collects all results **in the order they were spawned**.
+
+```nabi
+async fn fetch(id: i32) -> str {
+    await task::sleep(Duration::ms((40 - id * 10) as i64));
+    f"item-{id}"
+}
+
+let tasks = [task::spawn(fetch(1)), task::spawn(fetch(2)), task::spawn(fetch(3))];
+let items = await task::join(tasks);
+println(f"{items:?}");
+
+let f = fetch(3);
+println("not started waiting yet");
+println(await f);
+```
+
+```output
+["item-1", "item-2", "item-3"]
+not started waiting yet
+item-3
+```
+
+`await` is a prefix operator that binds as tightly as `-` or `!`: it applies to the call right after it, and the rest of the expression works on the result. `await answer() == 42` compares the awaited value; it does not await a comparison.
+
+```nabi
+async fn answer() -> i32 { 42 }
+
+println(f"{await answer() == 42} {await answer() + 1}");
+let r = try await task::timeout(Duration::ms(50), task::spawn(answer()));
+println(f"{r}");
+```
+
+```output
+true 43
+42
+```
+
+As the last line shows, `try await f()` reads left to right: await the future, then propagate its error.
+
+If the top-level statements contain an `await`, the whole program runs as an `async fn main`, so you can use `await` directly in a script. You cannot use `await` in the body of an ordinary `fn`.
+
+Set a time limit with `task::timeout`. When the time runs out, it throws `TimeoutError` and cancels the task. `task::race` gives the result of whichever task finishes first and cancels the others the same way.
+
+```nabi
+async fn slow() -> i32 {
+    await task::sleep(Duration::ms(200));
+    1
+}
+
+let r = try await task::timeout(Duration::ms(10), task::spawn(slow()))
+    catch e: task::TimeoutError { -1 };
+println(f"{r}");
+```
+
+```output
+-1
+```
+
+An `async` method may take `ref self`, like a synchronous one: its changes reach the receiver when the future completes. Such a call is awaited where it is made, `await r.next_byte()`; keeping the future to await later is an error, since the receiver could change meanwhile. The async io methods (`read_async`, `write_all_async`, .., [chapter 13](13-io.html)) take `ref self` too.
+
+```nabi
+struct Cursor { pos: usize; data: List<u8>; }
+
+impl Cursor {
+    async fn next_byte(ref self) -> u8 | none {
+        if self.pos >= self.data.len() { return none; }
+        self.pos += 1;
+        self.data[self.pos - 1]
+    }
+}
+
+let c = Cursor { pos: 0, data: [7u8, 8, 9] };
+while await c.next_byte() is u8 {}
+println(f"{c.pos}");
+```
+
+```output
+3
+```
+
+Channels work in async code too. `for await` waits for values without blocking the task. The task below releases `tx` when it ends, and that closes the channel.
+
+```nabi
+let (tx, rx) = channel();
+let producer = task::spawn(async {
+    for i in 1..=3 {
+        try! tx.send(i);
+        await task::sleep(Duration::ms(5));
+    }
+    "producer done"
+});
+
+let sum = 0;
+for await v in rx {
+    println(f"got {v}");
+    sum += v;
+}
+println(f"{await producer}, sum = {sum}");
+```
+
+```output
+got 1
+got 2
+got 3
+producer done, sum = 6
+```
+
+`task::spawn` hands its future to the task the same way a channel send hands over a value: the task works on its own copy of the lists and other collections the future captured. Using one of them in the spawning code afterwards is an error, because the changes the task makes would not show up there:
+
+```nabi norun
+async fn total(xs: List<i32>) -> i32 {
+    let t = 0;
+    for x in xs { t += x; }
+    t
+}
+
+let data = [1, 2, 3];
+let t = task::spawn(total(data));
+data.push(4);
+```
+
+```text check=checks/12-task-handoff.nabi
+error[E0105]: `data` was spawned as a task at line 8
+  --> main.nabi:9:1
+   |
+ 8 | let t = task::spawn(total(data));
+   |         ------------------------ `data` spawned here
+ 9 | data.push(4);
+   | ^^^^
+   |
+   = help: the task works on its own copy, so changes it makes are not seen here: return them from the task (`await`), hand over `data.clone()` to keep a separate copy, or share a collection it only reads with no copy: `.freeze()` it
+```
+
+Return what the task changed and take it back with `await`:
+
+```nabi
+async fn grow(xs: List<i32>) -> List<i32> {
+    xs.push(4);
+    xs
+}
+
+let data = [1, 2, 3];
+let t = task::spawn(grow(data));
+data = await t;
+println(f"{data:?}");
+```
+
+```output
+[1, 2, 3, 4]
+```
+
+## `par`: structured parallelism
+
+When you apply the same computation to many pieces of data, you do not need to manage threads yourself. `core::par` distributes the work over a worker pool, and by the time a function returns, all the work is done. `map` and `filter` preserve the input order.
+
+```nabi
+fn is_prime(n: i32) -> bool {
+    if n < 2 { return false; }
+    let d = 2;
+    while d * d <= n {
+        if n % d == 0 { return false; }
+        d += 1;
+    }
+    true
+}
+
+let squares = par::map(1..=8, |x| x * x);
+println(f"{squares:?}");
+
+let count = Atomic::new(0);
+par::for_each(1..=10000, |n| {
+    if is_prime(n) { count.fetch_add(1); }
+});
+println(f"primes below 10000: {count.load()}");
+
+let evens = par::filter([1, 2, 3, 4, 5, 6], |x| x % 2 == 0);
+let total = par::fold([1, 2, 3, 4], 0, |a, b| a + b);
+println(f"{evens:?} {total}");
+```
+
+```output
+[1, 4, 9, 16, 25, 36, 49, 64]
+primes below 10000: 1229
+[2, 4, 6] 10
+```
+
+`fold` folds each chunk separately and then combines the results, so you must pass an associative function (`+`, `max`, and so on) for the result to be deterministic. `par::reduce` does the same with no starting value and gives `none` when there are no items: `par::reduce(xs, |a, b| a.max(b))`.
+
+For exactly two jobs, use `par::join`; when the number is decided at run time, use `par::scope`. Every job `spawn`ed inside a scope finishes before the scope ends.
+
+```nabi
+let (a, b) = par::join(|| (1..=100).sum(), || "done");
+println(f"{a} {b}");
+
+par::scope(|s| {
+    let left = s.spawn(|| (1..=50).sum());
+    let right = s.spawn(|| (51..=100).sum());
+    println(f"{left.join() + right.join()}");
+});
+```
+
+```output
+5050 done
+5050
+```
+
+`par` gives each item to a worker, so two items must not share a list or other collection: two workers would change it at once. Before it starts, `par` checks that the items reach different collections. If two of them share one, those items run one after another on the calling thread, which is correct but no longer parallel, and `par` warns once for that call:
+
+```nabi norun
+let shared = [1, 2, 3];
+par::for_each([shared, shared], |xs| { xs.sort(); });
+```
+
+```text
+warning: par::for_each at main.nabi:2:1: two items reach one collection or future, so they run one at a time on this thread; give each item its own copy, freeze what they only read (`xs.freeze()`), or split a list with `chunks_mut`
+```
+
+Slices that cover different parts of one list do not count as sharing, so splitting a big list into chunks stays parallel. The check visits every collection the items reach, which costs a little per collection on each call.
+
+### Working on a big list in parallel
+
+A closure that several workers run can't capture a list, because two workers could change it at once. Give each worker a part of the list as its item instead: `chunks(n)` for reading, `chunks_mut(n)` for writing. The parts don't overlap, so every worker changes its own part of the list in place, with no copy and no lock. A frozen list can be captured, since nobody changes it.
+
+```nabi
+let xs: List<f64> = List::from_fn(1000, |i| i as f64);
+
+// Read: one sum per part, then add the parts up.
+let parts = par::map(xs.chunks(100), |part| {
+    let s = 0.0;
+    for x in part { s += x; }
+    s
+});
+let total: f64 = parts.iter().sum();
+println(f"sum {total}");
+
+// Write: each worker doubles its own part.
+par::for_each(xs.chunks_mut(100), |part| {
+    for i in 0..part.len() { part[i] = part[i] * 2.0; }
+});
+println(f"last {xs[999]}");
+
+// Several lists of one length, as in a game's entity data: zip the parts.
+let pos: List<f64> = List::filled(1000, 0.0);
+let vel: List<f64> = List::filled(1000, 1.5);
+let dt = 0.5;
+par::for_each(pos.chunks_mut(100).zip(vel.chunks(100)), |(p, v)| {
+    for i in 0..p.len() { p[i] = p[i] + v[i] * dt; }
+});
+println(f"pos {pos[0]} {pos[999]}");
+```
+
+```output
+sum 499500
+last 1998
+pos 0.75 0.75
+```
+
+A part is a `SliceMut`, a view that writes the list ([chapter 8](08-collections-iterators.html)). If two items' parts overlap, or one item holds the whole list, `par` runs the items one at a time with the warning above, so a mistake costs speed, never correctness.
+
+## Streams
+
+An `async yield fn` creates a stream that produces values one at a time, asynchronously. Think of it as the async version of a generator; consume it with `for await`.
+
+```nabi
+async yield fn ticks(n: i32) -> i32 {
+    for i in 1..=n {
+        await task::sleep(Duration::ms(5));
+        yield i * 10;
+    }
+}
+
+for await t in ticks(3) {
+    println(f"tick {t}");
+}
+```
+
+```output
+tick 10
+tick 20
+tick 30
+```
+
+A stream held in a variable (or a field) is polled in place, not through a copy: a loop that stops early with `break` leaves the stream where it stopped, and the next `for await` over it goes on from there. A stream that owns a resource (a file, a socket) has one owner, so `let t = s` moves it and `s` can't be walked afterwards.
+
+The `Stream` trait has combinators such as `map`, `filter`, `take`, and `throttle` ([`Stream` API](../std/core/stream.html#trait.Stream)).
+
+## Pitfalls
+
+**A `[ref x]` capture can't cross threads.** A `[ref x]` cell ([chapter 3](03-functions.html)) has no synchronization, so the compiler rejects it in a closure given to `thread::spawn`, `task::spawn`, or `par::*`, where two threads could change it at once.
+
+```text check=checks/12-ref-thread.nabi
+error[E0085]: `[ref count]` can't be used in a closure that may run on another thread: both threads could change `count` at once
+   = help: write `let count = Atomic::new(count);` before the closure, capture `count` without `ref`, and use `count.load()` / `count.store(..)`; or return the value from the closure instead
+```
+
+Share an `Atomic` (for a number) or a `Mutex` (for anything else) instead, or return the value from the thread and combine the results after `join`.
+
+```nabi
+use std::thread;
+
+let count = Atomic::new(0);
+let hs: List<thread::JoinHandle<()>> = [];
+for _ in 0..4 {
+    hs.push(thread::spawn(|| {
+        for _ in 0..10000 { count.fetch_add(1); }
+    }));
+}
+for h in hs { try h.join(); }
+println(f"{count.load()}");
+```
+
+```output
+40000
+```
+
+**A closure several threads run can't capture a collection.** A plain capture is shared with the code that made the closure, so a list captured by a `par`, `thread::spawn` or `Scope::spawn` closure could be changed by two threads at once. The compiler says what to write instead:
+
+```text check=checks/12-capture-list.nabi
+error[E0040]: mismatched types: argument 2 of `map` expects `fn(i64) -> i64 + Send + Sync`, found `closure(i64) -> i64` - the closure's captures don't meet the `fn` type's bounds
+  --> main.nabi:2:26
+   |
+ 2 | let out = par::map(0..3, |i| table[i] * 2);
+   |                          ^^^^^^^^^^^^^^^^
+   |
+   = note: the closure captures `table` (type `List<i64>`), which is not `Sync` (collections are not `Sync`: share one read-only with `.freeze()`, or through a `Mutex` to change it)
+   = help: share `table` read-only, with no copy: `let table = table.freeze();` before the closure; to write parts of it in parallel, give each worker its own part as an item: `par::for_each(table.chunks_mut(n), |part| ..)`
+```
+
+**A `static` must be `Sync`.** A `static` is visible to every thread, so its type must be safe to share. `static XS: List<i32> = [];` is an error: freeze a list that is only read (`static XS: FrozenList<i32> = [1, 2, 3].freeze();`), and wrap one that changes in a `Mutex`.
+
+```nabi
+static SEEN: Mutex<List<i32>> = Mutex::new([]);
+
+fn record(x: i32) {
+    using g = SEEN.lock() { g.get().push(x); }
+}
+
+record(1);
+record(2);
+println(f"{using g = SEEN.lock() { g.get_clone() }:?}");
+```
+
+```output
+[1, 2]
+```
+
+**Threads you don't join are killed when `main` returns.** The program ends when `main` does, and threads that are still running stop with it, halfway through. Keep the `JoinHandle` and `join` it. `nabi check` and `nabi lint` warn about a handle that is never joined:
+
+```text check=checks/12-unjoined.nabi
+warning[E0131]: this thread is never joined, so the program may end before it finishes
+  --> main.nabi:3:1
+   |
+ 3 | thread::spawn(|| println("hi"));
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: join it with `try thread::spawn(|| println("hi")).join()`, or write `thread::spawn(|| println("hi")).detach()` to let it run on its own
+```
+
+If the thread really should outlive your interest in it, call `detach()` on the handle.
+
+```nabi
+use std::thread;
+
+let t = thread::spawn(|| {
+    thread::sleep(Duration::ms(10));
+    println("thread done");
+});
+println("main done");
+try t.join();               // without this line, "thread done" may never print
+```
+
+```output
+main done
+thread done
+```
+
+**Futures are lazy.** Calling an `async fn` only creates a future; its body runs when you `await` it (or hand it to `task::spawn`). A future that is never awaited never runs. It is not an error, but `nabi check` and `nabi lint` warn: `this future is never awaited, so its body never runs`, and suggest writing `await f`. A `Task` from `task::spawn` gets no warning when you drop it: a spawned task runs on its own (fire-and-forget).
+
+```nabi
+async fn work() -> i32 {
+    println("work ran");
+    1
+}
+
+let f = work();             // nothing runs yet
+println("before await");
+println(f"{await f}");
+```
+
+```output
+before await
+work ran
+1
+```
+
+**`task::spawn` needs an async `main`.** Tasks run on an executor, and the executor is started by an `async fn main`. A script becomes one as soon as its top level contains an `await`; without one, `task::spawn` panics.
+
+```text
+thread 'main' panicked at .../library/core/src/task.nabi:564:18:
+no task executor is running: await inside `async fn main` or `task::block_on`
+```
+
+So `await` the tasks you spawn, as in the examples above. To call async code from an ordinary `fn`, use `task::block_on`, which runs the future to completion and returns its value.
+
+```nabi
+async fn work() -> i32 { 7 }
+
+fn compute() -> i32 {
+    task::block_on(work())
+}
+
+println(f"{compute()}");
+```
+
+```output
+7
+```
+
+## Summary
+
+- `thread::spawn` starts an OS thread; get its result with `try h.join()`.
+- Create channels with `channel()`. A `Sender` is released where its last owner leaves scope; `close()` it yourself in a thread, or when the receiver reads in the same scope.
+- The prelude has `task`, `par`, `channel`, `Mutex` and `Atomic`; `std::thread` needs a `use`.
+- Protect shared values with `Atomic` or `Mutex`. Lock guards must be bound with `using`; anything else is a compile error. `[ref x]` captures can't cross threads, and a `static` must be `Sync`.
+- A value handed to `Mutex::new` or `send` belongs to its new owner: using it afterwards, or using one of its elements, is a compile error (`E0105`). Use it through the lock, hand over a `clone()`, or take elements out with `pop` / `remove` before sending them. What `g.get()` returns stays inside the `using` block; keep a `g.get_clone()`.
+- The receiver gets its own copy of the collections in the value; the copy keeps its sharing and costs time in proportion to its size. `any Tr` crosses threads only with `Send + Sync` on the trait, and a `Weak` never does.
+- `thread::local` gives each thread its own value: use it inside `with(|v| ..)`, or move it in and out with `set` / `replace` / `take`.
+- Share a collection that is only read with `freeze()`: a `FrozenList` / `FrozenDict` / `FrozenSet` is read by every thread with no lock and no copy. For read-mostly state, keep a frozen snapshot in a `Mutex` and replace it whole. `Frozen<T>` gives each reader its own copy of a value.
+- `await` is a prefix operator on the call after it (`await f() == x` compares the result). Use `async fn` / `await` and `task::spawn` / `task::join` to run wait-heavy work concurrently.
+- `task::spawn` hands its future over like a send: the task works on its own copy of what the future captured, so return its changes with `await`. A closure gives a list to a thread with `[move xs]`, and such a closure is handed over once: `par::join(f, f)` is an error.
+- Join your threads and await your futures: un-joined threads die with `main`, and a future runs only when awaited; the lints warn about both. A dropped `task::spawn` task still runs. `task::spawn` needs an async `main` (or `task::block_on`).
+- For data-parallel computation, `par::map`, `par::for_each`, `par::join`, and `par::scope` keep things simple. Work on a big list by giving each worker a part: `par::map(xs.chunks(n), ..)` to read, `par::for_each(xs.chunks_mut(n), ..)` to write in place. Items that share a collection run one at a time, with a warning.
+- Create and consume streams with `async yield fn` and `for await`.
+
+## Further reading
+
+- Spec: [Async (`async` / `await`)](../spec/refs-lang/004-functions/412-async.html), [Operator precedence](../spec/refs-lang/003-expressions/302-precedence-and-associativity.html), [Streams](../spec/refs-lang/004-functions/413-stream.html), [`using`](../spec/refs-lang/003-expressions/317-using-expression.html), [Captures across threads](../spec/refs-lang/004-functions/406-capture-semantics.html), [`static`](../spec/refs-lang/005-modules/503-static.html)
+- Standard library spec: [sync](../spec/refs-standard-libraries/200-core/216-sync.html), [channel](../spec/refs-standard-libraries/200-core/217-channel.html), [task](../spec/refs-standard-libraries/200-core/218-task.html), [par](../spec/refs-standard-libraries/200-core/219-par.html)
+- API: [`thread::spawn`](../std/std/thread.html#fn.spawn), [`task::spawn`](../std/core/task.html#fn.spawn), [`task::join`](../std/core/task.html#fn.join), [`channel`](../std/core/channel.html#fn.channel), [`Mutex`](../std/core/sync.html#struct.Mutex), [`Atomic`](../std/core/sync.html#struct.Atomic), [`par::map`](../std/core/par.html#fn.map), [`par::scope`](../std/core/par.html#fn.scope)
+- Next chapter: [13. File and Network IO](13-io.html)

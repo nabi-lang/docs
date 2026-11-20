@@ -1,0 +1,6 @@
+use std::fs::File;
+use core::io::IoError;
+
+fn whole(path: str) throws (IoError) -> str {
+    try (try File::open(path)).read_to_str()
+}

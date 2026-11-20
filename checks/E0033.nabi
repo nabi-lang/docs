@@ -1,0 +1,5 @@
+pub use inner::helper;
+
+mod inner {
+    fn helper() -> i32 { 1 }
+}

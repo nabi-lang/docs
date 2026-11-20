@@ -1,0 +1,518 @@
+# 6. struct, enum, 트레잇
+
+이제 직접 타입을 정의할 차례입니다. 이 장에서는 데이터를 묶는 `struct`, 이름 붙은 경우를 나열하는 `enum`, 여러 타입이 공유하는 동작을 정의하는 `trait`을 다룹니다.
+
+## struct와 필드 기본값
+
+`struct`는 이름 붙은 필드의 묶음입니다. 필드는 `name: Type;`으로 쓰고, `= value`로 기본값을 줄 수 있습니다. 기본값이 있는 필드는 생성할 때 생략할 수 있습니다.
+
+```nabi
+struct Config {
+    name: str;
+    retry: i32 = 3;
+    verbose: bool = false;
+}
+
+let a = Config { name: "api" };
+let b = Config { name: "db", retry: 5 };
+println(f"{a.name} retry={a.retry} verbose={a.verbose}");
+println(f"{b.name} retry={b.retry}");
+```
+
+```output
+api retry=3 verbose=false
+db retry=5
+```
+
+기본값으로는 리터럴이나 `const` 식만 쓸 수 있습니다. 런타임에 계산해야 하는 초기값은 `fn new() -> Config` 같은 생성자 함수에서 정합니다. 필드를 위치로 구별하는 튜플 struct(`struct Rgb(u8, u8, u8);`)와 필드 없는 unit struct(`struct Marker;`)도 있습니다. unit struct는 제네릭일 수도 있습니다(`struct Tag<T>;`). 값은 `Tag::<i64>`이고, 타입이 정해지는 자리에서는 그냥 `Tag`입니다(`let t: Tag<i64> = Tag;`). 이런 struct의 생성자는 값입니다. 그래서 모듈에 같은 이름의 함수나 `const`, `static`이 있으면 중복 정의가 됩니다.
+
+## 메서드: `impl`과 `self`
+
+`impl Type { ... }` 블록 안의 함수는 그 타입의 메서드가 됩니다. 첫 매개변수가 `self`이면 인스턴스 메서드(`p.dist2(q)`)이고, 아니면 정적 메서드(`Point::origin()`)입니다. 필드를 바꾸는 메서드는 `ref self`를 받습니다.
+
+```nabi
+struct Point { x: f64; y: f64; }
+
+impl Point {
+    fn origin() -> Point { Point { x: 0.0, y: 0.0 } }
+
+    fn dist2(self, o: Point) -> f64 {
+        let dx = self.x - o.x;
+        let dy = self.y - o.y;
+        dx * dx + dy * dy
+    }
+
+    fn shift(ref self, dx: f64) { self.x += dx; }
+}
+
+let p = Point { x: 3.0, y: 4.0 };
+println(f"{p.dist2(Point::origin())}");
+p.shift(1.5);
+println(f"{p.x}");
+```
+
+```output
+25
+4.5
+```
+
+`ref self` 메서드에서 바꾼 내용은 호출한 쪽의 변수에 반영됩니다. 호출하는 곳에는 `ref`를 쓰지 않아도 됩니다. `ref`가 왜 필요한지는 다음 절에서 다룹니다.
+
+## struct는 값입니다
+
+struct는 `i32`처럼 **값**입니다. 대입하거나 함수에 넘기거나 리스트(`ps[i]`)나 딕셔너리에서 읽어 오면 언제나 사본이 생깁니다. 사본을 바꿔도 원본은 그대로입니다.
+
+```nabi
+struct Point { x: i32; y: i32; }
+
+let a = Point { x: 1, y: 2 };
+let b = a;              // a copy
+b.x = 100;
+println(f"{a.x} {b.x}");
+
+let ps = [Point { x: 1, y: 0 }, Point { x: 2, y: 0 }];
+let first = ps[0];      // also a copy
+first.x = 99;
+println(f"{ps[0].x} {first.x}");
+ps[0].x = 99;           // writes into the list
+println(f"{ps[0].x}");
+```
+
+```output
+1 100
+1 99
+99
+```
+
+`List`, `Dict`, `Set`은 반대입니다. 변수에 담긴 것은 공유되는 객체 하나를 가리키는 핸들입니다. 그래서 객체를 바꾸면 그 핸들의 모든 사본에서 바뀐 내용이 보입니다.
+
+|                       | `struct`, `enum`, 튜플, 숫자 | `List`, `Dict`, `Set`, `Mutex`, ... |
+|-----------------------|---------------------------------|-------------------------------------|
+| `let b = a;`          | 독립된 사본                | 같은 객체                     |
+| 필드 / 원소 쓰기 | 사본만 바뀜       | 모든 핸들에서 보임           |
+| 별도 사본 만들기 | 대입 자체          | `.clone()`                          |
+
+복사는 얕은 복사입니다. struct 필드에 `List`가 있으면 핸들만 복사되므로 struct의 두 사본이 그 리스트를 함께 씁니다. `#[derive(Clone)]`(아래 참고)으로 만든 `clone()`은 리스트까지 복사합니다.
+
+```nabi
+#[derive(Clone)]
+struct Team { name: str; members: List<str>; }
+
+let a = Team { name: "core", members: ["ada"] };
+let b = a;
+b.name = "docs";            // only b
+b.members.push("grace");    // the list both share
+println(f"{a.name} {a.members:?}");
+
+let c = a.clone();
+c.members.push("linus");
+println(f"{a.members:?} {c.members:?}");
+```
+
+```output
+core ["ada", "grace"]
+["ada", "grace"] ["ada", "grace", "linus"]
+```
+
+### 호출한 쪽의 값 바꾸기: `ref`
+
+함수는 struct 인자의 사본을 받습니다. 호출한 쪽의 변수를 바꾸려면 매개변수를 `ref`로 선언하고 호출하는 곳에도 `ref`를 씁니다. 그러면 코드를 읽는 사람이 어떤 인자가 바뀔 수 있는지 알 수 있습니다.
+
+```nabi
+struct Counter { n: i32; }
+
+fn bumped(c: Counter) -> i32 { c.n += 1; c.n }    // changes its own copy
+fn bump(ref c: Counter) { c.n += 1; }             // changes the caller's variable
+
+let c = Counter { n: 0 };
+println(f"{bumped(c)} {c.n}");
+bump(ref c);
+println(f"{c.n}");
+```
+
+```output
+1 0
+1
+```
+
+메서드도 같습니다. `self`는 사본이고, `ref self`는 호출한 쪽의 값입니다. 메서드는 호출하는 곳에 `ref`가 필요 없습니다. 사본에 쓴 뒤 아무도 읽지 않는 필드는 바꾼 내용이 사라지므로, `ref self`를 빠뜨리면 에러입니다.
+
+```nabi norun
+struct Counter { n: i32; }
+
+impl Counter {
+    fn inc(self) { self.n += 1; }
+}
+```
+
+```text check=checks/06-write-to-copy.nabi
+error[E0057]: `self.n` is set on a copy of the receiver, so the change is lost when `inc` returns
+  --> main.nabi:4:20
+   |
+ 4 |     fn inc(self) { self.n += 1; }
+   |                    ^^^^^^
+   |
+   = help: take `ref self` to change the caller's value: `fn inc(ref self)`; to change a local copy, write `let c = self;` and change `c`
+```
+
+help대로 `ref self`를 받습니다.
+
+```nabi
+struct Counter { n: i32; }
+
+impl Counter {
+    fn inc(ref self) { self.n += 1; }
+}
+
+let c = Counter { n: 0 };
+c.inc();
+c.inc();
+println(f"{c.n}");
+```
+
+```output
+2
+```
+
+루프도 같습니다. `for p in ps`는 각 원소의 사본을 묶으므로 `p.x *= 10`은 사본만 바꿉니다.
+
+```nabi norun
+for p in ps { p.x *= 10; }
+```
+
+```text check=checks/06-loop-copy.nabi
+error[E0057]: `p.x` is set on a copy of the element, so `ps` does not change
+  --> main.nabi:4:15
+   |
+ 4 | for p in ps { p.x *= 10; }
+   |               ^^^
+   |
+   = help: bind each element as a place with `for ref`: `for ref p in ps { p.x *= 10; }`
+```
+
+`for ref p in ps`는 각 원소를 자리로 묶습니다. `p`를 읽으면 원소를 읽고, `p`나 그 필드에 쓰면 원소에 씁니다. `p`(또는 `ps[i]`, `Dict` 항목)에 `ref self` 메서드를 불러도 제자리에서 바뀝니다.
+
+```nabi
+struct Point { x: i32; y: i32; }
+
+let ps = [Point { x: 1, y: 0 }, Point { x: 2, y: 0 }];
+for ref p in ps {
+    p.x *= 10;
+}
+println(f"{ps[0].x} {ps[1].x}");
+```
+
+```output
+10 20
+```
+
+원소를 쓰는 `for ref` 루프는 순회하는 리스트의 크기를 바꿀 수 없습니다. 본문의 `ps.push(..)`는 에러입니다([E0137](../errors/E0137.html)). 길이는 루프가 끝난 뒤 바꾸세요.
+
+클로저가 받는 struct 인자도 사본이므로 `ps.for_each(|p| { p.x = 0; })`도 같은 에러입니다([E0057](../errors/E0057.html)). 리스트를 `for ref`로 돌거나, 바꾼 값을 돌려주고 그 결과를 간직하세요: `ps.map(|p| { p.x *= 10; p }).to_list()`.
+
+## enum: 이름 붙은 경우
+
+`enum`은 여러 변형(variant) 중 하나인 값을 정의합니다. 변형에는 데이터가 없을 수도 있고(`Empty`), 위치 필드가 있을 수도 있고(`Circle(f64)`), 이름 있는 필드가 있을 수도 있습니다(`Rect { w: f64; h: f64; }`). 값은 `Shape::Circle(1.0)`처럼 만들고 `match`에서 같은 모양의 패턴으로 분해합니다.
+
+```nabi
+enum Shape {
+    Circle(f64),
+    Rect { w: f64; h: f64; },
+    Empty,
+}
+
+fn area(s: Shape) -> f64 {
+    match s {
+        Shape::Circle(r) => 3.0 * r * r,
+        Shape::Rect { w, h } => w * h,
+        Shape::Empty => 0.0,
+    }
+}
+
+let shapes = [Shape::Circle(1.0), Shape::Rect { w: 2.0, h: 3.0 }, Shape::Empty];
+for s in shapes {
+    println(f"{area(s)}");
+}
+println(f"{shapes[0] is Shape::Circle}");
+```
+
+```output
+3
+6
+0
+true
+```
+
+`s is Shape::Circle`은 데이터와 관계없이 변형만 검사합니다.
+
+기대하는 타입이 그 enum인 자리에서는 변형 이름만 써도 됩니다. `Shape`에 대한 `match`의 가지, `Shape` 매개변수에 넘기는 인자, 타입이 `Shape`인 `let`, `return` 값, struct 리터럴의 필드, `s == ..`의 오른쪽이 그렇습니다. 표준 라이브러리의 enum을 포함해 모든 enum에 통합니다(`let o: Ordering = Less;`).
+
+```nabi
+enum Shape {
+    Circle(f64),
+    Rect { w: f64; h: f64; },
+    Empty,
+}
+
+fn sides(s: Shape) -> i32 {
+    match s {
+        Circle(_) => 0,
+        Rect { .. } => 4,
+        Empty => 0,
+    }
+}
+
+println(f"{sides(Rect { w: 1.0, h: 2.0 })} {sides(Empty)}");
+```
+
+```output
+4 0
+```
+
+`let s = Empty;`처럼 기대하는 타입이 없으면 `Shape::Empty`로 전체 경로를 씁니다. 에러 메시지가 그렇게 알려 줍니다. 직접 정의한 이름은 언제나 변형보다 우선합니다.
+
+합 타입과 다른 점은 이름입니다. 합 타입은 이미 있는 타입을 이름 없이 묶고, `enum`은 각 경우에 의미 있는 이름을 붙입니다. 둘 다 `f64`인 "반지름"과 "변의 길이"를 구별해야 한다면 `enum`이 맞습니다.
+
+## 트레잇과 기본 메서드
+
+`trait`은 타입이 갖춰야 하는 메서드의 목록입니다. 본체 없이 시그니처만 적은 메서드는 구현하는 쪽이 채워야 하고, 본체가 있는 메서드는 기본 구현이 됩니다. 트레잇은 `impl Trait for Type`으로 구현합니다.
+
+```nabi
+trait Animal {
+    fn name(self) -> str;
+    fn sound(self) -> str;
+    fn speak(self) -> str { f"{self.name()}: {self.sound()}!" }
+}
+
+struct Dog;
+struct Cat { lives: i32; }
+
+impl Animal for Dog {
+    fn name(self) -> str { "dog" }
+    fn sound(self) -> str { "woof" }
+}
+
+impl Animal for Cat {
+    fn name(self) -> str { "cat" }
+    fn sound(self) -> str { "meow" }
+    fn speak(self) -> str { f"cat ({self.lives} lives): meow" }
+}
+
+println(Dog.speak());
+println(Cat { lives: 9 }.speak());
+```
+
+```output
+dog: woof!
+cat (9 lives): meow
+```
+
+트레잇의 메서드는 그 트레잇이 스코프에 있을 때만 찾습니다. 같은 모듈에서 정의했거나, `use`로 들여왔거나, 표준 라이브러리의 트레잇일 때입니다. 다른 모듈의 트레잇 메서드를 쓰려면 그 트레잇을 `use`해야 하고, 없으면 컴파일러가 무엇을 추가할지 알려 줍니다.
+
+```nabi norun
+use pkg::zoo::Animal;         // without this, `zoo::Dog.name()` is an error
+
+mod zoo {
+    pub trait Animal { fn name(self) -> str; }
+    pub struct Dog;
+    impl Animal for Dog { fn name(self) -> str { "dog" } }
+}
+
+println(zoo::Dog.name());
+```
+
+```text
+error[E0135]: method `name` comes from trait `zoo::Animal`, which is not in scope
+   = help: add `use pkg::zoo::Animal;`
+```
+
+impl이 컴파일러가 검사할 수 없는 약속을 하는 트레잇은 `unsafe trait`으로 선언하고, 그 impl은 모두 `unsafe impl`로 씁니다. 표준 라이브러리의 `Pod`가 그렇습니다. 둘 다 [14장](14-ffi.html)에서 다룹니다.
+
+## derive로 자동 구현
+
+비교, 해시, 디버그 출력처럼 기계적으로 쓸 수 있는 구현은 `#[derive(...)]`로 만듭니다. 내장 derive는 `Clone`, `Copy`, `Debug`, `Default`, `PartialEq`, `Eq`, `PartialOrd`, `Ord`, `Hash`이고, 표준 라이브러리가 에러 타입용 `Error`([10장](10-errors.html#직접-만드는-에러-타입))와 NABION 직렬화용 `Nabion`을 더합니다([15장](15-nabion.html)). `Default`는 필드에 선언한 기본값(`= value`)을 쓰고, 기본값이 없는 필드에만 그 타입의 `default()`를 씁니다.
+
+```nabi
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
+struct Version { major: i32; minor: i32; }
+
+let vs = [Version { major: 1, minor: 2 }, Version { major: 0, minor: 9 }];
+vs.sort();
+println(f"{vs:?}");
+
+let seen = Set::new();
+seen.insert(vs[0].clone());
+println(f"{Version { major: 0, minor: 9 } in seen}");
+
+let zero: Version = Default::default();
+println(f"{zero == vs[0]}");
+```
+
+```output
+[Version { major: 0, minor: 9 }, Version { major: 1, minor: 2 }]
+true
+false
+```
+
+`Ord`는 필드를 선언 순서대로 비교하므로 `sort`는 버전 순으로 정렬합니다. `Display`는 derive가 아닙니다. 사람이 읽는 형식은 타입을 만든 사람이 정하기 때문입니다. 타입에 `self`에 대한 f-string인 `#[display("..")]`를 붙이거나(`#[display("v{self.major}.{self.minor}")]`), 직접 구현합니다(아래 연산자 절 참고).
+
+같음을 직접 구현했다면 `Hash`도 직접 구현해야 합니다. 같은 값은 같은 해시를 내도록, 같음이 보는 것을 그대로 해셔에 넣어야 합니다. `Hash` impl은 숫자를 계산하지 않고, 받은 `Hasher`에 자기 부분을 씁니다. `Hasher`는 프렐류드에 없으므로 `core::hash`에서 가져옵니다.
+
+```nabi
+use core::hash::Hasher;
+
+struct Tag { name: str; }
+
+impl PartialEq for Tag {
+    fn eq(self, o: Tag) -> bool { self.name.to_lowercase() == o.name.to_lowercase() }
+    fn ne(self, o: Tag) -> bool { !self.eq(o) }
+}
+impl Eq for Tag {}
+impl Hash for Tag {
+    fn hash<H: Hasher>(self, ref h: H) { h.write_str(self.name.to_lowercase()); }
+}
+
+let tags: Set<Tag> = Set::new();
+tags.insert(Tag { name: "Nabi" });
+println(f"{tags.contains(Tag { name: "NABI" })}");
+```
+
+```output
+true
+```
+
+`Dict`와 `Set`이 쓰는 해셔는 프로세스마다 키가 정해지므로 해시 값은 실행할 때마다 달라집니다. 해시 값을 저장하지 마세요.
+
+표준 라이브러리의 타입도 같은 규칙을 따릅니다. 모든 공개 타입이 `Debug`를 구현하므로 범위(`0..3`), `File`(`File { path: "a.txt" }`), 반복자에도 `{x:?}`를 쓸 수 있습니다. 키를 담은 타입은 비밀 대신 `{ .. }`를 출력합니다. `Path`, `Ipv4Addr`, `Ordering` 같은 값 타입은 `Eq`와 `Hash`를 구현하므로 `Dict`의 키와 `Set`의 원소로 쓸 수 있습니다. `IoErrorKind`나 `HashAlgorithm`처럼 나중에 경우가 늘 수 있는 std enum은 `#[non_exhaustive]`라서, `match`할 때 `_` 가지가 있어야 합니다.
+
+직접 만드는 derive는 Nabi 코드의 템플릿입니다. `#[impl_derive(Trait)] @derive { .. }`는 `@for_fields`로 필드마다 부분을 반복하고, `@field.name` / `@field.type`으로 이름과 타입을 쓰며, `@concat`으로 이름 붙은 짝 항목을 선언할 수 있습니다. 아래에서 `Point`의 `#[derive(Columns)]`는 필드마다 리스트 하나를 가진 `PointColumns`도 선언합니다([6.9](../spec/refs-lang/006-meta-system/609-template-tokens.html)).
+
+```nabi
+trait Columns { fn width() -> usize; }
+
+#[impl_derive(Columns)] @derive {
+    pub struct @concat(@Self.name, Columns) {
+        @for_fields { pub @field.name: List<@field.type>; }
+    }
+    impl @concat(@Self.name, Columns) {
+        fn push(ref self, v: @Self) {
+            @for_fields { self.@field.name.push(v.@field); }
+        }
+    }
+    impl Columns for @Self {
+        fn width() -> usize { @Self.field_count }
+    }
+}
+
+#[derive(Columns)]
+struct Point { x: f32; y: f32; }
+
+let cols = PointColumns { x: [], y: [] };
+cols.push(Point { x: 1.0, y: 2.0 });
+cols.push(Point { x: 3.0, y: 4.0 });
+println(f"{cols.x:?} {cols.y:?} {Point::width()}");
+```
+
+```output
+[1.0, 3.0] [2.0, 4.0] 2
+```
+
+## 트레잇은 타입이 아닙니다
+
+Nabi에서는 트레잇 이름을 타입 자리에 그대로 쓸 수 없습니다. `fn f(a: Animal)`은 컴파일 에러입니다. 눈에 보이지 않는 동적 디스패치 비용을 막으려는 규칙입니다.
+
+```text check=checks/06-trait-as-type.nabi
+error[E0071]: trait `Animal` cannot be used as a type directly
+  --> main.nabi:2:9
+   |
+ 2 | fn f(a: Animal) {}
+   |         ^^^^^^
+   |
+   = help: use `any Animal` for a value of any type implementing it, or a generic parameter `<T: Animal>`
+```
+
+대신 제네릭이나 합 타입을 씁니다.
+
+```nabi
+trait Animal { fn sound(self) -> str; }
+struct Dog;
+struct Cat;
+impl Animal for Dog { fn sound(self) -> str { "woof" } }
+impl Animal for Cat { fn sound(self) -> str { "meow" } }
+
+// 1. Open set of types: a generic with a bound (static dispatch).
+fn twice<T: Animal>(a: T) -> str { f"{a.sound()} {a.sound()}" }
+fn thrice(a: some Animal) -> str { f"{twice(a)} {a.sound()}" }
+
+// 2. Closed set of types: a sum type.
+fn loud(a: Dog | Cat) -> str {
+    match a {
+        d: Dog => d.sound().to_uppercase(),
+        c: Cat => c.sound().to_uppercase(),
+    }
+}
+
+println(twice(Dog));
+println(thrice(Cat));
+println(loud(Cat));
+```
+
+```output
+woof woof
+meow meow meow
+MEOW
+```
+
+`a: some Animal`은 `T`에 이름을 붙이지 않은 같은 제네릭입니다. 후보가 정해진 몇 개라면 합 타입을, 후보가 열려 있다면 제네릭(다음 장)을 씁니다.
+
+> [!NOTE]
+> 심화: 런타임에 고른 여러 구현을 한 컬렉션에 섞어야 하면 `let zoo: List<any Animal> = [Dog, Cat];`처럼 `any Trait`을 씁니다. 이렇게 담은 값의 메서드는 동적 디스패치로 호출합니다. 타입에 적힌 `any`가 그 비용을 드러냅니다. `fn write<B: AsBytes>(..)`처럼 자기 타입 매개변수가 있는 메서드도 이렇게 부를 수 있습니다([`any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-제약-붙은-any-any-trait)).
+
+## 연산자 트레잇
+
+`+`, `==`, `<` 같은 연산자는 모두 트레잇 메서드 호출입니다. `+`는 `Add`이고, 문자열 보간 `{x}`는 `Display`입니다. 그래서 이 트레잇을 구현하면 직접 만든 타입에도 연산자를 쓰고 값을 출력할 수 있습니다. 연산자 트레잇은 `ops` 모듈에 있으므로 impl에서는 `ops::Add`라고 씁니다. 연산자 자체는 가져오지 않아도 어디서나 동작합니다.
+
+```nabi
+struct V2 { x: i32; y: i32; }
+
+impl ops::Add for V2 {
+    type Output = V2;
+    fn add(self, o: V2) -> V2 { V2 { x: self.x + o.x, y: self.y + o.y } }
+}
+
+impl Display for V2 {
+    fn fmt(self, ref f: Formatter) throws (FmtError) {
+        try f.write_str(f"({self.x}, {self.y})");
+    }
+}
+
+let v = V2 { x: 1, y: 2 } + V2 { x: 10, y: 20 };
+println(f"v = {v}");
+```
+
+```output
+v = (11, 22)
+```
+
+`type Output = V2;`는 트레잇의 **연관 타입**을 정합니다. 다음 장에서 다시 봅니다.
+
+`Display` 구현은 모양이 정해져 있으므로 그대로 복사해 쓰면 됩니다. 매개변수가 `ref f`이므로 `fmt`는 호출한 쪽의 `Formatter`에 씁니다. 쓰기는 실패할 수 있으므로 `fmt`는 `throws (FmtError)`이고, 호출에는 `try`를 붙입니다. 에러는 [10장](10-errors.html)에서 다룹니다. 여기처럼 출력이 f-string 하나라면 struct에 `#[display("({self.x}, {self.y})")]`를 붙여 같은 구현을 얻습니다. `Display` 타입에는 모두 `to_str()`도 있습니다.
+
+## 정리
+
+- `struct` 필드에는 `= value`로 기본값을 줄 수 있고, 메서드는 `impl` 블록에 둡니다.
+- struct는 값입니다. 대입, 인자 전달, `list[i]`는 사본을 만듭니다. 얕은 복사이므로 `List` 필드는 공유됩니다. 호출한 쪽의 값을 바꾸려면 `ref` 매개변수(`f(ref x)`)나 `ref self`를 받습니다.
+- `enum` 변형에는 unit, 튜플, 이름 있는 필드의 세 모양이 있고 `match`로 분해합니다.
+- `trait`에는 필수 메서드와 기본 메서드가 있고, `impl Trait for Type`으로 구현합니다.
+- `#[derive(...)]`는 `Debug`, `Clone`, `PartialEq`, `Eq`, `PartialOrd`, `Ord`, `Hash`, `Default`(그리고 표준 라이브러리의 `Error`, `Nabion`)를 자동으로 구현합니다. `#[display("..")]`는 `Display`를 씁니다.
+- 트레잇은 타입이 아닙니다. 제네릭(`<T: Tr>`이나 `x: some Tr`)이나 합 타입(또는 심화로 `any Trait`)을 씁니다.
+- 연산자와 `{x}` 출력도 트레잇 구현(`Add`, `Display` 등)으로 동작합니다.
+
+## 더 읽을거리
+
+- [2.3. `struct`](../spec/refs-lang/002-types/203-struct.html), [2.3.8. 값 의미](../spec/refs-lang/002-types/203-struct.html#238-값-의미), [4.7. `ref`](../spec/refs-lang/004-functions/407-ref-keyword.html), [2.4. `enum`](../spec/refs-lang/002-types/204-enum.html), [2.5. `union`](../spec/refs-lang/002-types/205-union.html)
+- [2.8. `trait`](../spec/refs-lang/002-types/208-trait.html), [2.9. `impl`](../spec/refs-lang/002-types/209-impl.html), [4.9. 메서드](../spec/refs-lang/004-functions/409-method.html)
+- [6.2.1. `#[derive(...)]`](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#621-derive-자동-트레잇-구현)
+- [2.12. 트레잇-as-타입 금지](../spec/refs-lang/002-types/212-trait-as-type-banned.html), [2.2.10. `any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-제약-붙은-any-any-trait)
+- [3.1. 연산자 디스패치](../spec/refs-lang/003-expressions/301-operator-dispatch.html), API: [`Add`](../../std/core/ops.html#trait.Add), [`Display`](../../std/core/fmt.html#trait.Display), [NABION](../../std/std/nabion.html)
+- 다음 장: [7. 제네릭](07-generics.html)

@@ -1,0 +1,5 @@
+use std::thread;
+
+let count = 0;
+let t = thread::spawn([ref count] || { count += 1; });
+try! t.join();

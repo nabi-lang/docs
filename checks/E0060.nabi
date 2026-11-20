@@ -1,0 +1,6 @@
+fn first(xs: List<i32>) -> i32 {
+    let n = xs.first() else {
+        println("empty");
+    };
+    n
+}

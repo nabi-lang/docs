@@ -1,0 +1,349 @@
+# 3. Functions
+
+This chapter covers declaring and calling functions, default values and named arguments, and closures you can pass around as values. In Nabi, a function body is also a block expression, so its last expression is the return value.
+
+## Declarations and return values
+
+Declare a function with `fn name(param: Type, ...) -> ReturnType { body }`. The last expression of the body (one without a semicolon) is the return value; use `return` only to exit early.
+
+```nabi
+fn add(a: i32, b: i32) -> i32 {
+    a + b
+}
+
+fn sign(n: i32) -> str {
+    if n < 0 {
+        return "negative";
+    }
+    if n == 0 { "zero" } else { "positive" }
+}
+
+fn divmod(a: i32, b: i32) -> (i32, i32) {
+    (a / b, a % b)
+}
+
+println(f"{add(2, 3)} {sign(-4)} {sign(0)}");
+let (q, r) = divmod(17, 5);
+println(f"17 = 5 * {q} + {r}");
+```
+
+```output
+5 negative zero
+17 = 5 * 3 + 2
+```
+
+To return several values, group them in a tuple and destructure it at the call site.
+
+Statements inside a block end with `;`, but the last one before `}` may leave it out, with the same meaning. So `while i < n { i += 1 }` is the same as `{ i += 1; }`, and a last `let`, `return`, `break` or `throw` works the same way. Only a last expression gives the block its value, as `a + b` does above.
+
+Return and parameter types can be omitted. An omitted return type is inferred from the last expression (`()` if it ends with `;`). An untyped parameter makes the function generic, compiled separately for each argument type it is called with.
+
+```nabi
+fn double(x: i32) { x * 2 }   // return type inferred: i32
+fn id(x) { x }                // generic: fn id<T>(x: T) -> T
+println(f"{double(4)} {id("hi")}");
+```
+
+```output
+8 hi
+```
+
+A `pub` or `pub(pkg)` function is different: other modules call it, so it writes its signature out: every parameter has a type, and without `->` it returns `()` (`main` and generators, `yield fn`, excepted). When its body gives a value, the compiler says which `-> T` to write ([E0138](../errors/E0138.html)).
+
+```nabi
+pub fn double(x: i32) -> i32 { x * 2 }   // pub: types written out
+pub fn greet(name: str) { println(f"hi {name}"); }   // no `->`: returns ()
+greet("nabi");
+println(f"{double(4)}");
+```
+
+```output
+hi nabi
+8
+```
+
+A block `{ ... }` is an expression outside function bodies too. It is handy for keeping temporaries inside the block and taking out only the result.
+
+```nabi
+let area = {
+    let w = 3;
+    let h = 4;
+    w * h
+};
+println(f"{area}");
+```
+
+```output
+12
+```
+
+## Default values and named arguments
+
+A parameter can have a default value with `= value`, and a call can pass arguments by name with `name: value`. Positional arguments come first, named arguments after.
+
+```nabi
+fn greet(name: str, greeting: str = "Hello", punct: str = "!") -> str {
+    f"{greeting}, {name}{punct}"
+}
+
+println(greet("nabi"));
+println(greet("nabi", punct: "?"));
+println(greet(name: "Ada", greeting: "Hi"));
+```
+
+```output
+Hello, nabi!
+Hello, nabi?
+Hi, Ada!
+```
+
+Default values must be known at compile time, such as literals or `const`s. A variable number of arguments is taken with `...T`; inside the body it is a read-only slice.
+
+```nabi
+fn sum(xs: ...i32) -> i32 {
+    let total = 0;
+    for x in xs {
+        total += x;
+    }
+    total
+}
+
+println(f"{sum()} {sum(1, 2, 3)}");
+```
+
+```output
+0 6
+```
+
+## Closures
+
+A closure is an anonymous function value, written `|params| expr` or `|params| { block }`. Parameter types are inferred from context; without context, write them out. A parameter, of a closure or a function, may be a pattern that always matches, as in `let`: `|(a, b)| a + b` takes one tuple, `|a, b|` takes two values, and `fn dist((x, y): (f64, f64))` destructures its argument.
+
+```nabi
+let double = |x: i32| x * 2;
+let describe = |x: i32| -> str {
+    let half = x / 2;
+    f"{x} is {half} * 2"
+};
+println(f"{double(21)}");
+println(describe(10));
+
+let sum = |(a, b): (i32, i32)| a + b;
+println(sum((3, 4)));
+```
+
+```output
+42
+10 is 5 * 2
+7
+```
+
+Closures capture surrounding variables **by copying their values**. If an outer variable changes after the closure is created, the closure still remembers the value from creation time. To modify the outer variable itself, request a by-reference capture with a `[ref name]` capture list.
+
+```nabi
+let count = 0;
+let snapshot = || count + 1;
+count = 10;
+println(f"snapshot: {snapshot()}");
+
+let inc = [ref count] || { count += 1; };
+inc();
+inc();
+println(f"count: {count}");
+```
+
+```output
+snapshot: 1
+count: 12
+```
+
+If you try to assign to a variable captured by value, or to a field of a struct captured by value, it is an error that tells you to add `[ref count]`. Heap objects such as `List` are different: the variable is a reference to the object, so even a by-value capture can mutate the object itself, for example with `push`.
+
+The opposite of `[ref name]` is `[move name]`: it gives the value to the closure. The closure gets its own copy of the lists inside, and the code that made it can no longer use the name. This is how a list goes to another thread ([chapter 12](12-concurrency.html)):
+
+```nabi
+use std::thread;
+
+let rows = ["a", "b", "c"];
+let h = thread::spawn([move rows] || rows.len());
+println(f"rows: {try! h.join()}");
+```
+
+```output
+rows: 3
+```
+
+## Function types
+
+Functions and closures are values of type `fn(ParamTypes) -> ReturnType`. You can store them in variables, pass them as arguments, return them, and put them in lists.
+
+```nabi
+fn apply(f: fn(i32) -> i32, x: i32) -> i32 {
+    f(x)
+}
+
+fn make_adder(n: i32) -> fn(i32) -> i32 {
+    |x| x + n
+}
+
+let add5 = make_adder(5);
+println(f"{apply(add5, 10)}");
+
+let ops: List<fn(i32, i32) -> i32> = [|a, b| a + b, |a, b| a * b];
+for op in ops {
+    println(f"{op(6, 7)}");
+}
+```
+
+```output
+15
+13
+42
+```
+
+The closure returned by `make_adder` stays alive with `n` captured.
+
+## Trailing closures
+
+If the last argument is a closure, it can be moved outside the parentheses: `f(args) |x| { ... }` with parameters, `f(args) { ... }` without. Patterns such as iteration and resource management then read like built-in syntax.
+
+```nabi
+fn repeat(times: i32, body: fn(i32)) {
+    for i in 0..times {
+        body(i);
+    }
+}
+
+fn measure(label: str, body: fn() -> i32) -> i32 {
+    let r = body();
+    println(f"{label}: {r}");
+    r
+}
+
+repeat(3) |i| {
+    println(f"tick {i}");
+}
+let total = measure("sum") { 1 + 2 + 3 };
+let evens = [1, 2, 3, 4].filter |x| { x % 2 == 0 }.to_list();
+println(f"{total} {evens:?}");
+```
+
+```output
+tick 0
+tick 1
+tick 2
+sum: 6
+6 [2, 4]
+```
+
+A trailing-closure call that starts a statement, like `repeat(3) |i| { .. }` above, ends at its `}` as if a `;` followed: no `;` is needed, and a next line that starts with an operator (`-1`) is a statement of its own. It is an expression statement like any other, so a non-unit result is dropped and the `unused_result` lint warns about it (write `_ = f(..) { .. };` to drop it on purpose). Inside a larger expression, such as `let total = measure("sum") { 6 } - 1;`, the operator continues the call.
+
+A bare `return` inside such a closure would end only that call of the closure, not the function around it, so it is an error. To end the call, name the function that takes the closure: `return@each` (with a value, `return@find x`). To leave the surrounding function, write a `for` loop instead.
+
+```nabi
+fn each(xs: List<i32>, body: fn(i32)) {
+    for x in xs { body(x); }
+}
+
+each([1, 2, 3]) |x| {
+    if x == 2 { return@each; }   // ends this call; 3 still prints
+    println(f"{x}");
+}
+```
+
+```output
+1
+3
+```
+
+## Pipes: `|>`
+
+`x |> f` calls `f(x)`, and `x |> f(a)` calls `f(x, a)`: the value on the left becomes the first argument. A chain of free functions then reads in the order it runs. `|>` binds looser than every other operator, so the whole expression on its left is passed (`1 + 2 |> double` is `double(3)`), and a line that starts with `|>` continues the one above. The right side is a function, a call, or a closure in parentheses; methods keep using `.` (`s.trim()`).
+
+```nabi
+fn double(x: i32) -> i32 { x * 2 }
+fn add(x: i32, y: i32) -> i32 { x + y }
+
+let n = 1 + 2
+    |> double
+    |> add(10)
+    |> (|v| v - 1);
+println(f"{n}");
+```
+
+```output
+15
+```
+
+## A preview of methods
+
+Functions inside an `impl` block are methods. If the first parameter is `self`, call it as `value.method()`; without `self`, it is a static method called as `Type::function()`. To modify fields inside a method, take `ref self`. Structs and methods are covered in detail in a later chapter.
+
+```nabi
+struct Counter { n: i32 }
+
+impl Counter {
+    fn new() -> Counter { Counter { n: 0 } }
+    fn bump(ref self) { self.n += 1; }
+    fn get(self) -> i32 { self.n }
+}
+
+let c = Counter::new();
+c.bump();
+c.bump();
+println(f"{c.get()}");
+```
+
+```output
+2
+```
+
+## Nested functions and the entry point
+
+You can declare a function inside a function. A nested function is visible only within its block and, unlike a closure, does **not** capture outer variables. Use it to hide helpers that need no outer state.
+
+```nabi
+fn hypot_sq(a: i32, b: i32) -> i32 {
+    fn sq(x: i32) -> i32 { x * x }
+    sq(a) + sq(b)
+}
+println(f"{hypot_sq(3, 4)}");
+```
+
+```output
+25
+```
+
+A program starts at the top-level statements of `src/main.nabi` (or a standalone file) or at `fn main()`. Top-level statements become the body of an implicit `main` generated by the compiler, so top-level `let` variables are **local variables** and are not visible inside other function bodies. If a function needs such a value, pass it as an argument or capture it in a closure.
+
+```nabi
+let base = 100;
+let shifted = |x: i32| x + base;
+
+fn scale(x: i32, factor: i32) -> i32 {
+    x * factor
+}
+
+println(f"{shifted(1)} {scale(base, 3)}");
+```
+
+```output
+101 300
+```
+
+## Summary
+
+- The last expression of a function body is its return value. Use `return` to exit early.
+- Parameters can have default values, and calls can name arguments with `name: value`. `...T` takes variadic arguments.
+- A closure `|x| expr` captures by copying values by default; `[ref x]` requests a by-reference capture, and `[move x]` gives `x` to the closure.
+- A function value has type `fn(A) -> R`. A closure in the last argument position can be written in trailing form; inside it, `return@name` ends that call.
+- `x |> f(a)` is `f(x, a)`: a pipe passes the value on its left to a function, loosest of all operators.
+- A top-level `let` is a local of the implicit `main`, so other functions cannot see it.
+
+## Further reading
+
+- [Function declarations](../spec/refs-lang/004-functions/401-function-declaration.html), [parameters](../spec/refs-lang/004-functions/402-parameters.html), [return](../spec/refs-lang/004-functions/403-return.html)
+- [Function types](../spec/refs-lang/004-functions/404-function-type.html), [closures](../spec/refs-lang/004-functions/405-closure.html), [capture semantics](../spec/refs-lang/004-functions/406-capture-semantics.html)
+- [Trailing closures](../spec/refs-lang/004-functions/408-trailing-closure.html), [methods](../spec/refs-lang/004-functions/409-method.html), [nested functions](../spec/refs-lang/004-functions/410-nested-functions.html)
+- [Entry point](../spec/refs-lang/004-functions/416-entry-point.html), [block expressions](../spec/refs-lang/003-expressions/309-block-expressions.html), [pipe expressions](../spec/refs-lang/003-expressions/318-pipe-expression.html)
+- Next chapter: [4. Control Flow](04-control-flow.html)

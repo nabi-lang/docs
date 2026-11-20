@@ -1,0 +1,81 @@
+# 봉인된 메시지
+
+`core::crypto`와 OS 난수 소스만 써서 메시지를 암호화하고 서명합니다. 암호화는 수신자만 읽을 수 있게 하고, 서명은 누가 보냈는지 수신자가 알 수 있게 합니다.
+
+> [!WARNING]
+> Nabi의 암호 기능은 새로 만들어졌고 감사를 받지 않았습니다. 이 프로그램은 부품이 어떻게 맞물리는지 보여 줄 뿐입니다. 아직 실제 비밀을 보호하는 데 쓰지 마세요.
+
+## 코드
+
+```nabi
+// Send a signed, encrypted message: X25519 key agreement, HKDF, ChaCha20-Poly1305 and Ed25519.
+use core::crypto::{Aead, AeadAlgorithm, HashAlgorithm, Secret};
+use core::crypto::{ed25519, hkdf, x25519};
+use std::random;
+
+struct Sealed {
+    sender_key: x25519::PublicKey;   // the sender's one-time X25519 public key
+    nonce: List<u8>;
+    body: List<u8>;                  // ciphertext and tag
+    signature: List<u8>;             // Ed25519 over sender_key, nonce and body
+}
+
+/// The AEAD key both sides derive from an X25519 shared secret.
+fn derive(shared: Secret) -> Secret {
+    let prk = hkdf::extract(HashAlgorithm::Sha256, b"sealed-box v1", shared);
+    try! hkdf::expand(HashAlgorithm::Sha256, prk, "aead key", 32)
+}
+
+fn signed_part(s: Sealed) -> List<u8> {
+    s.sender_key.to_bytes().to_list() + s.nonce + s.body
+}
+
+fn seal(to: x25519::PublicKey, signer: ed25519::SigningKey, text: str) -> Sealed {
+    let eph = try! x25519::PrivateKey::from_bytes(random::secret(32));
+    let shared = eph.diffie_hellman(to) ?? panic("bad peer key");
+    let nonce = random::bytes(12);
+    let body = try! (try! Aead::new(AeadAlgorithm::ChaCha20Poly1305, derive(shared))).seal(nonce, "", text);
+    let s = Sealed { sender_key: eph.public_key(), nonce: nonce, body: body, signature: [] };
+    s.signature = signer.sign(signed_part(s));
+    s
+}
+
+fn open(s: Sealed, me: x25519::PrivateKey, from: ed25519::VerifyingKey) -> str | none {
+    if !from.verify(signed_part(s), s.signature) { return none; }
+    let shared = me.diffie_hellman(s.sender_key)?;
+    let aead = try! Aead::new(AeadAlgorithm::ChaCha20Poly1305, derive(shared));
+    let plain = (try! aead.open(s.nonce, "", s.body))?;
+    try? str::from_utf8(plain)
+}
+
+// Bob's encryption key and Alice's signing key.
+let bob = try! x25519::PrivateKey::from_bytes(random::secret(32));
+let alice = try! ed25519::SigningKey::from_seed(random::secret(32));
+let alice_public = alice.verifying_key();
+
+let msg = seal(bob.public_key(), alice, "the key is under the mat");
+println(f"sealed: {msg.body.len()} bytes, signature {msg.signature.len()} bytes");
+println(f"bob reads: {open(msg, bob, alice_public) ?? "(rejected)"}");
+
+let eve = try! x25519::PrivateKey::from_bytes(random::secret(32));
+println(f"eve reads: {open(msg, eve, alice_public) ?? "(rejected)"}");
+
+msg.body[0] ^= 1;
+println(f"tampered: {open(msg, bob, alice_public) ?? "(rejected)"}");
+```
+
+```output
+sealed: 40 bytes, signature 64 bytes
+bob reads: the key is under the mat
+eve reads: (rejected)
+tampered: (rejected)
+```
+
+## 설명
+
+- 메시지마다 새 X25519 키 쌍을 만듭니다. Alice가 그 비밀 키와 Bob의 공개 키로 얻은 공유 비밀은 Bob이 계산한 공유 비밀과 같습니다. Bob은 자기 비밀 키와 함께 전달받은 일회용 공개 키로 계산합니다. 키는 타입 있는 값입니다. `x25519::PrivateKey`는 바이트를 비밀 저장소에 두고, 공개 쪽 `PublicKey`는 메시지에 담기는 평범한 값입니다([`x25519`](../../std/core/crypto/x25519.html), [2.21.3 키 교환](../spec/refs-standard-libraries/200-core/221-crypto.html#2213-키-교환)).
+- 원시 공유 비밀을 키로 바로 쓰지 않습니다. `hkdf::extract` / `expand`가 이 비밀을 32바이트 AEAD 키로 바꾸고, 라벨(`b"sealed-box v1"`)이 그 키를 이 프로토콜에 묶습니다([2.21.1](../spec/refs-standard-libraries/200-core/221-crypto.html#2211-해시-hmac-hkdf)).
+- ChaCha20-Poly1305는 암호화와 인증을 함께 합니다. 24바이트 텍스트는 40바이트가 됩니다. 늘어난 16바이트가 태그입니다. `open`은 키가 틀리거나 바이트가 하나라도 바뀌면 `none`을 돌려줍니다. 그래서 Eve의 시도와 변조된 사본은 평문이 나오기 전에 모두 거부됩니다([`Aead`](../../std/core/crypto/aead.html), [2.21.2](../spec/refs-standard-libraries/200-core/221-crypto.html#2212-aead)).
+- Alice는 일회용 키, nonce, 암호문을 한꺼번에 Ed25519로 서명하므로 누구도 그중 하나를 바꿔치기할 수 없습니다. `open`은 Alice의 `VerifyingKey`로 서명부터 확인합니다([`ed25519`](../../std/core/crypto/ed25519.html)).
+- 개인 키는 `random::secret`으로 만듭니다. 이 함수는 바이트를 곧바로 비밀 저장소에 넣습니다. 공유 비밀과 유도한 키도 `Secret`이므로 키 바이트가 일반 `List`에 담기는 일이 없습니다. nonce는 공개 값이고 `random::bytes`에서 얻습니다. 알고리듬이 직접 난수를 가져오는 일은 없습니다([키 재료](../learn/19-crypto-and-tls.html#키-재료-secret)). 있을 수도 없을 수도 있는 결과는 후위 `?`와 `??`로 꺼냅니다([합 타입](../learn/05-sum-types.html)).
+- 자세한 내용은 [암호와 TLS](../learn/19-crypto-and-tls.html)에 있습니다.

@@ -1,0 +1,199 @@
+# 19. 암호와 TLS
+
+Nabi에는 자체 암호 구현이 들어 있습니다. `core::crypto`에는 해시, HMAC과 HKDF, 인증 암호화, 키 교환, 서명 알고리듬이 있습니다. `std::random`은 운영체제의 안전한 난수 원천을 읽습니다. `std::net::tls`는 이 둘 위에 만든 TLS 1.3 클라이언트와 서버입니다. OpenSSL이나 다른 시스템 라이브러리가 끼어들지 않으므로 같은 코드는 모든 타깃에서 같게 동작합니다.
+
+> [!WARNING]
+> 이 코드는 실험 단계이고 감사(audit)를 받지 않았습니다. 공개된 테스트 벡터로 시험했고 비밀 데이터를 다룰 때 상수 시간(constant time)으로 실행되도록 작성했습니다. 하지만 실제 비밀을 맡기기 전에 암호 코드가 거쳐야 하는 독립적인 검토는 받지 않았습니다. 지금은 배우고 실험하는 데 쓰고, 중요한 일에는 감사받은 라이브러리를 쓰세요.
+
+## 해시와 MAC
+
+자주 쓰는 항목은 `core::crypto`에 있습니다(`HashAlgorithm`, `Digest`, `Hmac`, `Aead`, `Secret` 등). 키와 HKDF는 알고리듬의 모듈을 거쳐 부릅니다. 여러 모듈에 `PublicKey`가 있기 때문입니다. `crypto::ed25519::SigningKey`, `crypto::x25519::PrivateKey`, `crypto::hkdf::extract`처럼 씁니다. 모듈은 `sha2`, `sha3`, `hmac`, `hkdf`, `aead`, `x25519`, `ed25519`, `ecdsa`, `rsa`, `mlkem`입니다. 바이트를 받는 모든 함수는 `AsBytes` 값이면 무엇이든 받습니다. `List<u8>`, `Slice<u8>`, 바이트 배열, `str`(그 UTF-8 바이트), `Secret`을 받으므로 바이트 문자열과 텍스트를 바로 넘길 수 있습니다. 바이트를 받아 그대로 넘기는 함수를 직접 만들 때도 똑같이 `<B: AsBytes>`로 받으면 되고, 직접 만든 타입도 `AsBytes`를 구현하면 넘길 수 있습니다. 결과는 `List<u8>`이고, 키 재료만 `Secret`으로 돌아옵니다(아래 참고). 바이트를 텍스트로 보여 주려면 `encoding::hex::encode`와 `encoding::base64::encode`로 16진수나 base64로 바꿉니다(`base64::encode(x, base64::URL_SAFE_NO_PAD)`처럼 다른 알파벳과 패딩도 고를 수 있습니다). `decode`는 텍스트를 다시 바이트로 바꿉니다.
+
+```nabi
+use core::crypto::{HashAlgorithm, Digest, Hmac};
+use core::encoding::hex;
+
+println(hex::encode(HashAlgorithm::Sha256.digest("abc")));
+
+// The same hash, fed in pieces.
+let d = Digest::new(HashAlgorithm::Sha256);
+d.update("a");
+d.update(b"bc");
+println(f"{d.finish() == HashAlgorithm::Sha256.digest("abc")}");
+
+let tag = Hmac::mac(HashAlgorithm::Sha256, "secret key", "message");
+println(f"{tag.len()} {Hmac::verify(HashAlgorithm::Sha256, "secret key", "message", tag)}");
+println(f"{Hmac::verify(HashAlgorithm::Sha256, "secret key", "massage", tag)}");
+```
+
+```output
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+true
+32 true
+false
+```
+
+`Hmac::verify`는 상수 시간으로 비교합니다. 두 비밀을 직접 비교할 때는 `==` 대신 `crypto::constant_time_eq`를 쓰세요. `==`는 처음 다른 곳에서 멈추므로 얼마나 맞았는지가 새어 나갑니다. `hkdf::extract` / `expand`는 공유 비밀에서 키를 유도합니다. `HashAlgorithm`에는 SHA-3 함수 `Sha3_256`과 `Sha3_512`도 있으므로, HMAC, HKDF, 서명에도 다른 해시처럼 넘깁니다. `Hmac::mac(HashAlgorithm::Sha3_256, key, data)`처럼 씁니다. `sha3`에는 SHA-3와 SHAKE의 상태 타입도 따로 있습니다. 이후 릴리스에서 알고리듬이 늘어날 수 있으므로 `HashAlgorithm`에 대한 `match`에는 `_` 갈래가 필요합니다.
+
+## 암호화와 서명
+
+`Aead`는 한 번에 암호화와 인증을 합니다(AES-128-GCM, AES-256-GCM, ChaCha20-Poly1305). `seal`은 16바이트 태그가 붙은 암호문을 돌려줍니다. `open`은 암호문, 태그, 연관 데이터 가운데 무엇이든 바뀌었으면 `none`을 돌려줍니다. 키와 nonce는 `random`에서 얻습니다. 알고리듬은 난수를 인자로 받을 뿐 스스로 가져오지 않습니다.
+
+```nabi
+use core::crypto::{Aead, AeadAlgorithm};
+use core::crypto::ed25519::SigningKey;
+use std::random;
+
+let key = random::secret(32);
+let nonce = random::bytes(12);           // never reuse a nonce with the same key
+let aead = try! Aead::new(AeadAlgorithm::ChaCha20Poly1305, key);
+let sealed = try! aead.seal(nonce, "v1", "meet at noon");
+println(f"{sealed.len()} bytes sealed");  // 12 bytes of text + a 16-byte tag
+
+if let plain = try! aead.open(nonce, "v1", sealed) {
+    println(try! str::from_utf8(plain));
+}
+sealed[0] = sealed[0] ^ 1;              // tamper with one bit
+println(f"tampered: {(try! aead.open(nonce, "v1", sealed)) is none}");
+
+let signer = try! SigningKey::from_seed(random::secret(32));   // the private key
+let public = signer.verifying_key();
+let sig = signer.sign("release 1.0");
+println(f"{public.verify("release 1.0", sig)} {public.verify("release 1.1", sig)}");
+```
+
+```output
+28 bytes sealed
+meet at noon
+tampered: true
+true false
+```
+
+`x25519`와 `mlkem`(ML-KEM-768)은 공유 키를 합의합니다. 앞의 것은 고전적인 방식이고 뒤의 것은 양자 내성 방식입니다. `ecdsa`(P-256 / P-384)와 `rsa`는 웹 인증서에 쓰는 서명을 만들고 검증합니다. 개인 키는 타입이 있는 값입니다(`ed25519::SigningKey`, `x25519::PrivateKey`, `ecdsa::SigningKey`, `rsa::PrivateKey`, `mlkem::DecapsulationKey768`). 만들 때 한 번 검사하고, 바이트는 비밀 저장소(아래)에 둡니다. 공개 쪽(`VerifyingKey`, `PublicKey`, `EncapsulationKey768`)은 평범한 값입니다.
+
+## 키 재료: `Secret`
+
+`Secret`은 바이트를 '비밀 저장소'에 둡니다. 비밀 저장소는 수집기가 옮기거나 복사하지 않고, 해제하기 전에 0으로 덮어쓰는 버퍼입니다. `hkdf::extract` / `expand`, `x25519::PrivateKey::diffie_hellman`, ML-KEM의 `encapsulate` / `decapsulate`가 이 버퍼를 돌려줍니다. `random::secret(n)`은 난수 바이트를 곧바로 이 버퍼에 뽑아 넣습니다. 출력하면 내용이 아니라 `Secret { len: n, .. }`로 보입니다. `==`가 없으므로 `constant_time_eq`로 비교합니다. `wipe()`는 그 자리에서 0으로 지우고, `using` 바인딩은 블록 끝에서 지웁니다. `Aead`와 개인 키 타입도 키를 비밀 저장소에 두고, 각자의 `wipe`가 그 키를 지웁니다.
+
+```nabi
+use core::crypto::{Aead, AeadAlgorithm, HashAlgorithm, Secret, constant_time_eq};
+use core::crypto::{hkdf, x25519};
+use std::random;
+
+let a = try! x25519::PrivateKey::from_bytes(random::secret(32));
+let b = try! x25519::PrivateKey::from_bytes(random::secret(32));
+let ab = a.diffie_hellman(b.public_key()) ?? panic("bad key");
+let ba = b.diffie_hellman(a.public_key()) ?? panic("bad key");
+println(f"{ab:?} {constant_time_eq(ab, ba)}");
+
+let key = try! hkdf::expand(HashAlgorithm::Sha256, hkdf::extract(HashAlgorithm::Sha256, "salt", ab), "key", 32);
+let aead = try! Aead::new(AeadAlgorithm::ChaCha20Poly1305, key);
+key.wipe();                               // zero it now, not at some later collection
+println(f"{key[0]}");
+aead.wipe();                              // the cipher is done too
+
+using s = Secret::new("temporary") {
+    println(f"{s.len()} bytes");
+}                                         // wiped here
+```
+
+```output
+Secret { len: 32, .. } true
+0
+9 bytes
+```
+
+비밀의 바이트를 보통 객체(`as_bytes().to_list()`, `str`, 포맷한 문자열)로 복사하면 수집기가 지우지 않는 사본이 생깁니다. 비밀 저장소는 RAM에 고정되지도 않으므로 여전히 스왑이나 코어 덤프에 들어갈 수 있습니다.
+
+## TLS: `net::tls`
+
+`tls::Client::new(stream, server_name)`은 열린 `TcpStream` 위에서 TLS 1.3 핸드셰이크를 실행합니다. 서버의 인증서 체인을 OS 신뢰 저장소와 서버 이름으로 검사한 뒤 연결을 돌려줍니다. 이 연결에는 소켓과 같은 `read` / `write_all` / `read_to_end` 메서드가 있습니다. 기본 설정에서 핸드셰이크는 X25519MLKEM768 양자 내성 하이브리드를 제안합니다. TLS 1.2 이하는 거부합니다.
+
+```nabi norun
+use std::net::{tcp_connect, tls};
+
+let conn = try tls::Client::new(try tcp_connect("example.com:443"), "example.com");
+try conn.write_all(b"GET / HTTP/1.1\r\nHost: example.com\r\nConnection: close\r\n\r\n");
+let resp = try conn.read_to_end();
+try conn.close();                                           // close_notify, then the socket
+println((try str::from_utf8(resp)).lines().next() ?? "");   // HTTP/1.1 200 OK
+```
+
+실제 HTTP에는 이 일을 대신해 주는 [`http` 패키지](18-features-and-publishing.html#nabi-프로젝트의-패키지)을 쓰세요. 리다이렉트, 풀링, HTTP/2까지 처리합니다.
+
+서버에는 인증서 체인과 그 개인 키가 필요하고, 보통 PEM 파일에서 읽습니다. 아래 프로그램은 루프백 인터페이스에서 양쪽을 모두 실행합니다. 한쪽은 자체 서명 인증서를 쓰는 서버 task이고, 다른 쪽은 `ClientConfig.root_certs`로 정확히 그 인증서만 신뢰하는 클라이언트입니다. `ClientConfig`와 `ServerConfig`는 필드에 기본값이 있는 레코드라서, 리터럴에는 기본값과 다른 것만 적습니다. `ClientConfig { root_certs: chain }`처럼 쓰거나, OS 신뢰 저장소에서 시작하려면 `ClientConfig { alpn_protocols: [b"h2"], ..try tls::ClientConfig::new() }`처럼 씁니다. 모든 호출에는 task용 `_async` 형태가 있습니다([12장](12-concurrency.html)).
+
+```nabi
+use std::net;
+use std::net::{TcpStream, tls};
+
+// A self-signed Ed25519 certificate for `localhost` and its key (a demo
+// key: it is public, never use it for anything real).
+const CERT: str = "
+-----BEGIN CERTIFICATE-----
+MIIBVTCCAQegAwIBAgIUOw8IA2ogBBGsxE/m7hJPQIZPLzYwBQYDK2VwMBQxEjAQ
+BgNVBAMMCWxvY2FsaG9zdDAgFw0yNjEwMTYxNjEyMDRaGA8yMTI2MDkyMjE2MTIw
+NFowFDESMBAGA1UEAwwJbG9jYWxob3N0MCowBQYDK2VwAyEAguLEN9y6fnek02iG
+f4LullsxttwNkvHTYdhsjnFWsVajaTBnMB0GA1UdDgQWBBRUjvYk1Hhem6n+Hr1q
+HZm6wzG3mzAfBgNVHSMEGDAWgBRUjvYk1Hhem6n+Hr1qHZm6wzG3mzAPBgNVHRMB
+Af8EBTADAQH/MBQGA1UdEQQNMAuCCWxvY2FsaG9zdDAFBgMrZXADQQC2XwFaBIQ5
+C138MCqnpjXays5b9C4QnQ+tBky5VqKY1ffbKN9O4IIWBeQqED+shdRM5Y4HGYcH
++Zr3PLdVn7QD
+-----END CERTIFICATE-----
+";
+const KEY: str = "
+-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VwBCIEIMa20cYLozv3/41l6/owqHiube5cG+rd7cF4nHPZ6qd3
+-----END PRIVATE KEY-----
+";
+
+let chain = try! tls::Certificate::from_pem(CERT);
+let scfg = try! tls::ServerConfig::new(chain, try! tls::PrivateKey::from_pem(KEY));
+let l = try! net::tcp_listen("127.0.0.1:0");
+let addr = try! l.local_addr();
+let server = task::spawn_local(async {
+    let (conn, _) = try! await l.accept_async();
+    try! l.close();
+    let s = try! await tls::Server::new_async(conn, scfg);
+    let buf = List::filled(64, 0u8);
+    let n = try! await s.read_async(buf);
+    try! await s.write_all_async(b"pong");
+    try! await s.close_notify_async();
+    let sni = s.server_name() ?? "-";
+    try! s.close();
+    f"server read {n} bytes, SNI {sni}"
+});
+
+let ccfg = tls::ClientConfig { root_certs: chain };   // trust only our certificate
+let tcp = try! await TcpStream::connect_async(addr);
+let c = try! await tls::Client::with_config_async(tcp, "localhost", ccfg);
+try! await c.write_all_async(b"ping");
+let reply = try! await c.read_to_end_async();
+try! c.close();
+println(try! str::from_utf8(reply));
+println(await server);
+```
+
+```output
+pong
+server read 4 bytes, SNI localhost
+```
+
+`tls::system_roots()`는 OS 신뢰 저장소를 읽습니다(`SSL_CERT_FILE`로 덮어쓸 수 있음). `ClientConfig.alpn_protocols`는 `h2` 같은 프로토콜을 협상하고, `negotiated_alpn()` / `peer_certificates()`는 합의된 결과를 알려 줍니다. 클라이언트 인증서, 0-RTT 데이터를 쓰는 세션 재개, OCSP 스테이플링을 지원합니다. CRL과 네트워크 OCSP 조회는 쓰지 않습니다.
+
+## 요약
+
+- `core::crypto`에는 SHA-2 / SHA-3, HMAC, HKDF, AEAD, X25519, ML-KEM, Ed25519, ECDSA, RSA가 있습니다. 바이트 인자는 `AsBytes` 값이면 무엇이든 받고, 개인 키는 비밀 저장소에 있는 타입 있는 값입니다.
+- 난수는 오직 `std::random`(`bytes(n)`, `fill(buf)`, `secret(n)`)에서 얻어 인자로 넘깁니다.
+- 키는 `Secret`으로 돌아오고, `wipe()`나 `using`으로, 또는 수집될 때 지워집니다.
+- 비밀은 `==`가 아니라 `constant_time_eq`나 `Hmac::verify`로 비교합니다.
+- `tls::Client` / `tls::Server`는 `TcpStream`을 TLS 1.3으로 감싼 뒤 소켓처럼 읽고 씁니다. `close()`는 close_notify를 보낸 뒤 소켓을 닫습니다.
+- `ClientConfig` / `ServerConfig` 리터럴에는 기본값과 다른 필드만 적습니다.
+- 구현은 새것이고 감사를 받지 않았습니다.
+
+## 더 읽을거리
+
+- 표준 라이브러리 사양: [2.21 `crypto`](../spec/refs-standard-libraries/200-core/221-crypto.html), [3.9 `random`](../spec/refs-standard-libraries/300-std/309-random.html), [3.2.5 TLS 1.3](../spec/refs-standard-libraries/300-std/302-net.html#325-tls-13-nettls)
+- API: [core::crypto](../../std/core/crypto.html), [std::net::tls](../../std/std/net/tls.html)
+- [예제](../examples/index.html)
+- 다음 장: [20. 어떻게 하나요](20-cookbook.html)

@@ -1,0 +1,2 @@
+let d = 10 − 3;
+println(f"{d}");

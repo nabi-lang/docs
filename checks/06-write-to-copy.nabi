@@ -1,0 +1,5 @@
+struct Counter { n: i32; }
+
+impl Counter {
+    fn inc(self) { self.n += 1; }
+}

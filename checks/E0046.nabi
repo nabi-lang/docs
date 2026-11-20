@@ -1,0 +1,2 @@
+let s = "nabi";
+println(s.size());
