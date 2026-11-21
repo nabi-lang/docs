@@ -92,7 +92,7 @@ Four executables are installed.
 
 ### Managing toolchains
 
-`nabi toolchain` manages installed toolchains. The active toolchain is chosen, in order, by `+version` on the command line (`nabi +0.1 build`), the `NABI_TOOLCHAIN` environment variable, the `toolchain` field of the nearest `nabi.nabion` (or of a script's `//! nabion` block), and finally the default. A pin is a series (`"0.1"`, the newest installed 0.1.x), a version (`"0.1.0"`) or a requirement (`"^0.1.0"`). One command runs on one toolchain from start to finish: even a toolchain's own `bin/nabi`, run by its full path, hands the command to the toolchain the project pins, and each toolchain's `nabi` drives only its own `nabic`.
+`nabi toolchain` manages installed toolchains. The active toolchain is chosen, in order, by `+version` on the command line (`nabi +0.1 build`), the `NABI_TOOLCHAIN` environment variable, the `toolchain` field of the nearest `nabi.nabion` (or of a script's `//! nabion` block), and finally the default. A pin is a series (`"0.1"`, the newest installed 0.1.x release, or its newest release candidate while no 0.1 release is installed), a version (`"0.1.0"`) or a requirement (`"^0.1.0"`). One command runs on one toolchain from start to finish: even a toolchain's own `bin/nabi`, run by its full path, hands the command to the toolchain the project pins, and each toolchain's `nabi` drives only its own `nabic`.
 
 ```bash
 nabi toolchain list                     # installed toolchains

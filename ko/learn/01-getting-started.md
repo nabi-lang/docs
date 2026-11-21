@@ -92,7 +92,7 @@ host:      aarch64-apple-darwin
 
 ### toolchain 관리
 
-`nabi toolchain`은 설치된 toolchain을 관리합니다. 활성 toolchain은 명령줄의 `+version`(`nabi +0.1 build`), `NABI_TOOLCHAIN` 환경 변수, 가장 가까운 `nabi.nabion`(또는 스크립트의 `//! nabion` 블록)의 `toolchain` 필드, 기본값 순서로 정해집니다. 고정 값으로는 시리즈(`"0.1"`, 설치된 0.1.x 중 최신), 버전(`"0.1.0"`), 요구 조건(`"^0.1.0"`)을 쓸 수 있습니다. 명령 하나는 처음부터 끝까지 toolchain 하나로 실행됩니다. 어떤 toolchain의 `bin/nabi`를 전체 경로로 직접 실행해도 프로젝트가 고정한 toolchain에 명령을 넘기고, 각 toolchain의 `nabi`는 자기 `nabic`만 씁니다.
+`nabi toolchain`은 설치된 toolchain을 관리합니다. 활성 toolchain은 명령줄의 `+version`(`nabi +0.1 build`), `NABI_TOOLCHAIN` 환경 변수, 가장 가까운 `nabi.nabion`(또는 스크립트의 `//! nabion` 블록)의 `toolchain` 필드, 기본값 순서로 정해집니다. 고정 값으로는 시리즈(`"0.1"`, 설치된 0.1.x 릴리스 중 최신, 0.1 릴리스가 설치되지 않았으면 가장 새 릴리스 후보), 버전(`"0.1.0"`), 요구 조건(`"^0.1.0"`)을 쓸 수 있습니다. 명령 하나는 처음부터 끝까지 toolchain 하나로 실행됩니다. 어떤 toolchain의 `bin/nabi`를 전체 경로로 직접 실행해도 프로젝트가 고정한 toolchain에 명령을 넘기고, 각 toolchain의 `nabi`는 자기 `nabic`만 씁니다.
 
 ```bash
 nabi toolchain list                     # installed toolchains
