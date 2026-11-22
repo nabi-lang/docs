@@ -345,6 +345,18 @@ one build has one version of a package
 help: `c` 0.4.0 gets along with the other requirements on `b`: change the root package's requirement on it, `"c": "^0.4.0"`
 ```
 
+### 보안 권고: `nabi audit`
+
+레지스트리는 [보안 권고](https://packages.nabi-lang.org/ko/advisories)를 공개합니다. 어떤 패키지의 어느 버전에 알려진 취약점이 있는지, 어느 버전에서 고쳐졌는지를 밝힙니다. `nabi audit`은 `nabi.lock`의 패키지를 보안 권고와 대조하고, 어느 버전으로 올려야 하는지 알려 줍니다.
+
+```sh
+nabi audit
+```
+
+해당하는 권고가 없으면 0, 있으면 1(그래서 CI 작업이 실패합니다), 확인하지 못했으면 2로 끝납니다. 권고 목록은 레지스트리마다 한 번 받아 `$NABI_HOME/cache/advisories`에 한 시간 동안 두고, `--offline`은 그 사본만 씁니다. 읽어 보고 받아들이기로 한 권고는 `--ignore <id>`로 건너뛰고, 도구에서 쓸 때는 `--json`으로 레코드를 출력합니다. 경로·git 의존성과 네이티브 패키지는 확인하지 않습니다.
+
+취약점을 찾았다면 먼저 그 패키지의 소유자에게 비공개로 알리세요. 답이 없거나 레지스트리·툴체인의 문제라면 [security@nabi-lang.org](mailto:security@nabi-lang.org)로 보내 주세요. 자세한 내용은 [보안 권고](packages/04-security-advisories.html)(영어)에 있습니다.
+
 라이브러리에는 사용자가 켜고 끌 수 있는 **feature**를 둘 수 있습니다. `nabi login`과 `nabi publish`로 내 라이브러리를 패키지로 공개할 수도 있습니다. 둘 다 Nabi 프로젝트가 관리하는 패키지(`json`, `toml`, `csv`, `http`, `markdown`, `spatial`, `nabi-syntax`)와 함께 [18장](18-features-and-publishing.html)에서 다룹니다.
 
 ## 워크스페이스

@@ -345,6 +345,16 @@ one build has one version of a package
 help: `c` 0.4.0 gets along with the other requirements on `b`: change the root package's requirement on it, `"c": "^0.4.0"`
 ```
 
+### Security advisories: `nabi audit`
+
+The registry publishes [security advisories](https://packages.nabi-lang.org/advisories): which versions of a package have a known vulnerability, and which version fixes it. `nabi audit` checks the packages in `nabi.lock` against them and says what to upgrade to:
+
+```sh
+nabi audit
+```
+
+It exits with 0 when no advisory applies, 1 when one does (so a CI job fails), and 2 when it could not check. `--ignore <id>` accepts one advisory after you have read it, and `--json` prints records for tools. [Security advisories](packages/04-security-advisories.html) has the details, and how to report a vulnerability.
+
 A library can offer **features** that its users turn on and off, and you can publish your own library as a package with `nabi login` and `nabi publish`. Features are covered in [chapter 18](18-features-and-publishing.html), together with the packages the Nabi project maintains (`json`, `toml`, `csv`, `http`, `markdown`, `spatial`, `nabi-syntax`), and publishing in [Publishing Packages](packages/index.html).
 
 ## Workspaces

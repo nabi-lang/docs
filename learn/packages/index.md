@@ -18,5 +18,6 @@ Packages published from the nabi-lang organization are marked **Official**; they
 | [Publishing a package](01-publishing.html) | what a package needs, `nabi login`, `nabi publish`, names and owners, the docs the registry makes, `nabi yank` |
 | [Trusted publishing](02-trusted-publishing.html) | publishing from GitHub Actions with no stored token |
 | [Keeping an API stable](03-stable-api.html) | `#[deprecated]`, `#[non_exhaustive]` and `#[sealed]` |
+| [Security advisories](04-security-advisories.html) | `nabi audit`, reading an advisory, reporting a vulnerability |
 
 The registry's own rules are on the registry: the [usage policy](https://packages.nabi-lang.org/policy), the [terms of use](https://packages.nabi-lang.org/terms) and the [privacy notice](https://packages.nabi-lang.org/privacy).
