@@ -107,7 +107,7 @@ Secret { len: 32, .. } true
 
 ## TLS：`net::tls`
 
-`tls::Client::new(stream, server_name)` 在已開啟的 `TcpStream` 上執行 TLS 1.3 交握，依照作業系統的信任儲存區檢查伺服器的憑證鏈及其名稱，並回傳一個連線，具有與 socket 相同的 `read` / `write_all` / `read_to_end` 方法。使用預設設定時，交握會提供 X25519MLKEM768 後量子混合方案。TLS 1.2 及更舊的版本會被拒絕。
+`tls::Client::new(stream, server_name)` 在已開啟的 `TcpStream` 上執行 TLS 1.3 交握，依照作業系統的信任存放區檢查伺服器的憑證鏈及其名稱，並回傳一個連線，具有與 socket 相同的 `read` / `write_all` / `read_to_end` 方法。使用預設設定時，交握會提供 X25519MLKEM768 後量子混合方案。TLS 1.2 及更舊的版本會被拒絕。
 
 ```nabi norun
 use std::net::{tcp_connect, tls};
@@ -121,7 +121,7 @@ println((try str::from_utf8(resp)).lines().next() ?? "");   // HTTP/1.1 200 OK
 
 實際的 HTTP 請改用 [`http` 套件](18-features-and-publishing.html#nabi-套件)，它會替你處理這些事，還支援重新導向、連線池和 HTTP/2。
 
-伺服器需要一條憑證鏈及其私密金鑰，通常從 PEM 檔案讀取。下面的程式在 loopback 介面上同時執行兩端：一個使用自簽憑證的伺服器任務，以及一個透過 `ClientConfig.root_certs` 只信任該憑證的用戶端。`ClientConfig` 和 `ServerConfig` 是欄位都有預設值的紀錄，所以字面值只需寫出不同的部分：`ClientConfig { root_certs: chain }`，或是 `ClientConfig { alpn_protocols: [b"h2"], ..try tls::ClientConfig::new() }` 以作業系統的信任儲存區為起點。每個呼叫都有供任務使用的 `_async` 形式（[第 12 章](12-concurrency.html)）。
+伺服器需要一條憑證鏈及其私密金鑰，通常從 PEM 檔案讀取。下面的程式在 loopback 介面上同時執行兩端：一個使用自簽憑證的伺服器任務，以及一個透過 `ClientConfig.root_certs` 只信任該憑證的用戶端。`ClientConfig` 和 `ServerConfig` 是欄位都有預設值的紀錄，所以字面值只需寫出不同的部分：`ClientConfig { root_certs: chain }`，或是 `ClientConfig { alpn_protocols: [b"h2"], ..try tls::ClientConfig::new() }` 以作業系統的信任存放區為起點。每個呼叫都有供任務使用的 `_async` 形式（[第 12 章](12-concurrency.html)）。
 
 ```nabi
 use std::net;
@@ -179,7 +179,7 @@ pong
 server read 4 bytes, SNI localhost
 ```
 
-`tls::system_roots()` 讀取作業系統的信任儲存區（`SSL_CERT_FILE` 可以覆寫它），`ClientConfig.alpn_protocols` 協商 `h2` 等協定，`negotiated_alpn()` / `peer_certificates()` 則告訴你雙方協議的結果。用戶端憑證、帶 0-RTT 資料的工作階段恢復以及 OCSP stapling 都有支援；CRL 和透過網路的 OCSP 查詢則不使用。
+`tls::system_roots()` 讀取作業系統的信任存放區（`SSL_CERT_FILE` 可以覆寫它），`ClientConfig.alpn_protocols` 協商 `h2` 等協定，`negotiated_alpn()` / `peer_certificates()` 則告訴你雙方協議的結果。用戶端憑證、帶 0-RTT 資料的工作階段恢復以及 OCSP stapling 都有支援；CRL 和透過網路的 OCSP 查詢則不使用。
 
 ## 小結
 

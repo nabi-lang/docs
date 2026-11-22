@@ -325,7 +325,7 @@ done
 
 ## 進階：廣播運算子
 
-第一次閱讀時可以跳過本節。`.+`、`.*` 和 `.>` 這類帶點的運算子是逐元素運算。它們會脫糖（desugar）成 `DotAdd`、`DotMul` 和 `DotGt` 等 trait，所以只要為你的型別實作這些 trait，就能立刻使用這些運算子。
+第一次閱讀時可以跳過本節。`.+`、`.*` 和 `.>` 這類帶點的運算子是逐元素運算。它們會去語法糖（desugar）成 `DotAdd`、`DotMul` 和 `DotGt` 等 trait，所以只要為你的型別實作這些 trait，就能立刻使用這些運算子。
 
 ```nabi
 struct Vector { xs: List<f64>; }

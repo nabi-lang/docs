@@ -252,7 +252,7 @@ tab:	end
 raw: C:\path\n
 ```
 
-韩文音节 `'가'`（U+AC00，码点 44032）说明 `char` 能容纳任何 Unicode 字符，而不只是 ASCII。`len()` 计算字节数；需要字符数时用 `char_count()`。`r"..."` 是不处理转义的原始字符串。其他 `str` 方法（`trim`、`split`、`replace`、`parse` 等）见[标准库文档](../../std/core/str.html)。
+韩文音节 `'가'`（U+AC00，码位 44032）说明 `char` 能容纳任何 Unicode 字符，而不只是 ASCII。`len()` 计算字节数；需要字符数时用 `char_count()`。`r"..."` 是不处理转义的原始字符串。其他 `str` 方法（`trim`、`split`、`replace`、`parse` 等）见[标准库文档](../../std/core/str.html)。
 
 ## 元组、数组与列表
 
