@@ -2,25 +2,25 @@
 
 Nabi의 수치 계산 핵심은 표준 라이브러리에 있습니다. `Array<T, N>`, 점 연산자, 집계, `Complex`, 난수가 그렇습니다([21장](21-arrays-and-numerics.html)). 그 위에 과학자가 쌓는 선형대수, 통계, 신호, 데이터 프레임, 그래프는 패키지에 있습니다. 분야마다 패키지가 하나씩 있고 버전도 따로 매기며, 모두 C나 Fortran 없이 Nabi로 작성되어 WebAssembly를 포함한 Nabi의 모든 타깃에서 빌드됩니다.
 
-이 장은 패키지들의 지도를 보이고, 입력 데이터에 대해 모든 패키지가 공유하는 규칙 하나를 설명하고, CSV 파일에서 그래프까지 작은 문제 하나를 풀어 본 뒤, NumPy, SciPy, pandas에서 오는 독자를 위한 대응표로 끝납니다.
+이 장은 패키지들의 지도를 보이고, 입력 데이터에 대해 모든 패키지가 공유하는 규칙 하나를 설명하고, CSV 파일에서 그래프까지 작은 문제 하나를 풀어 보고, 패키지마다 튜토리얼을 안내한 뒤, NumPy, SciPy, pandas에서 오는 독자를 위한 대응표로 끝납니다.
 
 ## 패키지
 
 | 패키지 | 하는 일 | Python의 대응 |
 |--------|---------|---------------|
-| `linalg` | 밀집 행렬: 곱, LU, Cholesky, QR, SVD, 고윳값, 연립방정식, `expm` | `numpy.linalg`, `scipy.linalg` |
-| `sparse` | CSR / CSC / COO 행렬, CG, GMRES, BiCGSTAB, 희소 Cholesky와 LU | `scipy.sparse`, `scipy.sparse.linalg` |
-| `spatial` | 게임과 그래픽스용 고정 크기 벡터, 쿼터니언, 행렬, 변환, 도형; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
-| `autodiff` | 직접 쓴 함수의 도함수: 이중수, 역방향 테이프, 헤세 행렬, 테일러 급수 | `jax.grad`, `autograd` |
-| `stats` | 기술 통계, 19가지 분포, 검정, 회귀 | `scipy.stats`, `statsmodels`(기본) |
-| `signal` | 임의 길이 FFT, 창 함수, FIR / IIR 필터, 스펙트럼, 피크 | `numpy.fft`, `scipy.signal` |
-| `interpolate` | 스플라인, 다항식, 격자, 흩어진 점, 수치 적분 | `scipy.interpolate`, `scipy.integrate.quad` |
-| `optimize` | 최소화, 최소제곱, 근 찾기, 선형 계획법 | `scipy.optimize` |
-| `ode` | 초깃값 문제와 경곗값 문제, 강성 솔버, 심플렉틱 적분기 | `scipy.integrate.solve_ivp` |
-| `special` | 감마, 베셀, erf, 제타, 타원 함수, 복소 초등 함수 | `scipy.special` |
-| `table` | 열 기반 데이터 프레임, CSV, JSONL, Arrow와 Parquet 파일, 지연 쿼리 | `pandas`, `polars`, `pyarrow` |
-| `units` | 단위가 붙은 양, 컴파일할 때 검사 | `pint` |
-| `plot` | SVG, PNG, 터미널 그래프, 노트북 표시 | `matplotlib` |
+| [`linalg`](https://packages.nabi-lang.org/docs/linalg/latest) | 밀집 행렬: 곱, LU, Cholesky, QR, SVD, 고윳값, 연립방정식, `expm` | `numpy.linalg`, `scipy.linalg` |
+| [`sparse`](https://packages.nabi-lang.org/docs/sparse/latest) | CSR / CSC / COO 행렬, CG, GMRES, BiCGSTAB, 희소 Cholesky와 LU | `scipy.sparse`, `scipy.sparse.linalg` |
+| [`spatial`](https://packages.nabi-lang.org/docs/spatial/latest) | 게임과 그래픽스용 고정 크기 벡터, 쿼터니언, 행렬, 변환, 도형; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
+| [`autodiff`](https://packages.nabi-lang.org/docs/autodiff/latest) | 직접 쓴 함수의 도함수: 이중수, 역방향 테이프, 헤세 행렬, 테일러 급수 | `jax.grad`, `autograd` |
+| [`stats`](https://packages.nabi-lang.org/docs/stats/latest) | 기술 통계, 19가지 분포, 검정, 회귀 | `scipy.stats`, `statsmodels`(기본) |
+| [`signal`](https://packages.nabi-lang.org/docs/signal/latest) | 임의 길이 FFT, 창 함수, FIR / IIR 필터, 스펙트럼, 피크 | `numpy.fft`, `scipy.signal` |
+| [`interpolate`](https://packages.nabi-lang.org/docs/interpolate/latest) | 스플라인, 다항식, 격자, 흩어진 점, 수치 적분 | `scipy.interpolate`, `scipy.integrate.quad` |
+| [`optimize`](https://packages.nabi-lang.org/docs/optimize/latest) | 최소화, 최소제곱, 근 찾기, 선형 계획법 | `scipy.optimize` |
+| [`ode`](https://packages.nabi-lang.org/docs/ode/latest) | 초깃값 문제와 경곗값 문제, 강성 솔버, 심플렉틱 적분기 | `scipy.integrate.solve_ivp` |
+| [`special`](https://packages.nabi-lang.org/docs/special/latest) | 감마, 베셀, erf, 제타, 타원 함수, 복소 초등 함수 | `scipy.special` |
+| [`table`](https://packages.nabi-lang.org/docs/table/latest) | 열 기반 데이터 프레임, CSV, JSONL, Arrow와 Parquet 파일, 지연 쿼리 | `pandas`, `polars`, `pyarrow` |
+| [`units`](https://packages.nabi-lang.org/docs/units/latest) | 단위가 붙은 양, 컴파일할 때 검사 | `pint` |
+| [`plot`](https://packages.nabi-lang.org/docs/plot/latest) | SVG, PNG, 터미널 그래프, 노트북 표시 | `matplotlib` |
 
 쓰는 패키지는 `nabi add`로 `nabi.nabion`에 추가합니다(파일 하나짜리 스크립트라면 `nabi add <패키지> file.nabi`).
 
@@ -29,7 +29,7 @@ nabi add linalg
 nabi add table
 ```
 
-각 패키지의 API 문서는 [packages.nabi-lang.org](https://packages.nabi-lang.org)에 있습니다. 이 페이지의 코드는 이 패키지들이 필요하므로, 이 가이드의 다른 코드와 달리 사이트를 빌드할 때 실행하지 않습니다. 모든 블록은 패키지의 현재 버전으로 확인했습니다.
+튜토리얼과 API가 담긴 각 패키지의 문서는 레지스트리에 있습니다. 표에서 패키지 이름을 따라가세요. 이 페이지의 코드는 이 패키지들이 필요하므로, 이 가이드의 다른 코드와 달리 사이트를 빌드할 때 실행하지 않습니다. 모든 블록은 패키지의 현재 버전으로 확인했습니다.
 
 ## 입력은 한 가지 방식으로: 배열 같은 값
 
@@ -103,145 +103,20 @@ try ax.save("tea.svg");
 
 각 단계는 패키지 하나를 한 번 부르는 호출이고, 그 사이를 오가는 값은 평범한 `Vector<f64>`입니다. 변환 계층도 없고, CSV를 파싱할 때 말고는 복사도 없습니다.
 
-## 밀집 선형대수와 희소 선형대수
+## 튜토리얼
 
-`linalg`는 `f64`, `f32`와 그 복소 형태의 `Matrix<T>`를 다룹니다. 분해는 한 번 만들어 여러 번 푸는 타입입니다. `ops` 기능(기본으로 켜짐)을 쓰면 `@`가 행렬 곱, `\`가 풀이, `†`가 수반 행렬입니다.
+레지스트리에 있는 각 패키지 문서는 튜토리얼로 시작합니다. 작은 문제 하나를 단계별로 풀고, 그 코드는 패키지의 테스트가 실행합니다. 튜토리얼은 영어로 되어 있습니다.
 
-```nabi norun
-use core::array::{Matrix, Vector};
-
-let a: Matrix<f64> = [[4, 1, 0], [1, 3, 1], [0, 1, 2]];
-let b: Vector<f64> = [1, 2, 3];
-let x = try linalg::solve(a, b);
-let residual = a @ x .- b |> linalg::norm;           // about 1e-16
-let e = try linalg::eigh(a);                         // eigenvalues rising
-let c = try linalg::cholesky(a);
-let y = try c.solve(b);
-```
-
-0이 아닌 원소가 적은 큰 연립방정식은 `sparse`가 맡습니다. 삼중항이나 대각선으로 행렬을 만들고 직접법이나 반복법으로 풉니다. 반복 솔버는 전처리기와 어떤 `Operator`든 받으며, 행렬 없이 정의한 연산자도 됩니다.
-
-```nabi norun
-use core::array::Vector;
-
-// The 2-d Laplacian on a 100 x 100 grid: 10 000 unknowns.
-let t = try sparse::diags([[2.0], [-1.0], [-1.0]], [0, 1, -1], [100, 100]);
-let i = sparse::eye(100);
-let a = sparse::kron(i, t) + sparse::kron(t, i);
-let b = Vector::<f64>::ones([10000]);
-
-let s = try sparse::cg(a, b, pre: try sparse::ic0(a));     // conjugate gradients
-let f = try sparse::cholesky(a);                           // or a direct solve
-let x = try f.solve(b);
-println(f"{s.iterations} iterations; difference {linalg::norm(s.x .- x):e}");
-```
-
-## 도함수
-
-`autodiff`는 이 패키지의 수 타입으로 쓴 함수를 미분합니다. 함수를 `Smooth`에 대해 제네릭하게 한 번 쓰고, 부를 때의 타입으로 방식을 고릅니다. 입력이 적으면 `Dual`(순방향, 입력 하나에 한 번씩), 많으면 `Var`(역방향, 기울기 전체를 역방향 한 번으로), 정확한 2계 도함수는 `HyperDual`, 임의 차수의 테일러 계수는 `Jet`입니다.
-
-```nabi norun
-use autodiff::{Dual, HyperDual, Smooth, Var};
-use core::array::Vector;
-
-fn rosen<T: Smooth>(x: Vector<T>) -> T {
-    let a = x[1].clone() - x[0].clone() * x[0].clone();
-    let b = T::of(1.0) - x[0].clone();
-    a.clone() * a * 100.0 + b.clone() * b
-}
-
-let g = autodiff::grad(rosen::<Var>, [-1.2, 1.0]);       // reverse mode
-let h = autodiff::hessian(rosen::<HyperDual>, [-1.2, 1.0]);
-let d = autodiff::derivative(|x: Dual| -> Dual { x.sin() * x }, 1.0);
-let best = try optimize::lbfgs(rosen::<Var>, [-1.2, 1.0]);  // optimize takes AD functions too
-```
-
-`∂`와 `∇` 표기(`autodiff::ops`에 있고 `interpolate::ops`와 `optimize::ops`도 다시 내보냄)는 모든 패키지에서 한 가지 규칙을 따릅니다. 도함수는 준 것과 같은 형태로 돌아오고, 수로 돌아오지 않습니다. 함수의 `∂(f)`는 함수이므로 한 점에서의 값은 `∂(f)(x)`입니다. 스플라인의 `∂(s)`는 스플라인이고, 표본 값의 `∇(y)`는 표본 값입니다.
-
-```nabi norun
-use autodiff::{Dual, Var};
-use autodiff::ops::{∂, ∇};
-use core::array::Vector;
-
-let cos = ∂(|x: Dual| -> Dual { x.sin() });
-println(cos(0.0));                                           // 1
-let g = ∇(|x: Vector<Var>| -> Var { x[0] * x[1] });
-println(g([2.0, 5.0]));                                      // [5.0, 2.0]
-let s = try interpolate::cubic_spline(0..4, [0, 1, 8, 27]);
-println(f"{∂(s)(2.0):.6}");                                // 12.000000, the spline's slope
-let y: Vector<f64> = [0, 1, 4, 9];
-println(∇(y));                                               // [1.0, 2.0, 4.0, 5.0]
-```
-
-## 신호, 곡선, 방정식
-
-나머지도 같은 모양입니다. 배열을 받는 평범한 함수, 이름 붙은 인자로 주는 옵션, 무엇을 바꿔야 하는지 말해 주는 에러입니다.
-
-```nabi norun
-use core::array::{Array, Vector};
-use signal::filter::{Band, butter, sosfiltfilt};
-
-// A 50 Hz tone with a 300 Hz one on top, sampled at 1 kHz.
-let fs = 1khz;
-let x = Array::from_fn([2000], |i: [usize; 1]| -> f64 {
-    let t = (i[0] as f64) / fs;
-    (2.0 * f64::PI * 50hz * t).sin() + 0.3 * (2.0 * f64::PI * 300hz * t).sin()
-});
-let spectrum = try signal::welch(x, fs: fs, nperseg: 500);
-println(spectrum.peak());                                    // 50
-let clean = try sosfiltfilt(try butter(6, Band::Lowpass(100hz), fs: fs), x);
-
-// Quadrature and root finding.
-let area = try interpolate::quad(f64::sin, 0.0..f64::PI);    // area.value is 2
-let root = try optimize::brentq(|x: f64| -> f64 { x * x - 2.0 }, 0.0, 2.0);
-```
-
-`special`은 수리 물리의 함수들과, core의 `Complex`에 없는 복소 인자의 초등 함수를 더합니다. 분지 절단은 C99와 Python `cmath`를 따릅니다.
-
-```nabi norun
-use special::Elementary;
-
-let z = 1.0 + 2.0i;
-println(f"{special::gamma(4.5)} {special::jv(0.5, 2.0)} {special::erf(0.5)}");
-println(f"{z.sin()} {z.atanh()} {z.cbrt()}");
-```
-
-`units`는 컴파일할 때 차원을 검사합니다. 길이에 시간을 더하면 빌드되지 않습니다.
-
-```nabi norun
-use units::kinds::{Length, Time, Velocity};
-use units::symbols::{h, km};
-
-fn speed(d: Length, t: Time) -> Velocity { d / t }
-
-println(speed(42.195km, 2h) → km / h);                        // 21.0975 km/h
-```
-
-## 데이터 파일과 쿼리
-
-`table`은 CSV와 JSON Lines를 읽고 쓰며, 데이터 세계의 다른 도구들이 쓰는 열 기반 형식인 Arrow IPC(파일과 스트림)와 Parquet(기본은 Snappy 압축, zstd 페이지도 읽음)도 읽고 씁니다. `Table`의 메서드는 바로 실행됩니다. 테이블에 `lazy()`를 부르거나 파일에 `scan_parquet`, `scan_arrow`, `scan_csv`를 부르면 대신 `Query`를 만듭니다. `collect`는 필터를 스캔 안으로 밀어 넣고 쿼리가 쓰는 열만 읽은 뒤 실행합니다. 통계로 보아 필터에 걸릴 행이 없는 Parquet 행 그룹은 읽지 않습니다.
-
-```nabi norun
-use table::{col, desc, mean};
-use std::env;
-
-let t = table::table!{
-    "station": ["north", "south", "north", "east", "south", "east"],
-    "temp":    [12.5, 18.0, 13.5, 15.0, 19.5, 14.0],
-    "rain":    [3.0, 0.0, 1.5, 0.5, 0.0, 2.0],
-};
-let path = f"{env::temp_dir()}/weather.parquet";
-try table::write_parquet(t, path);
-
-let q = table::scan_parquet(path)
-    .filter(col("rain") .< 2.5)
-    .group_by(["station"]).agg([mean("temp")])
-    .sort([desc("temp_mean")]);
-println(try q.explain());             // the plan: the filter runs inside the scan
-println(try q.collect());
-```
-
-`table::read_arrow`와 `write_arrow`는 다른 Arrow 도구(pyarrow, Polars, DuckDB)에 같은 타입의 같은 열을 줍니다. 여기서 쓴 Parquet 파일은 Arrow 스키마를 함께 저장하므로 범주형 열은 범주형으로 돌아옵니다.
+| 튜토리얼 | 패키지 | 하는 일 |
+|----------|--------|---------|
+| [처음 해 보는 데이터 분석](https://packages.nabi-lang.org/docs/table/latest) | `table`, `stats`, `plot` | CSV 파일 읽기, 정리, 그룹 묶기, 차이 검정, 그래프 |
+| [선형대수](https://packages.nabi-lang.org/docs/linalg/latest) | `linalg` | 연립방정식, 최소제곱, 고윳값 |
+| [희소 시스템](https://packages.nabi-lang.org/docs/sparse/latest) | `sparse` | 미지수 10 000개짜리 희소 시스템, 반복법과 직접법 |
+| [통계](https://packages.nabi-lang.org/docs/stats/latest) | `stats` | 분포, 난수 표본, 검정, 회귀, 부트스트랩 |
+| [신호와 스펙트럼](https://packages.nabi-lang.org/docs/signal/latest) | `signal` | FFT, 잡음 속 파워 스펙트럼, 필터, 피크, 합성곱 |
+| [피팅과 최적화](https://packages.nabi-lang.org/docs/optimize/latest) | `optimize` | 근, 최솟값, 곡선 피팅, 선형 계획법 |
+| [미분방정식](https://packages.nabi-lang.org/docs/ode/latest) | `ode` | 초깃값 문제, 이벤트, 강성 시스템, 경곗값 문제 |
+| [도함수](https://packages.nabi-lang.org/docs/autodiff/latest) | `autodiff` | 직접 만든 함수의 정확한 기울기, 야코비안, 테일러 급수 |
 
 ## NumPy, SciPy, pandas에서 오는 경우
 

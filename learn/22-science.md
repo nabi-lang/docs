@@ -2,25 +2,25 @@
 
 Nabi's numeric core is in the standard library: `Array<T, N>`, the dot operators, reductions, `Complex` and random numbers ([chapter 21](21-arrays-and-numerics.html)). Everything a scientist builds on top of that, linear algebra, statistics, signals, data frames, plots, lives in packages: one package per field, each versioned on its own, all written in Nabi with no C or Fortran underneath, so they build for every target Nabi has, WebAssembly included.
 
-This chapter maps the packages, shows the one rule they share for input data, works one small problem from a CSV file to a plot, and ends with a table for readers coming from NumPy, SciPy and pandas.
+This chapter maps the packages, shows the one rule they share for input data, works one small problem from a CSV file to a plot, points to each package's tutorial, and ends with a table for readers coming from NumPy, SciPy and pandas.
 
 ## The packages
 
 | Package | What it does | Python counterpart |
 |---------|--------------|--------------------|
-| `linalg` | dense matrices: products, LU, Cholesky, QR, SVD, eigen, solvers, `expm` | `numpy.linalg`, `scipy.linalg` |
-| `sparse` | CSR / CSC / COO matrices, CG, GMRES, BiCGSTAB, sparse Cholesky and LU | `scipy.sparse`, `scipy.sparse.linalg` |
-| `spatial` | small fixed-size vectors, quaternions, matrices, transforms and shapes for games and graphics; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
-| `autodiff` | derivatives of your own functions: dual numbers, a reverse-mode tape, Hessians, Taylor series | `jax.grad`, `autograd` |
-| `stats` | descriptive statistics, 19 distributions, tests, regression | `scipy.stats`, `statsmodels` (basics) |
-| `signal` | FFT of any length, windows, FIR / IIR filters, spectra, peaks | `numpy.fft`, `scipy.signal` |
-| `interpolate` | splines, polynomials, grids, scattered data, quadrature | `scipy.interpolate`, `scipy.integrate.quad` |
-| `optimize` | minimization, least squares, root finding, linear programming | `scipy.optimize` |
-| `ode` | initial and boundary value problems, stiff solvers, symplectic integrators | `scipy.integrate.solve_ivp` |
-| `special` | gamma, Bessel, erf, zeta, elliptic functions; complex elementary functions | `scipy.special` |
-| `table` | columnar data frames, CSV, JSONL, Arrow and Parquet files, lazy queries | `pandas`, `polars`, `pyarrow` |
-| `units` | quantities with units, checked when you compile | `pint` |
-| `plot` | SVG, PNG and terminal plots, notebook display | `matplotlib` |
+| [`linalg`](https://packages.nabi-lang.org/docs/linalg/latest) | dense matrices: products, LU, Cholesky, QR, SVD, eigen, solvers, `expm` | `numpy.linalg`, `scipy.linalg` |
+| [`sparse`](https://packages.nabi-lang.org/docs/sparse/latest) | CSR / CSC / COO matrices, CG, GMRES, BiCGSTAB, sparse Cholesky and LU | `scipy.sparse`, `scipy.sparse.linalg` |
+| [`spatial`](https://packages.nabi-lang.org/docs/spatial/latest) | small fixed-size vectors, quaternions, matrices, transforms and shapes for games and graphics; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
+| [`autodiff`](https://packages.nabi-lang.org/docs/autodiff/latest) | derivatives of your own functions: dual numbers, a reverse-mode tape, Hessians, Taylor series | `jax.grad`, `autograd` |
+| [`stats`](https://packages.nabi-lang.org/docs/stats/latest) | descriptive statistics, 19 distributions, tests, regression | `scipy.stats`, `statsmodels` (basics) |
+| [`signal`](https://packages.nabi-lang.org/docs/signal/latest) | FFT of any length, windows, FIR / IIR filters, spectra, peaks | `numpy.fft`, `scipy.signal` |
+| [`interpolate`](https://packages.nabi-lang.org/docs/interpolate/latest) | splines, polynomials, grids, scattered data, quadrature | `scipy.interpolate`, `scipy.integrate.quad` |
+| [`optimize`](https://packages.nabi-lang.org/docs/optimize/latest) | minimization, least squares, root finding, linear programming | `scipy.optimize` |
+| [`ode`](https://packages.nabi-lang.org/docs/ode/latest) | initial and boundary value problems, stiff solvers, symplectic integrators | `scipy.integrate.solve_ivp` |
+| [`special`](https://packages.nabi-lang.org/docs/special/latest) | gamma, Bessel, erf, zeta, elliptic functions; complex elementary functions | `scipy.special` |
+| [`table`](https://packages.nabi-lang.org/docs/table/latest) | columnar data frames, CSV, JSONL, Arrow and Parquet files, lazy queries | `pandas`, `polars`, `pyarrow` |
+| [`units`](https://packages.nabi-lang.org/docs/units/latest) | quantities with units, checked when you compile | `pint` |
+| [`plot`](https://packages.nabi-lang.org/docs/plot/latest) | SVG, PNG and terminal plots, notebook display | `matplotlib` |
 
 Add the ones you use to `nabi.nabion` with `nabi add` (or, for a single-file script, `nabi add <package> file.nabi`):
 
@@ -29,7 +29,7 @@ nabi add linalg
 nabi add table
 ```
 
-Each package has its API documentation on [packages.nabi-lang.org](https://packages.nabi-lang.org). The code on this page needs those packages, so unlike the rest of this guide it is not run when the site is built; every block was checked with the packages' current versions.
+Each package's docs, a tutorial and its API, are on the registry: follow the package's name in the table. The code on this page needs those packages, so unlike the rest of this guide it is not run when the site is built; every block was checked with the packages' current versions.
 
 ## One way in: array-like input
 
@@ -103,145 +103,20 @@ try ax.save("tea.svg");
 
 Each step is one call into one package, and the values between them are plain `Vector<f64>`s: no conversion layer, no copies beyond the CSV parse.
 
-## Linear algebra, dense and sparse
+## The tutorials
 
-`linalg` works on `Matrix<T>` for `f64`, `f32` and their complex forms. Factorizations are types you build once and solve with many times. With the `ops` feature (on by default) `@` is the matrix product, `\` solves and `†` is the adjoint:
+Each package's docs on the registry start with a tutorial: a small problem worked step by step, with code that its tests run.
 
-```nabi norun
-use core::array::{Matrix, Vector};
-
-let a: Matrix<f64> = [[4, 1, 0], [1, 3, 1], [0, 1, 2]];
-let b: Vector<f64> = [1, 2, 3];
-let x = try linalg::solve(a, b);
-let residual = a @ x .- b |> linalg::norm;           // about 1e-16
-let e = try linalg::eigh(a);                         // eigenvalues rising
-let c = try linalg::cholesky(a);
-let y = try c.solve(b);
-```
-
-Large systems with few nonzeros go to `sparse`. Build a matrix from triplets or diagonals, then solve directly or iteratively; the iterative solvers take a preconditioner and any `Operator`, including a matrix-free one:
-
-```nabi norun
-use core::array::Vector;
-
-// The 2-d Laplacian on a 100 x 100 grid: 10 000 unknowns.
-let t = try sparse::diags([[2.0], [-1.0], [-1.0]], [0, 1, -1], [100, 100]);
-let i = sparse::eye(100);
-let a = sparse::kron(i, t) + sparse::kron(t, i);
-let b = Vector::<f64>::ones([10000]);
-
-let s = try sparse::cg(a, b, pre: try sparse::ic0(a));     // conjugate gradients
-let f = try sparse::cholesky(a);                           // or a direct solve
-let x = try f.solve(b);
-println(f"{s.iterations} iterations; difference {linalg::norm(s.x .- x):e}");
-```
-
-## Derivatives
-
-`autodiff` differentiates functions you write over its number types. Write the function once, generic over `Smooth`, and pick the mode by the type you call it with: `Dual` (forward mode, one pass per input) for few inputs, `Var` (reverse mode, one backward sweep for the whole gradient) for many, `HyperDual` for exact second derivatives, `Jet` for Taylor coefficients of any order.
-
-```nabi norun
-use autodiff::{Dual, HyperDual, Smooth, Var};
-use core::array::Vector;
-
-fn rosen<T: Smooth>(x: Vector<T>) -> T {
-    let a = x[1].clone() - x[0].clone() * x[0].clone();
-    let b = T::of(1.0) - x[0].clone();
-    a.clone() * a * 100.0 + b.clone() * b
-}
-
-let g = autodiff::grad(rosen::<Var>, [-1.2, 1.0]);       // reverse mode
-let h = autodiff::hessian(rosen::<HyperDual>, [-1.2, 1.0]);
-let d = autodiff::derivative(|x: Dual| -> Dual { x.sin() * x }, 1.0);
-let best = try optimize::lbfgs(rosen::<Var>, [-1.2, 1.0]);  // optimize takes AD functions too
-```
-
-The notation `∂` and `∇` (from `autodiff::ops`, also re-exported by `interpolate::ops` and `optimize::ops`) follows one rule across the packages: the derivative comes back in the form of what you gave, never as a number. `∂(f)` of a function is a function, so its value at a point is `∂(f)(x)`; `∂(s)` of a spline is a spline; `∇(y)` of sampled values is sampled values.
-
-```nabi norun
-use autodiff::{Dual, Var};
-use autodiff::ops::{∂, ∇};
-use core::array::Vector;
-
-let cos = ∂(|x: Dual| -> Dual { x.sin() });
-println(cos(0.0));                                           // 1
-let g = ∇(|x: Vector<Var>| -> Var { x[0] * x[1] });
-println(g([2.0, 5.0]));                                      // [5.0, 2.0]
-let s = try interpolate::cubic_spline(0..4, [0, 1, 8, 27]);
-println(f"{∂(s)(2.0):.6}");                                // 12.000000, the spline's slope
-let y: Vector<f64> = [0, 1, 4, 9];
-println(∇(y));                                               // [1.0, 2.0, 4.0, 5.0]
-```
-
-## Signals, curves and equations
-
-The rest follows the same shape: plain functions on arrays, options as named arguments, errors that say what to change.
-
-```nabi norun
-use core::array::{Array, Vector};
-use signal::filter::{Band, butter, sosfiltfilt};
-
-// A 50 Hz tone with a 300 Hz one on top, sampled at 1 kHz.
-let fs = 1khz;
-let x = Array::from_fn([2000], |i: [usize; 1]| -> f64 {
-    let t = (i[0] as f64) / fs;
-    (2.0 * f64::PI * 50hz * t).sin() + 0.3 * (2.0 * f64::PI * 300hz * t).sin()
-});
-let spectrum = try signal::welch(x, fs: fs, nperseg: 500);
-println(spectrum.peak());                                    // 50
-let clean = try sosfiltfilt(try butter(6, Band::Lowpass(100hz), fs: fs), x);
-
-// Quadrature and root finding.
-let area = try interpolate::quad(f64::sin, 0.0..f64::PI);    // area.value is 2
-let root = try optimize::brentq(|x: f64| -> f64 { x * x - 2.0 }, 0.0, 2.0);
-```
-
-`special` adds the functions of mathematical physics, and the elementary functions of a complex argument that core's `Complex` leaves out, with the branch cuts of C99 and Python's `cmath`:
-
-```nabi norun
-use special::Elementary;
-
-let z = 1.0 + 2.0i;
-println(f"{special::gamma(4.5)} {special::jv(0.5, 2.0)} {special::erf(0.5)}");
-println(f"{z.sin()} {z.atanh()} {z.cbrt()}");
-```
-
-`units` checks dimensions when you compile: adding a length to a time does not build.
-
-```nabi norun
-use units::kinds::{Length, Time, Velocity};
-use units::symbols::{h, km};
-
-fn speed(d: Length, t: Time) -> Velocity { d / t }
-
-println(speed(42.195km, 2h) → km / h);                        // 21.0975 km/h
-```
-
-## Data files and queries
-
-`table` reads and writes CSV and JSON Lines, and the columnar formats the rest of the data world uses: Arrow IPC (files and streams) and Parquet (Snappy compressed by default; zstd pages are read too). A `Table`'s methods run at once; `lazy()` on a table, or `scan_parquet`, `scan_arrow` and `scan_csv` on a file, builds a `Query` instead, which `collect` runs after pushing filters down into the scan and reading only the columns the query uses. A Parquet row group whose statistics rule a filter out is never read.
-
-```nabi norun
-use table::{col, desc, mean};
-use std::env;
-
-let t = table::table!{
-    "station": ["north", "south", "north", "east", "south", "east"],
-    "temp":    [12.5, 18.0, 13.5, 15.0, 19.5, 14.0],
-    "rain":    [3.0, 0.0, 1.5, 0.5, 0.0, 2.0],
-};
-let path = f"{env::temp_dir()}/weather.parquet";
-try table::write_parquet(t, path);
-
-let q = table::scan_parquet(path)
-    .filter(col("rain") .< 2.5)
-    .group_by(["station"]).agg([mean("temp")])
-    .sort([desc("temp_mean")]);
-println(try q.explain());             // the plan: the filter runs inside the scan
-println(try q.collect());
-```
-
-`table::read_arrow` and `write_arrow` give other Arrow tools (pyarrow, Polars, DuckDB) the same columns with the same types, and Parquet files written here store their Arrow schema, so categorical columns come back as categorical.
+| Tutorial | Package | What it does |
+|----------|---------|--------------|
+| [A first data analysis](https://packages.nabi-lang.org/docs/table/latest) | `table`, `stats`, `plot` | read a CSV file, clean, group, test a difference, plot |
+| [Linear algebra](https://packages.nabi-lang.org/docs/linalg/latest) | `linalg` | solve systems, least squares, eigenvalues |
+| [Sparse systems](https://packages.nabi-lang.org/docs/sparse/latest) | `sparse` | a 10 000-unknown sparse system, iterative and direct solvers |
+| [Statistics](https://packages.nabi-lang.org/docs/stats/latest) | `stats` | distributions, random samples, tests, regression, the bootstrap |
+| [Signals and spectra](https://packages.nabi-lang.org/docs/signal/latest) | `signal` | FFT, power spectra in noise, filters, peaks, convolution |
+| [Fitting and optimization](https://packages.nabi-lang.org/docs/optimize/latest) | `optimize` | roots, minima, curve fitting, linear programming |
+| [Differential equations](https://packages.nabi-lang.org/docs/ode/latest) | `ode` | initial value problems, events, stiff systems, boundary value problems |
+| [Derivatives](https://packages.nabi-lang.org/docs/autodiff/latest) | `autodiff` | exact gradients, Jacobians and Taylor series of your own functions |
 
 ## From NumPy, SciPy and pandas
 

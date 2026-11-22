@@ -343,7 +343,7 @@ one build has one version of a package
 help: `c` 0.4.0 gets along with the other requirements on `b`: change the root package's requirement on it, `"c": "^0.4.0"`
 ```
 
-A library can offer **features** that its users turn on and off, and you can publish your own library as a package with `nabi login` and `nabi publish`. Both are covered in [chapter 18](18-features-and-publishing.html), together with the packages the Nabi project maintains (`json`, `toml`, `csv`, `http`, `markdown`, `spatial`, `nabi-syntax`).
+A library can offer **features** that its users turn on and off, and you can publish your own library as a package with `nabi login` and `nabi publish`. Features are covered in [chapter 18](18-features-and-publishing.html), together with the packages the Nabi project maintains (`json`, `toml`, `csv`, `http`, `markdown`, `spatial`, `nabi-syntax`), and publishing in [Publishing Packages](packages/index.html).
 
 ## Workspaces
 

@@ -89,17 +89,7 @@ The lockfile pins every package of the graph, optional ones included, so switchi
 
 ## The Nabi packages
 
-The Nabi project maintains a few libraries as packages of their own, outside the standard library. Each is pure Nabi with no dependencies beyond `std`.
-
-| Package      | What it is                                                                    |
-|------------|-------------------------------------------------------------------------------|
-| `json`     | JSON (RFC 8259): a `Value` tree, a strict parser with `line:col` errors, a streaming tokenizer, typed encode / decode with `#[derive(json::Json)]`, JSON Pointer |
-| `toml`     | TOML 1.1.0: a `Value` tree with typed date-times, a parser with `line:col` errors, a writer, typed encode / decode with `#[derive(toml::Toml)]` |
-| `csv`      | CSV (RFC 4180 plus dialects): a streaming reader over a `Read`, a `str` or bytes, typed rows with `#[derive(Csv)]`, a writer with quoting styles, errors with line and column |
-| `http`     | HTTP/1.1 and HTTP/2 client and server: strict parsing, HPACK, streaming bodies, connection pooling, `https` over std's TLS. Features `http1`, `http2`, `tls`, all on by default |
-| `markdown` | CommonMark plus GitHub extensions (tables, callouts, footnotes, heading anchors) to HTML. It renders this site |
-| `spatial`  | Game and graphics math: `Vec2/3/4`, `Quat`, `Mat2/3/4`, affine transforms, projections and shapes, generic over `f32` and `f64`. Every type is `#[repr(C)]`; `Mat4` products run on SIMD lanes |
-| `nabi-syntax` | A tokenizer and HTML highlighter for Nabi and NABION source. It highlights the code on this site |
+The Nabi project publishes a set of libraries as packages of their own, outside the standard library: data formats (`json`, `toml`, `csv`), `http`, `markdown`, `regex`, `spatial`, `nabi-syntax`, and the science packages of [chapter 22](22-science.html). Each is pure Nabi. They are marked **Official** on the registry, which [lists them all](https://packages.nabi-lang.org/packages?q=official:yes), and each one's docs start with how to use it.
 
 `json` and `toml` follow the shape of std's [`nabion`](15-nabion.html) module: `parse` / `to_str` / `from_str`, plus `to_value` / `from_value`, and a derive for your own types.
 
@@ -139,104 +129,19 @@ println(try await r.body.text());
 
 ## Publishing a package
 
-Publishing adds one line to the registry index, pointing at a commit of your git repository. You upload no source: the registry fetches that commit, keeps an archive of it and writes the archive's SHA-256 into the line (`archive`), so users download the archive and the version outlives your repository. The package must have a `src/lib.nabi` (a library), a `src/main.nabi` (a program for `nabi install`) or both, and a readme, at the root of a clean git work tree with a remote `origin`, and every normal dependency must itself come from the registry: git dependencies are rejected, and so is a path dependency unless it also names the version to publish in its place, `Dep::path("../geom", version: "^0.1")` (publish `geom` first). Path and git `dev_deps` without a `version:` are dropped. Set `nabi_version` to the oldest nabi you have built the package with: `nabi publish` needs it, and resolution gives each user the newest version their toolchain builds (`"0.1.3"` admits nabi 0.1.3 and later 0.1.x, [chapter 1](01-getting-started.html#managing-toolchains)). `nabi new` writes the version that made the package. Fill in `description`, `license` and `repository`: they show up in `nabi search` and on the website. The other fields a package page shows are optional, as in Cargo:
+Publishing adds one line to the registry index, pointing at a commit of your git repository; the registry keeps an archive of that commit, so the version outlives your repository. In short:
 
-```nabion
-Package {
-    name: "textwrap",
-    version: "0.1.0",
-    nabi_version: "0.1.0",
-    description: "Word wrapping for terminals",
-    license: "MIT OR Apache-2.0",
-    repository: "https://github.com/you/textwrap",
-    authors: ["You <you@example.com>"],
-    homepage: "https://example.com/textwrap",
-    documentation: "https://example.com/textwrap/docs",
-    keywords: ["text", "terminal"],
-    categories: ["text-processing"],
-    exclude: ["bench/**"],
-    deps: {},
-}
+```bash
+nabi login                # a token from packages.nabi-lang.org/me
+nabi publish --dry-run    # print the index entry; nothing leaves your machine
+nabi publish
+nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
 ```
 
-`keywords` and `categories` take at most 5 entries each; `include` / `exclude` choose the files the package holds; `license_file`, `readme`, `links`, `default_run` and a free-form `metadata` table are there too. A field `nabi` does not know is a warning, not an error, and is still sent to the registry.
+Publishing has its own section of the guide, [Publishing Packages](packages/index.html): what a package needs, [`nabi login` and `nabi publish`](packages/01-publishing.html), [trusted publishing](packages/02-trusted-publishing.html) from GitHub Actions, and [keeping an API stable](packages/03-stable-api.html) with `#[deprecated]`, `#[non_exhaustive]` and `#[sealed]`.
 
 > [!IMPORTANT]
 > For now only the registry's maintainers can publish. Anyone can sign in and use packages, but `nabi login` refuses an account that cannot publish yet.
-
-### `nabi login`
-
-Sign in at [packages.nabi-lang.org/me](https://packages.nabi-lang.org/me) with GitHub and create an account token there. Then hand it to `nabi`:
-
-```text
-$ nabi login
-a token from https://packages.nabi-lang.org/me (not shown; Ctrl-C to cancel):
-   Logged in as your-name at https://packages.nabi-lang.org (token in ~/.nabi/tokens.nabion)
-```
-
-Without an argument, the token is read from standard input without echoing. `nabi login` asks the registry who the token belongs to and refuses a token it rejects, saving nothing. A good token is kept in `~/.nabi/tokens.nabion` (readable only by you), filed under the index it was made for, and is sent only to that index; `nabi login --registry <url>` keeps one for another index. `nabi logout` removes it, and `nabi logout --all` removes every index's token. In CI, set `NABI_REGISTRY_TOKEN` instead; it is sent only to packages.nabi-lang.org.
-
-### `nabi publish`
-
-`nabi publish --dry-run` prints the index entry it would add, and nothing leaves your machine. `nabi publish` publishes, as `cargo publish` does.
-
-```text
-$ nabi publish --dry-run
-Package { name: "textwrap", version: "0.1.0", deps: [], source: Dep::git("https://github.com/you/textwrap.git", rev: "8e2afb20.."), tree: "823a3592..", yanked: false, nabi_version: "0.1.0" }
-note: dry run; `nabi publish` sends it to the registry API of https://github.com/nabi-lang/packages-index (needs `nabi login`), which adds it as te/xt/textwrap
-```
-
-The entry holds only what resolving needs: the HEAD commit and its tree hash, the dependencies, and `nabi_version`. Push that commit first. The description, license and other metadata travel beside it to the registry, which shows them with who published each version. `nabi publish` sends both with your token (`Published textwrap 0.1.0 to https://packages.nabi-lang.org`), and the version is live once the index has it. A version cannot be published twice, and a name differing only in case or `-` / `_` from an existing package is taken.
-
-The registry also makes the version's API docs from the source at that commit, reading it without building or running it: [packages.nabi-lang.org/packages/textwrap/0.1.0/docs](https://packages.nabi-lang.org/packages/textwrap/0.1.0/docs), and `/packages/textwrap/latest/docs` for the newest version. The pages are laid out as `nabi doc` lays them out: the root module at `docs`, each other public module on a page of its own (`docs/<module>`), and the same anchors (`docs#fn.wrap`). An item you re-export from a private module with `pub use` is shown there as if it were declared where you re-export it. If the docs cannot be made, the version is published anyway: `nabi publish` prints the reason as a warning, and the docs page shows it.
-
-### `nabi yank`
-
-A version with a serious bug can be yanked. New resolutions skip it, but projects whose `nabi.lock` already pins it keep building, so yanking never breaks anyone. `--undo` reverses it.
-
-```bash
-nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
-nabi yank textwrap@0.1.0 --undo
-```
-
-`--message` says why; the registry shows it on the package's page.
-
-### Changing a published API
-
-When a function, method, field or type of your package should go away, mark it `#[deprecated]` instead of removing it. Code that uses it keeps building and gets a warning that says what to write instead; remove it in the next breaking release.
-
-```nabi norun
-#[deprecated(since = "0.3.0", note = "use `wrap_width`")]
-pub fn wrap(s: str) -> str { wrap_width(s, 80) }
-```
-
-```text
-warning[E0131]: use of deprecated function `wrap`
-  --> src/main.nabi:6:9
-   |
- 6 | println(textwrap::wrap("hi"));
-   |         ^^^^^^^^^^^^^^^^^^^^
-   |
-   = note: deprecated since 0.3.0
-   = note: use `wrap_width`
-   = note: `#[warn(deprecated)]` on by default
-```
-
-Two attributes keep room to grow. `#[non_exhaustive]` on an enum makes a `match` in other packages end with `_ =>`, so you can add variants later. On a struct, it marks a record you may add fields to: other packages still build it with a literal, leaving out fields that have defaults, but a pattern on it ends in `..`. Give every field you add later a default, so those literals keep compiling.
-
-```nabi norun
-#[non_exhaustive]
-pub struct WrapOptions {
-    pub width: i32 = 80;
-    pub break_words: bool = false;
-}
-
-// in another package
-let o = textwrap::WrapOptions { width: 60 };
-let textwrap::WrapOptions { width, .. } = o;
-```
-
-`#[sealed]` on a trait means only your package implements it. Other packages still use it in bounds and call its methods, but an `impl` of it elsewhere is an error, so you may rely on knowing every implementation.
 
 ## Summary
 
@@ -244,11 +149,11 @@ let textwrap::WrapOptions { width, .. } = o;
 - Optional dependencies (`optional: true`) are built only when a feature enables them.
 - Choose features with `--features`, `--no-default-features`, `--all-features`, and per dependency with `features:` / `default_features: false`. Features are unified across the build, so they must only add.
 - Code tests them with `#[cfg(feature = "..")]` and `cfg!(feature = "..")`.
-- `json`, `toml`, `csv`, `http`, `markdown`, `spatial` and `nabi-syntax` are the Nabi project's packages.
-- Publish with `nabi login` (a registry token), `nabi publish --dry-run` and `nabi publish`; withdraw with `nabi yank name@version --message <why>`, and retire an API with `#[deprecated]` before removing it. `#[non_exhaustive]` and `#[sealed]` leave room to add variants, fields and impls. Publishing is open to maintainers only for now.
+- The Nabi project's packages are marked Official on the registry.
+- Publish with `nabi login`, `nabi publish --dry-run` and `nabi publish`, and withdraw with `nabi yank`; the details are in [Publishing Packages](packages/index.html). Publishing is open to maintainers only for now.
 
 ## Further reading
 
 - Spec: [9.10.4c Features](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104c-features), [9.10.4a Registry packages](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-registry-packages), [`nabi search` / `publish` / `yank` / `login`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-search--publish--yank--login--logout), [`nabi.nabion`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)
-- [packages.nabi-lang.org](https://packages.nabi-lang.org), the package registry
+- [Publishing Packages](packages/index.html), and [packages.nabi-lang.org](https://packages.nabi-lang.org), the package registry
 - Next chapter: [19. Cryptography and TLS](19-crypto-and-tls.html)
