@@ -63,7 +63,7 @@ println(f"{line + 1}");
 43
 ```
 
-要改变变量的值，使用不带 `let` 的赋值。重新声明不会改动旧变量（[5.1.4](../spec/refs-lang/005-modules/501-variable-declaration.html#514-redeclaration-in-the-same-scope)）：已打开的文件不会因此关闭，所以要先关闭它，或者把它移入新值，例如 `let f = BufReader::new(f);`（第 13 章）。
+要改变变量的值，使用不带 `let` 的赋值。重新声明不会改动旧变量（[5.1.4](../spec/refs-lang/005-modules/501-variable-declaration.html#514-在同一作用域中重新声明)）：已打开的文件不会因此关闭，所以要先关闭它，或者把它移入新值，例如 `let f = BufReader::new(f);`（第 13 章）。
 
 ## 数值类型与字面量
 
@@ -125,7 +125,7 @@ error[E0054]: operator `+` cannot be applied to `i32` and `i64`
    = help: Nabi never converts numbers implicitly; convert one side: `(a as i64) + b`
 ```
 
-这是有意为之，为的是防止悄无声息地丢失精度。转换要显式写出。`as` 总是成功，但可能截断或改变值；`.into()` 只允许无损转换：在每个目标上都保留所有值的拓宽转换，例如 `i32` 到 `i64`、`u8` 到 `isize` 或 `u32` 到 `f64`（完整的表见[标准库 2.11.8](../spec/refs-standard-libraries/200-core/211-conversion.html#2118-from-impl-matrix---between-primitives)）。
+这是有意为之，为的是防止悄无声息地丢失精度。转换要显式写出。`as` 总是成功，但可能截断或改变值；`.into()` 只允许无损转换：在每个目标上都保留所有值的拓宽转换，例如 `i32` 到 `i64`、`u8` 到 `isize` 或 `u32` 到 `f64`（完整的表见[标准库 2.11.8](../spec/refs-standard-libraries/200-core/211-conversion.html#2118-from-实现矩阵原始类型之间)）。
 
 ```nabi
 let x: i32 = 10;

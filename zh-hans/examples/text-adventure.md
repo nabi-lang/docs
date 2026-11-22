@@ -190,7 +190,7 @@ The lamp reveals a pile of gold. You win!
 ## 讲解
 
 - 玩家的输入先被解析成 `Command` 枚举，游戏逻辑只处理这个枚举。字符串处理和状态变化分开，所以添加新命令很容易，编译器也会检查 `match` 是否覆盖了每个变体（[和类型](../learn/05-sum-types.html)，[3.12 match](../spec/refs-lang/003-expressions/312-match-expression.html)）。
-- `"n" | "north" => ...` 这样的或模式把别名归为一组，`"go"` 对剩下的单词再次调用 `parse`，所以 `go west` 和 `west` 成为同一个命令（[3.11 模式](../spec/refs-lang/003-expressions/311-patterns.html#or-patterns)）。
+- `"n" | "north" => ...` 这样的或模式把别名归为一组，`"go"` 对剩下的单词再次调用 `parse`，所以 `go west` 和 `west` 成为同一个命令（[3.11 模式](../spec/refs-lang/003-expressions/311-patterns.html#或模式)）。
 - `Dict::get` 返回 `usize | none`。分成 `next: usize => ...` 和 `none => ...` 两个分支，就自然地处理了“那个方向没有出口”的情况（[`Dict`](../../std/core/collections/dict.html#struct.Dict)）。
 - 游戏状态 `Game` 通过 `step(ref self, ...)` 就地修改。房间的 `items` 是 `List`，所以用 `let items = self.rooms[self.here].items;` 取出它再调用 `remove`，也会修改房间自己的列表（[集合与迭代器](../learn/08-collections-iterators.html)）。
 - `script` 列表代替标准输入，一次送入一行。要做成真正的游戏，把这个循环换成 `while let line = try io::input("> ") { .. }`，它会逐行读取，直到输入结束（[I/O](../learn/13-io.html)）。

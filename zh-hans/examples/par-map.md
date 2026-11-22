@@ -95,7 +95,7 @@ sequential: 148933, parallel: 148933, match: true
 
 ## 讲解
 
-- `par::map` 把元素分成若干块，在线程池上同时处理，但结果列表保持输入的顺序，所以 `counts[i]` 就是从 `starts[i]` 开始的那一块的答案（[2.19.1 core API](../spec/refs-standard-libraries/200-core/219-par.html#2191-core-api)，[`par::map`](../../std/core/par.html#fn.map)）。
+- `par::map` 把元素分成若干块，在线程池上同时处理，但结果列表保持输入的顺序，所以 `counts[i]` 就是从 `starts[i]` 开始的那一块的答案（[2.19.1 core API](../spec/refs-standard-libraries/200-core/219-par.html#2191-核心-api)，[`par::map`](../../std/core/par.html#fn.map)）。
 - `par::fold` 先对每一块折叠，再折叠各块的结果。函数必须满足结合律，这样重新分组才能得到同样的答案：加法满足，减法不满足（[`par::fold`](../../std/core/par.html#fn.fold)）。`par::reduce(counts, |a, b| a + b)` 与之相同，只是不需要 `0`，对空列表给出 `none`（[`par::reduce`](../../std/core/par.html#fn.reduce)）。
 - `par::filter` 同样保持顺序，所以一百万附近的素数按升序输出。
 - `par::join` 同时运行两个互不相关的计算，并以元组返回两个结果（[并发](../learn/12-concurrency.html)）。

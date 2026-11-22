@@ -154,6 +154,6 @@ nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
 
 ## 延伸阅读
 
-- 规范：[9.10.4c 特性](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104c-features)、[9.10.4a 注册表包](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-registry-packages)、[`nabi search` / `publish` / `yank` / `login`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-search--publish--yank--login--logout)、[`nabi.nabion`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)
+- 规范：[9.10.4c 特性](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104c-特性)、[9.10.4a 注册表包](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-注册表包)、[`nabi search` / `publish` / `yank` / `login`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-search--publish--yank--login--logout)、[`nabi.nabion`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)
 - [发布包](packages/index.html)，以及包注册表 [packages.nabi-lang.org](https://packages.nabi-lang.org)
 - 下一章：[19. 密码学与 TLS](19-crypto-and-tls.html)

@@ -185,7 +185,7 @@ fn main() {
 ## 讲解
 
 - JSON 值是有六个变体的枚举 `Json`。数组和对象以 `List<Json>` 和 `Dict<str, Json>` 递归地持有自身；`Dict` 保持键的顺序（[和类型](../learn/05-sum-types.html)，[结构体、枚举与 trait](../learn/06-structs-enums-traits.html)）。
-- 解析器是一个持有位置 `pos` 的结构体，推进位置的方法接受 `ref self`。这样的方法返回（或抛出错误）时，更新后的 `self` 会写回调用方（[4.7.5 方法接收者](../spec/refs-lang/004-functions/407-ref-keyword.html#475-exception-for-method-receivers)）。
-- 输入结束用 `let c = self.peek() else { throw ...; };` 检查。`peek()` 返回 `char | none`，所以遇到 `none` 时 `let-else` 离开，在它下面 `c` 是 `char`（[3.16 `let-else`](../spec/refs-lang/003-expressions/316-let-else.html#3161-form)）。
+- 解析器是一个持有位置 `pos` 的结构体，推进位置的方法接受 `ref self`。这样的方法返回（或抛出错误）时，更新后的 `self` 会写回调用方（[4.7.5 方法接收者](../spec/refs-lang/004-functions/407-ref-keyword.html#475-方法接收者的例外)）。
+- 输入结束用 `let c = self.peek() else { throw ...; };` 检查。`peek()` 返回 `char | none`，所以遇到 `none` 时 `let-else` 离开，在它下面 `c` 是 `char`（[3.16 `let-else`](../spec/refs-lang/003-expressions/316-let-else.html#3161-形式)）。
 - 所有错误都是同一个携带消息和位置的 `ParseError`。标准库抛出的错误，例如数字解析失败，用 `catch _ { throw ParseError { ... }; }` 转换成带位置的错误（[错误处理](../learn/10-errors.html)）。
 - 输出由返回字符串的递归函数 `pretty` 构造。对于数组和对象，先渲染每个元素，再由 `block` 加上缩进和逗号；字符串值用 `{s:?}`（Debug）输出引号和转义（[字符串](../learn/09-strings.html)）。

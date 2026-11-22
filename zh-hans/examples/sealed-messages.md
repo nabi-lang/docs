@@ -73,8 +73,8 @@ tampered: (rejected)
 
 ## 讲解
 
-- 每条消息都使用一对新的 X25519 密钥。它的私密部分和 Bob 的公钥得出的共享密钥，与 Bob 用他的私钥和随消息发来的一次性公钥算出的共享密钥相同。密钥是有类型的值：`x25519::PrivateKey` 把它的字节保存在机密存储中，它的 `PublicKey` 部分是放进消息中的普通值（[`x25519`](../../std/core/crypto/x25519.html)，[2.21.3 密钥交换](../spec/refs-standard-libraries/200-core/221-crypto.html#2213-key-exchange)）。
-- 原始的共享密钥不直接用作密钥：`hkdf::extract` / `expand` 把它变成 32 字节的 AEAD 密钥，并用一个标签（`b"sealed-box v1"`）把密钥与这个协议绑定（[2.21.1](../spec/refs-standard-libraries/200-core/221-crypto.html#2211-hashes-hmac-hkdf)）。
+- 每条消息都使用一对新的 X25519 密钥。它的私密部分和 Bob 的公钥得出的共享密钥，与 Bob 用他的私钥和随消息发来的一次性公钥算出的共享密钥相同。密钥是有类型的值：`x25519::PrivateKey` 把它的字节保存在机密存储中，它的 `PublicKey` 部分是放进消息中的普通值（[`x25519`](../../std/core/crypto/x25519.html)，[2.21.3 密钥交换](../spec/refs-standard-libraries/200-core/221-crypto.html#2213-密钥交换)）。
+- 原始的共享密钥不直接用作密钥：`hkdf::extract` / `expand` 把它变成 32 字节的 AEAD 密钥，并用一个标签（`b"sealed-box v1"`）把密钥与这个协议绑定（[2.21.1](../spec/refs-standard-libraries/200-core/221-crypto.html#2211-哈希hmachkdf)）。
 - ChaCha20-Poly1305 同时进行加密和认证。24 字节的文本变成 40 字节，多出的 16 字节是认证标签。密钥不对或者有字节被改动时，`open` 返回 `none`，所以 Eve 和被篡改的副本都会在任何明文出现之前被拒绝（[`Aead`](../../std/core/crypto/aead.html)，[2.21.2](../spec/refs-standard-libraries/200-core/221-crypto.html#2212-aead)）。
 - Alice 用 Ed25519 对一次性公钥、nonce 和密文一起签名，所以谁也无法替换其中任何一个。`open` 先用 Alice 的 `VerifyingKey` 检查签名（[`ed25519`](../../std/core/crypto/ed25519.html)）。
 - 私钥由 `random::secret` 生成，它把字节直接放进机密存储；共享密钥和派生密钥也是 `Secret`，所以任何密钥字节都不会落入普通的 `List`。nonce 是公开的，来自 `random::bytes`。算法从不自己获取随机数（[密钥材料](../learn/19-crypto-and-tls.html#密钥材料secret)）。可选的结果用后缀 `?` 和 `??` 取出（[和类型](../learn/05-sum-types.html)）。

@@ -1,6 +1,6 @@
 # 错误码
 
-nabic 的每条诊断都以一个错误码开头：`error[E0040]: mismatched types: ...`。每类错误一个错误码，所以一个错误码涵盖多条消息。消息本身会说明哪里出了问题，通常还会说明应该改写成什么。`nabic --explain E0040`（或 `nabi --explain E0040`）会打印错误码的简短说明，本站对应的页面内容相同，另外附有示例。使用 `--message-format=json` 时，错误码在 `code` 字段中，所属类别在 `kind` 字段中（[9.9.4 诊断](../spec/refs-lang/009-tools/909-debug-tools.html#994-diagnostics--error-messages)）。
+nabic 的每条诊断都以一个错误码开头：`error[E0040]: mismatched types: ...`。每类错误一个错误码，所以一个错误码涵盖多条消息。消息本身会说明哪里出了问题，通常还会说明应该改写成什么。`nabic --explain E0040`（或 `nabi --explain E0040`）会打印错误码的简短说明，本站对应的页面内容相同，另外附有示例。使用 `--message-format=json` 时，错误码在 `code` 字段中，所属类别在 `kind` 字段中（[9.9.4 诊断](../spec/refs-lang/009-tools/909-debug-tools.html#994-诊断--错误消息)）。
 
 错误码按加入的先后顺序编号，从 E0001 开始，中间没有空缺。本索引对应 nabic 0.1.0。大多数页面都给出一个示例和它的修正，示例会在构建文档时与编译器的实际输出核对。
 

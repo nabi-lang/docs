@@ -245,10 +245,10 @@ none
 `?` 只作用于 `T | none`。它不是传播错误的方式；错误用 `throws` / `try` 处理（[错误控制流](../spec/refs-lang/003-expressions/314-error-control-flow.html)）。
 
 > [!NOTE]
-> 进阶：如果集合本身存放 `none`（`List<i32?>`），`get` 的结果就是两层的可选类型 `(i32 | none)?`，用来区分“没有元素”和“存放的是 none”。`??`、`?.` 和 `?` 只作用于外层。完整规则见[嵌套可选类型](../spec/refs-lang/002-types/206-sum-types.html#nested-optional)。
+> 进阶：如果集合本身存放 `none`（`List<i32?>`），`get` 的结果就是两层的可选类型 `(i32 | none)?`，用来区分“没有元素”和“存放的是 none”。`??`、`?.` 和 `?` 只作用于外层。完整规则见[嵌套可选类型](../spec/refs-lang/002-types/206-sum-types.html#嵌套可选类型)。
 
 > [!NOTE]
-> 进阶：`T?` 值在比较和排序时 `none` 排在最前，所以对 `[3, none, 1]` 排序得到 `[none, 1, 3]`。由两个值类型组成的和类型（例如 `i32 | str`）没有顺序：对它使用 `<`、`min` / `max` 和 `sort` 都是编译错误。这类值要用 `sort_by_key` 或 `sort_by` 按键排序（[规范顺序](../spec/refs-lang/002-types/206-sum-types.html#canonical-order)）。
+> 进阶：`T?` 值在比较和排序时 `none` 排在最前，所以对 `[3, none, 1]` 排序得到 `[none, 1, 3]`。由两个值类型组成的和类型（例如 `i32 | str`）没有顺序：对它使用 `<`、`min` / `max` 和 `sort` 都是编译错误。这类值要用 `sort_by_key` 或 `sort_by` 按键排序（[规范顺序](../spec/refs-lang/002-types/206-sum-types.html#规范顺序)）。
 
 ## 小结
 
@@ -259,8 +259,8 @@ none
 
 ## 延伸阅读
 
-- [2.6. 和类型](../spec/refs-lang/002-types/206-sum-types.html)，[2.1.5a. 可选类型 `T?`](../spec/refs-lang/002-types/201-type-expressions.html#215a-optional-types-t)
-- [2.2.6. 类型收窄](../spec/refs-lang/002-types/202-any-slot.html#226-narrowing)，[3.10.5. `if let`](../spec/refs-lang/003-expressions/310-if-expression.html#3105-if-let-combining-with-pattern-matching)，[3.16. `let-else`](../spec/refs-lang/003-expressions/316-let-else.html)，[3.11. 模式](../spec/refs-lang/003-expressions/311-patterns.html)
-- [3.8. 可选链与空值合并](../spec/refs-lang/003-expressions/308-optional-chaining-and-coalescing.html)，[3.14.10. `?` 运算符](../spec/refs-lang/003-expressions/314-error-control-flow.html#31410-the--operator---early-return-of-none)
+- [2.6. 和类型](../spec/refs-lang/002-types/206-sum-types.html)，[2.1.5a. 可选类型 `T?`](../spec/refs-lang/002-types/201-type-expressions.html#215a-可选类型t)
+- [2.2.6. 类型收窄](../spec/refs-lang/002-types/202-any-slot.html#226-类型收窄)，[3.10.5. `if let`](../spec/refs-lang/003-expressions/310-if-expression.html#3105-if-let与模式匹配结合)，[3.16. `let-else`](../spec/refs-lang/003-expressions/316-let-else.html)，[3.11. 模式](../spec/refs-lang/003-expressions/311-patterns.html)
+- [3.8. 可选链与空值合并](../spec/refs-lang/003-expressions/308-optional-chaining-and-coalescing.html)，[3.14.10. `?` 运算符](../spec/refs-lang/003-expressions/314-error-control-flow.html#31410--运算符提前返回-none)
 - [2.7. niche 优化](../spec/refs-lang/002-types/207-niche-optimization.html)
 - 下一章：[6. 结构体、枚举与 trait](06-structs-enums-traits.html)

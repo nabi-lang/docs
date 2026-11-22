@@ -466,7 +466,7 @@ MEOW
 `a: some Animal` 是同样的泛型，只是不必给 `T` 起名。候选类型固定为少数几个时用和类型；集合是开放的就用泛型（下一章）。
 
 > [!NOTE]
-> 进阶：当一个集合必须混合在运行时选定的多种实现时，写 `any Trait`，如 `let zoo: List<any Animal> = [Dog, Cat];`。通过它的调用使用动态分派，类型中的 `any` 让这一开销显而易见。自带类型参数的方法，比如 `fn write<B: AsBytes>(..)`，也可以通过它调用（[`any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-constrained-any-any-trait)）。
+> 进阶：当一个集合必须混合在运行时选定的多种实现时，写 `any Trait`，如 `let zoo: List<any Animal> = [Dog, Cat];`。通过它的调用使用动态分派，类型中的 `any` 让这一开销显而易见。自带类型参数的方法，比如 `fn write<B: AsBytes>(..)`，也可以通过它调用（[`any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-受约束的-anyany-trait)）。
 
 ## 运算符 trait
 
@@ -510,9 +510,9 @@ v = (11, 22)
 
 ## 延伸阅读
 
-- [2.3. `struct`](../spec/refs-lang/002-types/203-struct.html)、[2.3.8. 值语义](../spec/refs-lang/002-types/203-struct.html#238-value-semantics)、[4.7. `ref`](../spec/refs-lang/004-functions/407-ref-keyword.html)、[2.4. `enum`](../spec/refs-lang/002-types/204-enum.html)、[2.5. `union`](../spec/refs-lang/002-types/205-union.html)
+- [2.3. `struct`](../spec/refs-lang/002-types/203-struct.html)、[2.3.8. 值语义](../spec/refs-lang/002-types/203-struct.html#238-值语义)、[4.7. `ref`](../spec/refs-lang/004-functions/407-ref-keyword.html)、[2.4. `enum`](../spec/refs-lang/002-types/204-enum.html)、[2.5. `union`](../spec/refs-lang/002-types/205-union.html)
 - [2.8. `trait`](../spec/refs-lang/002-types/208-trait.html)、[2.9. `impl`](../spec/refs-lang/002-types/209-impl.html)、[4.9. 方法](../spec/refs-lang/004-functions/409-method.html)
-- [6.2.1. `#[derive(...)]`](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#621-derive-automatic-trait-implementation)
-- [2.12. trait 不能作类型](../spec/refs-lang/002-types/212-trait-as-type-banned.html)、[2.2.10. `any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-constrained-any-any-trait)
+- [6.2.1. `#[derive(...)]`](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#621-derive-自动实现-trait)
+- [2.12. trait 不能作类型](../spec/refs-lang/002-types/212-trait-as-type-banned.html)、[2.2.10. `any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-受约束的-anyany-trait)
 - [3.1. 运算符分派](../spec/refs-lang/003-expressions/301-operator-dispatch.html)，API：[`Add`](../../std/core/ops.html#trait.Add)、[`Display`](../../std/core/fmt.html#trait.Display)、[NABION](../../std/std/nabion.html)
 - 下一章：[7. 泛型](07-generics.html)

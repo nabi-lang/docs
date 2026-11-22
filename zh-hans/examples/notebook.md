@@ -80,7 +80,7 @@ histogram:
 
 ## 讲解
 
-- notebook 单元格中顶层的 `let` 和 `fn` 在整个会话中都保持有效。单元格可以再次 `let` 同一个名称，就像源文件一样，所以可以用不同的数据重新运行单元格（[5.1.4 同一作用域中的重新声明](../spec/refs-lang/005-modules/501-variable-declaration.html#514-redeclaration-in-the-same-scope)）。
+- notebook 单元格中顶层的 `let` 和 `fn` 在整个会话中都保持有效。单元格可以再次 `let` 同一个名称，就像源文件一样，所以可以用不同的数据重新运行单元格（[5.1.4 同一作用域中的重新声明](../spec/refs-lang/005-modules/501-variable-declaration.html#514-在同一作用域中重新声明)）。
 - `f64` 没有 `Ord`（NaN 无法排序），所以中位数按 IEEE 全序排序：`sorted_by(f64::total_cmp)`（[集合与迭代器](../learn/08-collections-iterators.html)）。
 - `temps.min()` / `temps.max()` 可用于浮点数（与 NumPy 一样，NaN 会胜出）；`?? f64::NAN` 处理空列表的情况（[`Iterator`](../../std/core/iter.html#trait.Iterator)）。
 - `temps[week * 7:(week + 1) * 7]` 以切片取出列表的一个区间，`to_list()` 把它复制成 `mean` 接受的 `List`。`sum()` 对整个列表求和，`(x - m) ** 2` 求平方（[3.6 索引与切片](../spec/refs-lang/003-expressions/306-indexing-and-slicing.html)）。
@@ -88,7 +88,7 @@ histogram:
 
 ## 运行
 
-先在 Jupyter 中注册 Nabi 内核。`nabi jupyter install` 把 kernelspec（`kernels/nabi/kernel.json`）写入 Jupyter 的数据目录（macOS 上是 `~/Library/Jupyter`，Windows 上是 `%APPDATA%\jupyter`，其他系统上是 `~/.local/share/jupyter`；见 [9.8.3 安装 kernelspec](../spec/refs-lang/009-tools/908-jupyter-integration.html#983-kernelspec-installation)）。
+先在 Jupyter 中注册 Nabi 内核。`nabi jupyter install` 把 kernelspec（`kernels/nabi/kernel.json`）写入 Jupyter 的数据目录（macOS 上是 `~/Library/Jupyter`，Windows 上是 `%APPDATA%\jupyter`，其他系统上是 `~/.local/share/jupyter`；见 [9.8.3 安装 kernelspec](../spec/refs-lang/009-tools/908-jupyter-integration.html#983-安装-kernelspec)）。
 
 ```bash
 nabi jupyter install

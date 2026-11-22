@@ -448,8 +448,8 @@ show_sum(1.5, 2.0);   // 3.5
 
 ## 延伸阅读
 
-- [2.10. 泛型](../spec/refs-lang/002-types/210-generics.html)：[2.10.3. trait 约束](../spec/refs-lang/002-types/210-generics.html#2103-trait-bounds)、[2.10.4. where 子句](../spec/refs-lang/002-types/210-generics.html#2104-where-clauses)、[2.10.9. 函数体检查](../spec/refs-lang/002-types/210-generics.html#2109-body-checking)、[2.10.7. 与渐进类型的结合](../spec/refs-lang/002-types/210-generics.html#2107-combination-with-gradual-typing)、[2.10.13. 对类型参数的类型检查](../spec/refs-lang/002-types/210-generics.html#21013-type-tests-on-type-parameters)
-- [2.8.3. 关联类型](../spec/refs-lang/002-types/208-trait.html#283-associated-types)
+- [2.10. 泛型](../spec/refs-lang/002-types/210-generics.html)：[2.10.3. trait 约束](../spec/refs-lang/002-types/210-generics.html#2103-trait-约束)、[2.10.4. where 子句](../spec/refs-lang/002-types/210-generics.html#2104-where-子句)、[2.10.9. 函数体检查](../spec/refs-lang/002-types/210-generics.html#2109-主体检查)、[2.10.7. 与渐进类型的结合](../spec/refs-lang/002-types/210-generics.html#2107-与渐进类型的结合)、[2.10.13. 对类型参数的类型检查](../spec/refs-lang/002-types/210-generics.html#21013-对类型参数的类型测试)
+- [2.8.3. 关联类型](../spec/refs-lang/002-types/208-trait.html#283-关联类型)
 - [2.11. `const` 泛型](../spec/refs-lang/002-types/211-const-generics.html)
 - [2.2. `any` 槽](../spec/refs-lang/002-types/202-any-slot.html)
 - 下一章：[8. 集合类型与迭代器](08-collections-iterators.html)

@@ -178,7 +178,7 @@ for src in program {
 
 - 程序和值共用一个枚举 `Value`。Lisp 的代码和数据形状相同，所以解析器产生 `Value`，求值器接受一个 `Value` 并返回一个 `Value`（[和类型](../learn/05-sum-types.html)，[结构体、枚举与 trait](../learn/06-structs-enums-traits.html)）。
 - 解析器通过 `ref pos: usize` 与调用方共享读取位置。它是一个经典的递归下降解析器，调用自身来读取括号中的内容（[4.7 `ref` 关键字](../spec/refs-lang/004-functions/407-ref-keyword.html)）。
-- 不是整数的词法单元都是符号。`try? tok.parse::<i64>()` 把解析错误变成 `none`，所以一个有两个分支的 `match` 就能区分这两种情况（[3.14.3 `try?` 与 `try!`](../spec/refs-lang/003-expressions/314-error-control-flow.html#3143-try-and-try)）。在只接受一个变体的地方，`let Value::Sym(name) = items[1] else { throw ...; };` 这样的 [let-else](../spec/refs-lang/003-expressions/316-let-else.html) 要么绑定它，要么离开函数。
+- 不是整数的词法单元都是符号。`try? tok.parse::<i64>()` 把解析错误变成 `none`，所以一个有两个分支的 `match` 就能区分这两种情况（[3.14.3 `try?` 与 `try!`](../spec/refs-lang/003-expressions/314-error-control-flow.html#3143-try-与-try)）。在只接受一个变体的地方，`let Value::Sym(name) = items[1] else { throw ...; };` 这样的 [let-else](../spec/refs-lang/003-expressions/316-let-else.html) 要么绑定它，要么离开函数。
 - 运行时错误 `throw` 一个 `LispError`，每个函数都在签名中用 `throws (LispError)` 写明这一点。底部的 `try { ... } catch e: LispError { ... }` 把一行的错误变成消息，所以下一行仍然会运行（[错误处理](../learn/10-errors.html)）。
 - `lambda` 捕获创建它时的 `Env`。`Dict` 是共享的引用，所以 `make-adder` 返回的函数记得 `k`，而 `fact` 即使是之后才定义的，也能找到自身。
 

@@ -914,7 +914,7 @@ if n == 0 {
 
 ## 延伸阅读
 
-- 规范：[5.9 extern 块](../spec/refs-lang/005-modules/509-extern-block.html)、[9.13 C 编译器](../spec/refs-lang/009-tools/913-c-compiler.html)、[4.15 unsafe](../spec/refs-lang/004-functions/415-unsafe.html)、[4.15.4 unsafe trait](../spec/refs-lang/004-functions/415-unsafe.html#4154-in-traits)、[6.2.3 link 属性](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#623-link-naming-an-external-library)、[与 C 兼容的字符](../spec/refs-lang/001-lexical/108-character-literals.html)
-- 标准库规范：[FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)、[GC 固定](../spec/refs-standard-libraries/100-bare/106-gc-pin.html)、[指针](../spec/refs-standard-libraries/100-bare/101-ptr.html)、[`Pod` trait](../spec/refs-standard-libraries/100-bare/103-mem.html#133-the-pod-trait)、[panic 钩子](../spec/refs-standard-libraries/300-std/312-panic.html)
+- 规范：[5.9 extern 块](../spec/refs-lang/005-modules/509-extern-block.html)、[9.13 C 编译器](../spec/refs-lang/009-tools/913-c-compiler.html)、[4.15 unsafe](../spec/refs-lang/004-functions/415-unsafe.html)、[4.15.4 unsafe trait](../spec/refs-lang/004-functions/415-unsafe.html#4154-在-trait-中)、[6.2.3 link 属性](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#623-link-指定外部库)、[与 C 兼容的字符](../spec/refs-lang/001-lexical/108-character-literals.html)
+- 标准库规范：[FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)、[GC 固定](../spec/refs-standard-libraries/100-bare/106-gc-pin.html)、[指针](../spec/refs-standard-libraries/100-bare/101-ptr.html)、[`Pod` trait](../spec/refs-standard-libraries/100-bare/103-mem.html#133-pod-trait)、[panic 钩子](../spec/refs-standard-libraries/300-std/312-panic.html)
 - API：[bare::ffi](../../std/bare/ffi.html)、[bare::gc](../../std/bare/gc.html)、[bare::ptr](../../std/bare/ptr.html)、[bare::alloc](../../std/bare/alloc.html)、[bare::mem](../../std/bare/mem.html)、[std::panic](../../std/std/panic.html)
 - 下一章：[15. NABION](15-nabion.html)

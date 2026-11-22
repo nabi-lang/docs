@@ -253,7 +253,7 @@ missing: b
 invalid: empty key
 ```
 
-`lookup` 的错误种类封闭为 `NotFound | Invalid`，所以覆盖了这两种类型的 `describe` 成为一个不再抛出错误的函数。这由编译器检查。错误种类难以封闭时（例如公开 API），使用单独的 `throws`；接收方用 `catch e` 捕获全部，或者像 `catch e: ValueError` 那样先收窄（[4.14.3](../spec/refs-lang/004-functions/414-throws.html#4143-untyped-throws)）。
+`lookup` 的错误种类封闭为 `NotFound | Invalid`，所以覆盖了这两种类型的 `describe` 成为一个不再抛出错误的函数。这由编译器检查。错误种类难以封闭时（例如公开 API），使用单独的 `throws`；接收方用 `catch e` 捕获全部，或者像 `catch e: ValueError` 那样先收窄（[4.14.3](../spec/refs-lang/004-functions/414-throws.html#4143-无类型的-throws)）。
 
 `catch` 后面可以跟任意模式，所以用结构体模式可以直接取出字段。
 
@@ -455,7 +455,7 @@ for n in [4, 5] {
 
 ## 延伸阅读
 
-- 规范：[错误控制流](../spec/refs-lang/003-expressions/314-error-control-flow.html)、[`throws` 签名](../spec/refs-lang/004-functions/414-throws.html)、[`using` 表达式](../spec/refs-lang/003-expressions/317-using-expression.html)、[panic 与致命错误](../spec/refs-lang/003-expressions/314-error-control-flow.html#3148-panics-and-fatal-errors)
+- 规范：[错误控制流](../spec/refs-lang/003-expressions/314-error-control-flow.html)、[`throws` 签名](../spec/refs-lang/004-functions/414-throws.html)、[`using` 表达式](../spec/refs-lang/003-expressions/317-using-expression.html)、[panic 与致命错误](../spec/refs-lang/003-expressions/314-error-control-flow.html#3148-panic-与致命错误)
 - 标准库规范：[error](../spec/refs-standard-libraries/200-core/214-error.html)
 - API：[`Error`](../../std/core/error.html#trait.Error)、[`ValueError`](../../std/core/error.html#struct.ValueError)、[`Result`](../../std/core/error.html#enum.Result)、[`Drop`](../../std/core/marker.html#trait.Drop)
 - 下一章：[11. 模块与包](11-modules-packages.html)

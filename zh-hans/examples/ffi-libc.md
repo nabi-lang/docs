@@ -88,8 +88,8 @@ qsort descending: [88, 56, 42, 21, 19, 7, 3]
 ## 讲解
 
 - `extern "C" { ... }` 块只包含没有函数体的签名。在其中声明的函数隐式为 `unsafe`，所以每次调用都要放在 `unsafe { ... }` 中（[5.9 `extern` 块](../spec/refs-lang/005-modules/509-extern-block.html)，[4.15 unsafe](../spec/refs-lang/004-functions/415-unsafe.html)）。
-- `str` 参数以 NUL 结尾的 `char*` 传给 C。所以 `strlen("naïve")` 返回的是 UTF-8 字节数 6，而不是 5 个字符（[5.9.4 FFI 兼容类型](../spec/refs-lang/005-modules/509-extern-block.html#594-ffi-compatible-types)）。
+- `str` 参数以 NUL 结尾的 `char*` 传给 C。所以 `strlen("naïve")` 返回的是 UTF-8 字节数 6，而不是 5 个字符（[5.9.4 FFI 兼容类型](../spec/refs-lang/005-modules/509-extern-block.html#594-ffi-兼容类型)）。
 - 可能为 NULL 的 C 指针以 [`CPtr`](../../std/bare/ptr.html#struct.CPtr) 接收。`as_const()` 给出非空的 [`ConstPtr`](../../std/bare/ptr.html#struct.ConstPtr) 或 `none`，所以一个 `?` 就能把 `getenv` 包装成返回 `str | none` 的安全函数（[和类型](../learn/05-sum-types.html)）。
 - 内存用 [`Layout`](../../std/bare/alloc.html#struct.Layout) 和 `alloc` / `dealloc` 手动分配，并通过 [`ManyPtr`](../../std/bare/ptr.html#struct.ManyPtr) 的 `read(i)` / `write(i, v)` 像 C 数组一样访问。GC 不管理这块内存，所以要自己释放。
-- `extern "C" fn descending` 是用 C ABI 编译的 Nabi 函数。把它作为函数指针传给 `qsort`，C 在排序时就能回调 Nabi 代码（[5.9.10 定义 `extern fn`](../spec/refs-lang/005-modules/509-extern-block.html#5910-extern-fn-definitions-exposed-externally)）。
+- `extern "C" fn descending` 是用 C ABI 编译的 Nabi 函数。把它作为函数指针传给 `qsort`，C 在排序时就能回调 Nabi 代码（[5.9.10 定义 `extern fn`](../spec/refs-lang/005-modules/509-extern-block.html#5910-extern-fn-定义对外暴露)）。
 - `snprintf` 这样的可变参数函数在签名末尾用 `...` 声明。更多内容见 [FFI 一章](../learn/14-ffi.html)。

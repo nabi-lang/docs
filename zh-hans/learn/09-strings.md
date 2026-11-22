@@ -124,7 +124,7 @@ false true true
 ["can't", "stop", "3.14"]
 ```
 
-`grapheme_slice(0, n)` 保留前 `n` 个字素，所以截短的标题永远不会把重音符或旗帜切成两半。规范化形式、折叠和分割规则见 [`str` 参考](../spec/refs-standard-libraries/200-core/215-string.html#21510-unicode-text---normalization-case-folding-segmentation)。
+`grapheme_slice(0, n)` 保留前 `n` 个字素，所以截短的标题永远不会把重音符或旗帜切成两半。规范化形式、折叠和分割规则见 [`str` 参考](../spec/refs-standard-libraries/200-core/215-string.html#21510-unicode-文本规范化大小写折叠分段)。
 
 ## `StrBuf`：逐段构建
 
@@ -145,7 +145,7 @@ println(f"{s} ({s.len()} bytes)");
 1, 4, 9, 16, 25! (16 bytes)
 ```
 
-只拼接一次两个字符串，用 `+` 就够了；它也可以追加一个 `char`（`s + '!'`），`s += '!'` 也一样。不过和 C 或 Python 不同，相邻的字符串字面量（`"abc" "def"`）不会自动连接。这样写是编译错误；要连接就写 `+`（[1.7.4](../spec/refs-lang/001-lexical/107-string-literals.html#174-automatic-concatenation-of-adjacent-strings)）。
+只拼接一次两个字符串，用 `+` 就够了；它也可以追加一个 `char`（`s + '!'`），`s += '!'` 也一样。不过和 C 或 Python 不同，相邻的字符串字面量（`"abc" "def"`）不会自动连接。这样写是编译错误；要连接就写 `+`（[1.7.4](../spec/refs-lang/001-lexical/107-string-literals.html#174-相邻字符串的自动连接)）。
 
 ```nabi
 let greeting = "hello, " + "world" + '!';
@@ -175,7 +175,7 @@ she said "hi"
 one long line
 ```
 
-如最后一个示例所示，行尾的 `\` 会同时去掉换行符和下一行开头的空白。这条规则同样不适用于原始字符串（[1.7.2](../spec/refs-lang/001-lexical/107-string-literals.html#172-raw-strings)）。
+如最后一个示例所示，行尾的 `\` 会同时去掉换行符和下一行开头的空白。这条规则同样不适用于原始字符串（[1.7.2](../spec/refs-lang/001-lexical/107-string-literals.html#172-原始字符串)）。
 
 ## 字节串 `b"..."`
 
@@ -291,7 +291,7 @@ n=1234567 1,234,567 1_234_567 25.6% n + 1 = 1234568
 
 `g` 类型是 C 和 Python 的通用格式：精度统计的是有效数字（默认 6 位），很大或很小的数会改用指数形式。`{1234.5678:.3g}` 是 `1.23e+03`，`{1e20:g}` 是 `1e+20`，`{0.5:g}` 是 `0.5`。
 
-要在运行时选择宽度或精度，在说明符中再放一个插值。`{..}` 和 `${..}` 都可以（[动态格式说明符](../spec/refs-lang/001-lexical/107-string-literals.html#dynamic-format-specifiers)）。
+要在运行时选择宽度或精度，在说明符中再放一个插值。`{..}` 和 `${..}` 都可以（[动态格式说明符](../spec/refs-lang/001-lexical/107-string-literals.html#动态格式说明符)）。
 
 ```nabi
 let x = 2.0 / 3.0;
@@ -351,7 +351,7 @@ Circle(1.5) Rect { w: 2.5, h: 3.0 }
 
 ## 延伸阅读
 
-- 规范：[字符串字面量与 f-string](../spec/refs-lang/001-lexical/107-string-literals.html)、[字符字面量](../spec/refs-lang/001-lexical/108-character-literals.html)、[字节串](../spec/refs-lang/001-lexical/107-string-literals.html#175-byte-strings)、[嵌入文件](../spec/refs-lang/006-meta-system/611-include.html)
+- 规范：[字符串字面量与 f-string](../spec/refs-lang/001-lexical/107-string-literals.html)、[字符字面量](../spec/refs-lang/001-lexical/108-character-literals.html)、[字节串](../spec/refs-lang/001-lexical/107-string-literals.html#175-字节串)、[嵌入文件](../spec/refs-lang/006-meta-system/611-include.html)
 - 标准库规范：[fmt](../spec/refs-standard-libraries/200-core/210-fmt.html)、[字符串](../spec/refs-standard-libraries/200-core/215-string.html)
 - API：[`str` 的方法](../../std/core/str.html#impl.str)、[`StrBuf`](../../std/core/str.html#struct.StrBuf)、[`Display`](../../std/core/fmt.html#trait.Display)、[`Formatter`](../../std/core/fmt.html#struct.Formatter)
 - 下一章：[10. 错误处理](10-errors.html)

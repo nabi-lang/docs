@@ -461,6 +461,6 @@ $ nabi install tool@0.2
 ## 延伸阅读
 
 - 规范：[模块](../spec/refs-lang/005-modules/504-modules.html)、[`use`](../spec/refs-lang/005-modules/505-use.html)、[可见性](../spec/refs-lang/005-modules/506-visibility.html)、[路径](../spec/refs-lang/005-modules/507-paths.html)、[重新导出](../spec/refs-lang/005-modules/508-re-export.html)
-- 工具：[`nabi` 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[`nabi.nabion` / `nabi.lock`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)、[注册表包](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-registry-packages)、[环境](../spec/refs-lang/009-tools/910-nabi-frontend.html#9105-environments)、[内联清单](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-inline-manifest-for-single-file-scripts)
+- 工具：[`nabi` 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[`nabi.nabion` / `nabi.lock`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)、[注册表包](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-注册表包)、[环境](../spec/refs-lang/009-tools/910-nabi-frontend.html#9105-环境)、[内联清单](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-单文件脚本的内联清单)
 - [1. 入门](01-getting-started.html)
 - 下一章：[12. 并发](12-concurrency.html)

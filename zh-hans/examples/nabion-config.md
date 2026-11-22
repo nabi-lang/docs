@@ -135,7 +135,7 @@ round trip: true
 
 ## 讲解
 
-- 只需一个 `#[derive(Nabion)]`，结构体和枚举就能与 NABION 互相转换。嵌套的结构体（`Listen`）、枚举（`Level`）、`List`、`Dict` 和 `Tls | none` 都能直接对应（[NABION](../learn/15-nabion.html)，[3.8.2 与 Nabi 类型的对应](../spec/refs-standard-libraries/300-std/308-nabion.html#382-correspondence-with-nabi-types)）。
+- 只需一个 `#[derive(Nabion)]`，结构体和枚举就能与 NABION 互相转换。嵌套的结构体（`Listen`）、枚举（`Level`）、`List`、`Dict` 和 `Tls | none` 都能直接对应（[NABION](../learn/15-nabion.html)，[3.8.2 与 Nabi 类型的对应](../spec/refs-standard-libraries/300-std/308-nabion.html#382-与-nabi-类型的对应)）。
 - 文档中缺少的字段采用结构体的默认值（`workers: i32 = 4`）；没有默认值的 `T | none` 字段为 `none`。不写类型名的嵌套值，例如 `listen: { port: 9000 }`，也可以接受。
 - 遇到类型不对的值时，`nabion::from_str` 抛出 `NabionError`，消息中带有 `line:col` 位置。类型中没有的字段默认会被跳过；在 `Config` 上加 `#[nabion(deny_unknown_fields)]` 会把它变成错误，这样 `wokers` 这样的拼写错误就不会被悄悄忽略（[`nabion::from_str`](../../std/std/nabion.html#fn.from_str)）。
 - 格式之外的规则（端口不能为 0，工作线程数在范围内）由 `validate` 收集，并一起报告。`T | none` 值是否为空用 `c.tls is none` 检查。

@@ -100,7 +100,7 @@ ok=false
 ## 讲解
 
 - `process::run(program, args)` 把程序运行到结束，并以文本返回它的标准输出；退出状态表示失败时，会抛出携带标准错误输出的 `ExitStatusError`（[`process::run`](../../std/std/process.html#fn.run)）。`main` 没有声明 `throws`：它放过的错误会被输出，程序以状态 1 退出。
-- [`Command`](../../std/std/process.html#struct.Command) 是一个构建器。`args`、`env`、`current_dir`、`stdin` 等方法返回更新后的命令，所以可以在一行中链式调用，最后以 `output()`、`status()` 或 `spawn()` 之一结束（[3.6.1 `Command` 构建器](../spec/refs-standard-libraries/300-std/306-process.html#361-command-builder)）。
+- [`Command`](../../std/std/process.html#struct.Command) 是一个构建器。`args`、`env`、`current_dir`、`stdin` 等方法返回更新后的命令，所以可以在一行中链式调用，最后以 `output()`、`status()` 或 `spawn()` 之一结束（[3.6.1 `Command` 构建器](../spec/refs-standard-libraries/300-std/306-process.html#361-command-构建器)）。
 - `output()` 等待子进程结束，并把标准输出和标准错误输出都收集到 [`Output`](../../std/std/process.html#struct.Output) 中。它同时读取两个管道，所以子进程不会因为管道写满而停住。`str::from_utf8` 把字节变成字符串。
 - 管道（`|`）由 `sh -c` 处理，而不是由 nabi 处理。需要 shell 语法时，这是最简单的方法。
 - `env` 只为子进程添加变量，`env_clear` 清空继承的环境。父进程的环境不会改变。

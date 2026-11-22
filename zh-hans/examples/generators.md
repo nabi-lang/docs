@@ -95,10 +95,10 @@ leaves: ["a", "b", "c", "d", "e"]
 
 ## 讲解
 
-- 调用 `yield fn` 不会立即运行它的函数体，而是返回一个迭代器 `GenIter<T>`。`-> i64` 不是返回值，而是产出的元素的类型（[4.11.3 具名生成器函数](../spec/refs-lang/004-functions/411-generators.html#4113-named-generator-functions)）。
-- `fibonacci()` 和 `primes()` 是无限生成器。它们的局部变量（`a`、`b`、`found`）在两次 `yield` 之间保持不变，使用方用 `take`、`nth` 等只取出需要的元素个数（[4.11.9 无限生成器](../spec/refs-lang/004-functions/411-generators.html#4119-infinite-generators)）。
+- 调用 `yield fn` 不会立即运行它的函数体，而是返回一个迭代器 `GenIter<T>`。`-> i64` 不是返回值，而是产出的元素的类型（[4.11.3 具名生成器函数](../spec/refs-lang/004-functions/411-generators.html#4113-具名生成器函数)）。
+- `fibonacci()` 和 `primes()` 是无限生成器。它们的局部变量（`a`、`b`、`found`）在两次 `yield` 之间保持不变，使用方用 `take`、`nth` 等只取出需要的元素个数（[4.11.9 无限生成器](../spec/refs-lang/004-functions/411-generators.html#4119-无限生成器)）。
 - 生成器实现了 [`Iterator`](../../std/core/iter.html#trait.Iterator)，所以可以与 `filter`、`sum`、`to_list` 等适配器组合。手写的 `take_while`（标准迭代器也有一个）是单个泛型 `yield fn`，用 `return;` 结束迭代（[集合与迭代器](../learn/08-collections-iterators.html)，[泛型](../learn/07-generics.html)）。
-- `yield { ... }` 是内联生成器块，在需要表达式的地方直接构造一个迭代器（[4.11.4](../spec/refs-lang/004-functions/411-generators.html#4114-inline-yield-blocks-values)）。
+- `yield { ... }` 是内联生成器块，在需要表达式的地方直接构造一个迭代器（[4.11.4](../spec/refs-lang/004-functions/411-generators.html#4114-内联-yield-块值)）。
 - `leaves` 调用自身，并重新产出每棵子树的值。递归生成器是展平嵌套结构的常用方法（[和类型](../learn/05-sum-types.html)）。
 
 > [!NOTE]

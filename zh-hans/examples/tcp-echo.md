@@ -87,7 +87,7 @@ server echoed 6 lines and stopped
 
 - 把 `TcpListener` 绑定到端口 0，由操作系统选择一个空闲端口，`local_addr()` 报告实际的地址，所以不会与其他程序冲突。`bind` 和 `connect` 接受文本、`SocketAddr` 或其他任何实现了 `ToSocketAddrs` 的东西（[3.2 net](../spec/refs-standard-libraries/300-std/302-net.html)，[`TcpListener`](../../std/std/net.html#struct.TcpListener)）。
 - 服务器线程为每个连接启动一个处理线程，然后 `join` 所有线程，并累加处理过的行数。闭包捕获 `listener` 和 `conn`，并把它们带到其他线程（[并发](../learn/12-concurrency.html)，[`thread::spawn`](../../std/std/thread.html#fn.spawn)）。
-- 为了在写入的同时逐行读取，套接字被 `split()` 成读半部（包装在 `BufReader` 中）和写半部：每一半拥有自己的方向（[拆分的两半](../spec/refs-standard-libraries/300-std/302-net.html#split-halves)，[`BufReader`](../../std/core/io.html#struct.BufReader)）。
+- 为了在写入的同时逐行读取，套接字被 `split()` 成读半部（包装在 `BufReader` 中）和写半部：每一半拥有自己的方向（[拆分的两半](../spec/refs-standard-libraries/300-std/302-net.html#拆分为两半)，[`BufReader`](../../std/core/io.html#struct.BufReader)）。
 - 每个套接字都由它的所有者关闭：服务器的处理程序关闭两半（`r.into_inner().close()`、`w.close()`），客户端关闭写半部并离开 `using` 块，监听器在所有客户端处理完后关闭。关闭可能失败，所以留下一个没有关闭就是编译错误。
 - 关闭的顺序很重要。发送完所有内容后，客户端关闭写半部，表示“没有更多了”（即 `shutdown(Write)`，读半部保持打开），服务器的 `lines()` 收到这个信号后结束循环。服务器关闭两半之后，套接字关闭，客户端的 `read_line` 读到 0 字节。
-- 同样的服务器也可以用 `accept_async` / `read_async` 和任务来写，而不使用阻塞 API（[3.2.0 通用规则](../spec/refs-standard-libraries/300-std/302-net.html#320-common-rules)）。
+- 同样的服务器也可以用 `accept_async` / `read_async` 和任务来写，而不使用阻塞 API（[3.2.0 通用规则](../spec/refs-standard-libraries/300-std/302-net.html#320-通用规则)）。

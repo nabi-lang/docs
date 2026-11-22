@@ -706,7 +706,7 @@ run `nabi help` for usage
 
 ## 延伸阅读
 
-- 规范：[nabic CLI](../spec/refs-lang/009-tools/901-nabic-cli.html)、[标准格式](../spec/refs-lang/009-tools/910-nabi-frontend.html#standard-format)、[lint 控制](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#629-allow--deny--warn-lint-control)、[Nabi 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[JIT 单元与 REPL](../spec/refs-lang/009-tools/907-jit-cells.html)、[REPL 行编辑](../spec/refs-lang/009-tools/907-jit-cells.html#line-editing)、[REPL 命令](../spec/refs-lang/009-tools/909-debug-tools.html#999-repl--jupyter-debugging)、[Jupyter](../spec/refs-lang/009-tools/908-jupyter-integration.html)、[调试工具](../spec/refs-lang/009-tools/909-debug-tools.html)、[诊断](../spec/refs-lang/009-tools/909-debug-tools.html#994-diagnostics--error-messages)、[符号修饰](../spec/refs-lang/009-tools/905-symbol-mangling.html)
+- 规范：[nabic CLI](../spec/refs-lang/009-tools/901-nabic-cli.html)、[标准格式](../spec/refs-lang/009-tools/910-nabi-frontend.html#标准格式)、[lint 控制](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#629-allow--deny--warn-lint-控制)、[Nabi 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[JIT 单元与 REPL](../spec/refs-lang/009-tools/907-jit-cells.html)、[REPL 行编辑](../spec/refs-lang/009-tools/907-jit-cells.html#行编辑)、[REPL 命令](../spec/refs-lang/009-tools/909-debug-tools.html#999-repl--jupyter-调试)、[Jupyter](../spec/refs-lang/009-tools/908-jupyter-integration.html)、[调试工具](../spec/refs-lang/009-tools/909-debug-tools.html)、[诊断](../spec/refs-lang/009-tools/909-debug-tools.html#994-诊断--错误消息)、[符号修饰](../spec/refs-lang/009-tools/905-symbol-mangling.html)
 - [错误码](../errors/index.html)
 - 在运行时加载代码：[23. 插件](23-plugins.html)
 - 在程序运行时应用修改：[26. 热重载](26-hot-reload.html)

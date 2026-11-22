@@ -158,5 +158,5 @@ debug=true level=1
 
 ## 延伸阅读
 
-- 规范：[6.3 `#[cfg]`](../spec/refs-lang/006-meta-system/603-cfg.html)、[6.3.3 附加位置](../spec/refs-lang/006-meta-system/603-cfg.html#633-attachment-positions)、[6.3.5 `cfg!`](../spec/refs-lang/006-meta-system/603-cfg.html#635-cfg-compile-time-bool-value)、[平台目标](../spec/refs-lang/000-meta/006-platform-targets.html)
+- 规范：[6.3 `#[cfg]`](../spec/refs-lang/006-meta-system/603-cfg.html)、[6.3.3 附加位置](../spec/refs-lang/006-meta-system/603-cfg.html#633-附着位置)、[6.3.5 `cfg!`](../spec/refs-lang/006-meta-system/603-cfg.html#635-cfg-编译期-bool-值)、[平台目标](../spec/refs-lang/000-meta/006-platform-targets.html)
 - 下一章：[18. 特性与发布](18-features-and-publishing.html)

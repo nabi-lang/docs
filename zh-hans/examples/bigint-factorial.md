@@ -77,8 +77,8 @@ gcd(100!, 2^200) = 2^97
 
 ## 讲解
 
-- `int` 是没有大小限制的整数。小的值存放在单个 `i64` 中，只在溢出时才换成数字数组，所以对小数字来说，它的速度和定宽整数差不多（[2.1.2 `int`](../spec/refs-standard-libraries/200-core/201-numbers.html#212-int---arbitrary-precision-integer)，[`Int`](../../std/core/num/bigint.html#struct.Int)）。
-- `int` 和 `i64` 不能在算术中混用。要像 `int::from(k)` 这样显式转换，所以从代码中一眼就能看出哪些运算可能溢出（[2.1.6 算术结果类型](../spec/refs-standard-libraries/200-core/201-numbers.html#216-arithmetic-result-types)）。
+- `int` 是没有大小限制的整数。小的值存放在单个 `i64` 中，只在溢出时才换成数字数组，所以对小数字来说，它的速度和定宽整数差不多（[2.1.2 `int`](../spec/refs-standard-libraries/200-core/201-numbers.html#212-int任意精度整数)，[`Int`](../../std/core/num/bigint.html#struct.Int)）。
+- `int` 和 `i64` 不能在算术中混用。要像 `int::from(k)` 这样显式转换，所以从代码中一眼就能看出哪些运算可能溢出（[2.1.6 算术结果类型](../spec/refs-standard-libraries/200-core/201-numbers.html#216-算术结果类型)）。
 - 在 `i64` 这一边，`checked_mul` 溢出时返回 `none`。后缀 `?` 把这个 `none` 直接从函数中返回，所以 `factorial_i64` 以 `i64 | none` 报告结果（[和类型](../learn/05-sum-types.html)）。
 - 超出 `i64` 范围的整数字面量可以直接写在 `int` 位置上（`let big: int = 123_456_...`）。
 - `int` 实现了 `Display`，所以 `f"{x}"` 给出它的十进制字符串，字符串切片 `text[:20]` 和 `text[-10:]` 只显示开头和结尾（[字符串](../learn/09-strings.html)）。

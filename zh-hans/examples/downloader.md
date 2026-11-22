@@ -105,8 +105,8 @@ style.css          29696 B
 
 ## 讲解
 
-- 通道可以有多个发送者和多个接收者（MPMC）。`Receiver` 的副本共享同一个队列，所以每个工作任务都持有那一个任务接收者的副本，每个 URL 交给最先取走它的空闲工作任务（[2.17.4 多生产者与多消费者](../spec/refs-standard-libraries/200-core/217-channel.html#2174-multiple-producers-and-consumers)，[`channel`](../../std/core/channel.html#fn.channel)）。
+- 通道可以有多个发送者和多个接收者（MPMC）。`Receiver` 的副本共享同一个队列，所以每个工作任务都持有那一个任务接收者的副本，每个 URL 交给最先取走它的空闲工作任务（[2.17.4 多生产者与多消费者](../spec/refs-standard-libraries/200-core/217-channel.html#2174-多个生产者与消费者)，[`channel`](../../std/core/channel.html#fn.channel)）。
 - 每个工作任务通过 `clone()` 得到自己的发送者，完成后 `close()` 它。`for await r in done_rx` 只有在所有发送者都关闭后才结束，所以 `main` 提前关闭了它原来的 `done_tx`（[并发](../learn/12-concurrency.html)）。
 - `await jobs.recv_async()` 挂起的是任务而不是线程，直到有值到达。`main` 关闭 `job_tx` 并且队列为空后，它产出 `none`，`let-else` 中的 `break` 就会离开工作循环。
-- 如果任务没有按时完成，`task::timeout` 会抛出 `TimeoutError` 并取消该任务，所以慢的下载会在下一个 `await` 处停止（`task::race` 也以同样的方式取消落败的任务；[`task::timeout`](../../std/core/task.html#fn.timeout)，[2.18.1 core API](../spec/refs-standard-libraries/200-core/218-task.html#2181-core-api)）。
+- 如果任务没有按时完成，`task::timeout` 会抛出 `TimeoutError` 并取消该任务，所以慢的下载会在下一个 `await` 处停止（`task::race` 也以同样的方式取消落败的任务；[`task::timeout`](../../std/core/task.html#fn.timeout)，[2.18.1 core API](../spec/refs-standard-libraries/200-core/218-task.html#2181-核心-api)）。
 - 每次运行时结果到达的顺序都可能不同，所以输出前按 URL 排序，报告总是相同的。

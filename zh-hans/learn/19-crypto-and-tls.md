@@ -193,7 +193,7 @@ server read 4 bytes, SNI localhost
 
 ## 延伸阅读
 
-- 标准库规范：[2.21 `crypto`](../spec/refs-standard-libraries/200-core/221-crypto.html)、[3.9 `random`](../spec/refs-standard-libraries/300-std/309-random.html)、[3.2.5 TLS 1.3](../spec/refs-standard-libraries/300-std/302-net.html#325-tls-13---nettls)
+- 标准库规范：[2.21 `crypto`](../spec/refs-standard-libraries/200-core/221-crypto.html)、[3.9 `random`](../spec/refs-standard-libraries/300-std/309-random.html)、[3.2.5 TLS 1.3](../spec/refs-standard-libraries/300-std/302-net.html#325-tls-13nettls)
 - API：[core::crypto](../../std/core/crypto.html)、[std::net::tls](../../std/std/net/tls.html)
 - [示例](../examples/index.html)
 - 下一章：[20. 怎么做……](20-cookbook.html)
