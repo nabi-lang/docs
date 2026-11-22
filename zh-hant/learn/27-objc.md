@@ -1,6 +1,6 @@
 # 27. Objective-C 與 Apple 框架
 
-在 macOS 上，系統本身的函式庫，也就是 Foundation、AppKit、Metal 等，都是 Objective-C 類別。Nabi 直接呼叫它們：在 `extern "objc"` 區塊中宣告你用到的類別與方法，每個方法就成為一個普通的 Nabi 方法，負責送出對應的 Objective-C 訊息。過程中不需要 C 編譯器，也不需要膠合程式碼。對於 Apple 的框架，你很少需要自己寫這些區塊：`ffi::objc::import` 會讀取 SDK 的標頭檔並替你產生（[匯入 SDK 的標頭檔](#importing-the-sdks-headers)）。前面幾節先手動宣告，藉此說明匯入會帶給你什麼。
+在 macOS 上，系統本身的函式庫，也就是 Foundation、AppKit、Metal 等，都是 Objective-C 類別。Nabi 直接呼叫它們：在 `extern "objc"` 區塊中宣告你用到的類別與方法，每個方法就成為一個普通的 Nabi 方法，負責送出對應的 Objective-C 訊息。過程中不需要 C 編譯器，也不需要膠合程式碼。對於 Apple 的框架，你很少需要自己寫這些區塊：`ffi::objc::import` 會讀取 SDK 的標頭檔並替你產生（[匯入 SDK 的標頭檔](#匯入-sdk-的標頭檔)）。前面幾節先手動宣告，藉此說明匯入會帶給你什麼。
 
 本章的內容只能在 Apple 目標（`aarch64-apple-darwin`）上運作。建置網站時不會執行其中的程式碼區塊；每個區塊都已在 Mac 上編譯並執行過，並附上輸出。
 

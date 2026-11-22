@@ -151,5 +151,5 @@ match p.unload() {
 ## 延伸閱讀
 
 - 規格：[外掛](../spec/refs-lang/009-tools/912-plugins.html)、[模組描述子 ABI](../spec/refs-lang/008-abi/812-module-abi.html)、[`std::plugin`](../spec/refs-standard-libraries/300-std/311-plugin.html)
-- API：[std::plugin](../std/std/plugin.html)
+- API：[std::plugin](../../std/std/plugin.html)
 - 上一章：[22. 用 Nabi 做科學計算](22-science.html)

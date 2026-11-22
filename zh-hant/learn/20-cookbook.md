@@ -1,10 +1,10 @@
-# 20. 該怎麼做……
+# 20. 怎麼做……
 
 日常工作的簡短解答。每一則都是完整的程式，可以貼進檔案，用 `nabi run file.nabi` 執行。每則食譜都附有說明它的章節連結。
 
 ## 讀取檔案
 
-`fs::read_to_str` 以文字形式讀取整個檔案；`fs::write` 寫入一個檔案。兩者都會擲回 `IoError`，所以呼叫時要加上 `try`（[第 13 章](13-io.html#reading-and-writing-files)）。
+`fs::read_to_str` 以文字形式讀取整個檔案；`fs::write` 寫入一個檔案。兩者都會擲回 `IoError`，所以呼叫時要加上 `try`（[第 13 章](13-io.html#讀寫檔案)）。
 
 ```nabi
 use std::{env, fs, process};
@@ -27,7 +27,7 @@ three
 
 ## 逐行讀取標準輸入
 
-`io::stdin().lines()` 逐一產生不含換行字元的每一行；讀取錯誤會以擲回的方式結束迴圈，`try for` 則把錯誤往外傳（[第 13 章](13-io.html#standard-io-and-the-environment)）。下面的輸出是 `0 lines`，因為本頁建置時沒有輸入；請在本機執行，並把檔案導入（`nabi run count.nabi < file`）。
+`io::stdin().lines()` 逐一產生不含換行字元的每一行；讀取錯誤會以擲回的方式結束迴圈，`try for` 則把錯誤往外傳（[第 13 章](13-io.html#標準-io-與環境)）。下面的輸出是 `0 lines`，因為本頁建置時沒有輸入；請在本機執行，並把檔案導入（`nabi run count.nabi < file`）。
 
 ```nabi
 let count = 0;
@@ -46,7 +46,7 @@ println(f"{count} lines");
 
 ## 取得命令列引數
 
-`env::args()` 是一個 `List<str>`；第 0 個元素是程式本身。引數寫在 `--` 之後：`nabi run greet.nabi -- ada grace`（[第 13 章](13-io.html#standard-io-and-the-environment)、[範例](../examples/cli-args.html)）。下面的輸出是 `0 arguments`，因為本頁建置時沒有引數；請在本機帶上一些引數執行。
+`env::args()` 是一個 `List<str>`；第 0 個元素是程式本身。引數寫在 `--` 之後：`nabi run greet.nabi -- ada grace`（[第 13 章](13-io.html#標準-io-與環境)、[範例](../examples/cli-args.html)）。下面的輸出是 `0 arguments`，因為本頁建置時沒有引數；請在本機帶上一些引數執行。
 
 ```nabi
 use std::env;
@@ -64,7 +64,7 @@ println(f"{args.len() - 1} arguments");
 
 ## 以結束碼結束程式
 
-`process::exit(code)` 會立即結束程式。`finally` 區塊與 `Drop` 都不會執行。指令碼最上層未被攔截的錯誤，本身就會以結束碼 1 結束（[第 10 章](10-errors.html#errors-at-the-top-of-a-script)）。
+`process::exit(code)` 會立即結束程式。`finally` 區塊與 `Drop` 都不會執行。指令碼最上層未被攔截的錯誤，本身就會以結束碼 1 結束（[第 10 章](10-errors.html#指令碼頂層的錯誤)）。
 
 ```nabi build
 use std::{env, process};
@@ -79,7 +79,7 @@ println(f"hello, {args[1]}");
 
 ## 暫停，以及量測某件事花了多久
 
-`Instant::now()` 讀取單調時鐘（monotonic clock），`elapsed()` 給出一個 `Duration`。`thread::sleep` 會阻塞目前的執行緒；在非同步程式碼中，請改用 `await task::sleep(..)`（[第 12 章](12-concurrency.html#async-and-tasks)、[`Duration` API](../std/core/time.html#struct.Duration)）。
+`Instant::now()` 讀取單調時鐘（monotonic clock），`elapsed()` 給出一個 `Duration`。`thread::sleep` 會阻塞目前的執行緒；在非同步程式碼中，請改用 `await task::sleep(..)`（[第 12 章](12-concurrency.html#async-與任務)、[`Duration` API](../../std/core/time.html#struct.Duration)）。
 
 ```nabi
 use std::thread;
@@ -98,7 +98,7 @@ true
 
 ## 日期、時間與時區
 
-日曆功能在 `std::time` 裡。`Date`、`Time` 與 `DateTime` 是日曆和掛鐘上顯示的內容，不帶時區；`Zoned` 則是某個 `TimeZone` 中的一個時間點。`Display` 寫出 ISO 8601 / RFC 3339 格式，`parse` 讀取這種格式，`format` / `parse_with` 則接受 `%d %B %Y` 之類的 strftime 樣式（[時區與樣式](../spec/refs-standard-libraries/300-std/303-time.html#337-offsets-time-zones-and-zoned)、[`time` API](../std/std/time.html)）。
+日曆功能在 `std::time` 裡。`Date`、`Time` 與 `DateTime` 是日曆和掛鐘上顯示的內容，不帶時區；`Zoned` 則是某個 `TimeZone` 中的一個時間點。`Display` 寫出 ISO 8601 / RFC 3339 格式，`parse` 讀取這種格式，`format` / `parse_with` 則接受 `%d %B %Y` 之類的 strftime 樣式（[時區與樣式](../spec/refs-standard-libraries/300-std/303-time.html#337-offsets-time-zones-and-zoned)、[`time` API](../../std/std/time.html)）。
 
 ```nabi
 use std::time::{Date, DateTime, TimeZone, Zoned};
@@ -128,7 +128,7 @@ true 2024-03-31
 
 ## 並行執行任務並等待它們
 
-`task::spawn` 把一個 future 當作任務啟動，`task::join` 則等待所有任務，並依啟動順序回傳結果。只要最上層出現任何 `await`，指令碼的 `main` 就會成為非同步函式，而 `task::spawn` 需要這一點（[第 12 章](12-concurrency.html#async-and-tasks)）。
+`task::spawn` 把一個 future 當作任務啟動，`task::join` 則等待所有任務，並依啟動順序回傳結果。只要最上層出現任何 `await`，指令碼的 `main` 就會成為非同步函式，而 `task::spawn` 需要這一點（[第 12 章](12-concurrency.html#async-與任務)）。
 
 ```nabi
 async fn fetch(id: i32) -> str {
@@ -147,7 +147,7 @@ println(f"{items:?}");
 
 ## 在執行緒之間共用計數器或串列
 
-數字用 `Atomic`，其他東西用 `Mutex`。`m.with(|v| ..)` 只在一次呼叫期間持有鎖；需要持有較長一段時間時，就用 `using` 繫結 guard，它會在區塊結束時釋放鎖。這裡用 `[ref x]` 擷取無法編譯，因為它在執行緒之間並不安全（[第 12 章](12-concurrency.html#mutex-and-atomic)）。
+數字用 `Atomic`，其他東西用 `Mutex`。`m.with(|v| ..)` 只在一次呼叫期間持有鎖；需要持有較長一段時間時，就用 `using` 繫結 guard，它會在區塊結束時釋放鎖。這裡用 `[ref x]` 擷取無法編譯，因為它在執行緒之間並不安全（[第 12 章](12-concurrency.html#mutex-與-atomic)）。
 
 ```nabi
 use std::thread;
@@ -197,7 +197,7 @@ error: port 80 is reserved
 
 ## 剖析 JSON
 
-JSON 位於 [packages.nabi-lang.org](https://packages.nabi-lang.org) 上的 `json` 套件，而不在標準函式庫中。在套件中用 `nabi add json` 加入它，指令碼則用 `nabi add json app.nabi`（[第 18 章](18-features-and-publishing.html#the-nabi-packages)）。
+JSON 位於 [packages.nabi-lang.org](https://packages.nabi-lang.org) 上的 `json` 套件，而不在標準函式庫中。在套件中用 `nabi add json` 加入它，指令碼則用 `nabi add json app.nabi`（[第 18 章](18-features-and-publishing.html#nabi-套件)）。
 
 ```nabion
 Package { name: "app", version: "0.1.0", deps: {
@@ -222,7 +222,7 @@ println(json::to_str(u));                       // {"name":"grace","age":85,"tag
 
 ## 發出 HTTP 請求，或提供 HTTP 服務
 
-HTTP 由 `http` 套件提供，加入方式與上面的 `json` 相同（`nabi add http`，指令碼則用 `nabi add http app.nabi`）。它的用戶端與伺服器都是非同步的，所以指令碼要使用 `await`（[第 12 章](12-concurrency.html#async-and-tasks)、[第 18 章](18-features-and-publishing.html#the-nabi-packages)）。
+HTTP 由 `http` 套件提供，加入方式與上面的 `json` 相同（`nabi add http`，指令碼則用 `nabi add http app.nabi`）。它的用戶端與伺服器都是非同步的，所以指令碼要使用 `await`（[第 12 章](12-concurrency.html#async-與任務)、[第 18 章](18-features-and-publishing.html#nabi-套件)）。
 
 ```nabion
 Package { name: "app", version: "0.1.0", deps: {
@@ -259,4 +259,4 @@ hello from /hi
 ## 延伸閱讀
 
 - [範例](../examples/index.html)：較長的完整程式，其中包括一個[命令列工具](../examples/cli-args.html)、一個 [TCP echo 伺服器](../examples/tcp-echo.html)，以及一個從零寫起的 [JSON 剖析器](../examples/json-parser.html)。
-- 標準函式庫 API：[`fs`](../std/std/fs.html)、[`io`](../std/core/io.html)、[`env`](../std/std/env.html)、[`time`](../std/std/time.html)、[`thread`](../std/std/thread.html)、[`task`](../std/core/task.html)、[`sync`](../std/core/sync.html)
+- 標準函式庫 API：[`fs`](../../std/std/fs.html)、[`io`](../../std/core/io.html)、[`env`](../../std/std/env.html)、[`time`](../../std/std/time.html)、[`thread`](../../std/std/thread.html)、[`task`](../../std/core/task.html)、[`sync`](../../std/core/sync.html)

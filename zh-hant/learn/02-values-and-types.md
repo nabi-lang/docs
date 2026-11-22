@@ -67,7 +67,7 @@ println(f"{line + 1}");
 
 ## 數值型別與字面值
 
-整數有 `i8` `i16` `i32` `i64` `isize`，以及無號的 `u8` `u16` `u32` `u64` `usize`；浮點數有 `f32` `f64`，而 `f16`／`bf16` 用於在大型陣列中儲存 16 位元浮點數（[陣列與數值運算](21-arrays-and-numerics.html#16-bit-floats-f16-and-bf16)）。帶有型別名稱後綴的字面值就是該型別；沒有後綴時，則依照**預期型別**（expected type）決定。用 `let` 綁定的字面值，會從該變數在函式中後續的用法取得型別；只有在沒有任何線索時，整數才預設為 `i64`，浮點數預設為 `f64`。
+整數有 `i8` `i16` `i32` `i64` `isize`，以及無號的 `u8` `u16` `u32` `u64` `usize`；浮點數有 `f32` `f64`，而 `f16`／`bf16` 用於在大型陣列中儲存 16 位元浮點數（[陣列與數值運算](21-arrays-and-numerics.html#16-位元浮點數f16-與-bf16)）。帶有型別名稱後綴的字面值就是該型別；沒有後綴時，則依照**預期型別**（expected type）決定。用 `let` 綁定的字面值，會從該變數在函式中後續的用法取得型別；只有在沒有任何線索時，整數才預設為 `i64`，浮點數預設為 `f64`。
 
 ```nabi
 let a = 42;            // i64
@@ -107,7 +107,7 @@ println(f"{count_big([5, 500, 900])} {hits.load()}");
 
 Nabi 仍然從不做轉換：一個變數只有一種型別。把 `let t = 0;` 當作 `f64` 使用是錯誤，錯誤訊息會告訴你在宣告處寫成 `let t = 0.0;`。
 
-型別參數宣告的預設型別也算在內。有 `struct Vec3<T = f32>` 時，`Vec3::new(1.0, 2.0, 3.0)` 中的字面值預設為 `f32`，所以這個向量是 `Vec3<f32>`；預期型別、後續用法或有型別的引數仍然優先（[泛型](07-generics.html#defaults)）。
+型別參數宣告的預設型別也算在內。有 `struct Vec3<T = f32>` 時，`Vec3::new(1.0, 2.0, 3.0)` 中的字面值預設為 `f32`，所以這個向量是 `Vec3<f32>`；預期型別、後續用法或有型別的引數仍然優先（[泛型](07-generics.html#預設值)）。
 
 `_` 是數字分隔符，`0x`／`0b`／`0o` 分別表示十六進位／二進位／八進位。開頭的零不會讓數字變成八進位，`0755` 是編譯錯誤：八進位請寫 `0o755`，十進位請寫 `755`。整數除法會向零截斷。超出型別範圍的字面值（`let x: u8 = 256;`）是編譯錯誤。
 
@@ -252,7 +252,7 @@ tab:	end
 raw: C:\path\n
 ```
 
-韓文音節 `'가'`（U+AC00，碼位 44032）顯示 `char` 可以容納任何 Unicode 字元，而不只是 ASCII。`len()` 計算的是位元組數；需要字元數時請用 `char_count()`。`r"..."` 是不處理跳脫序列的原始字串。其他 `str` 方法（`trim`、`split`、`replace`、`parse` 等）請見[標準函式庫文件](../std/core/str.html)。
+韓文音節 `'가'`（U+AC00，碼位 44032）顯示 `char` 可以容納任何 Unicode 字元，而不只是 ASCII。`len()` 計算的是位元組數；需要字元數時請用 `char_count()`。`r"..."` 是不處理跳脫序列的原始字串。其他 `str` 方法（`trim`、`split`、`replace`、`parse` 等）請見[標準函式庫文件](../../std/core/str.html)。
 
 ## 元組、陣列與串列
 
@@ -334,7 +334,7 @@ println(f"2^100 = {big}");
 `int` 可以用 `big.to_f64()` 轉成 `f64`，結果會捨入到最接近的值。捨入並非無損，所以 `into()` 和 `as f64` 對它無法編譯；值超過 `f64::MAX` 時，`try f64::try_from(big)` 會擲回錯誤，而不是得到 `inf`。
 
 > [!NOTE]
-> 進階：`int` 也提供 `isqrt`、`modpow`、`gcd`、`lcm` 等數論輔助函式。它們都列在 [`int` API](../std/core/num/bigint.html) 中。
+> 進階：`int` 也提供 `isqrt`、`modpow`、`gcd`、`lcm` 等數論輔助函式。它們都列在 [`int` API](../../std/core/num/bigint.html) 中。
 
 ## 常數
 
@@ -371,5 +371,5 @@ welcome: 58 seats left
 - [數值字面值](../spec/refs-lang/001-lexical/106-numeric-literals.html)、[字串字面值](../spec/refs-lang/001-lexical/107-string-literals.html)、[字元字面值](../spec/refs-lang/001-lexical/108-character-literals.html)
 - [強制轉型與轉換](../spec/refs-lang/002-types/214-cast-and-conversion.html)、[型別運算式](../spec/refs-lang/002-types/201-type-expressions.html)
 - [數值型別與 `int`](../spec/refs-standard-libraries/200-core/201-numbers.html)、[格式化輸出](../spec/refs-standard-libraries/200-core/210-fmt.html)
-- 標準函式庫 API：[`str`](../std/core/str.html)、[`List`](../std/core/collections/list.html)
+- 標準函式庫 API：[`str`](../../std/core/str.html)、[`List`](../../std/core/collections/list.html)
 - 下一章：[3. 函式](03-functions.html)

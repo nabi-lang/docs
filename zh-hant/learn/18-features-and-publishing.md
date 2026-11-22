@@ -117,7 +117,7 @@ Package { name: "app", version: "0.1.0", deps: {
 } }
 ```
 
-在指令碼中，把檔案放在最後：`nabi add json app.nabi` 會把相依套件寫進指令碼的 `//!` 區塊（[第 11 章](11-modules-packages.html#single-file-scripts-and-environments)）。
+在指令碼中，把檔案放在最後：`nabi add json app.nabi` 會把相依套件寫進指令碼的 `//!` 區塊（[第 11 章](11-modules-packages.html#單檔指令碼與環境)）。
 
 有了 `http`，一個 HTTPS 請求只要幾行。這個套件會開啟 TCP 連線，以作業系統的信任存放區執行 [`std::net::tls`](19-crypto-and-tls.html) 的 TLS 1.3 交握，透過 ALPN 提供 HTTP/2，並在必要時退回 HTTP/1.1：
 
@@ -138,7 +138,7 @@ nabi publish
 nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
 ```
 
-發布在本指南中有獨立的一節，[發布套件](packages/index.html)：說明套件需要什麼、[`nabi login` 與 `nabi publish`](packages/01-publishing.html)、從 GitHub Actions 進行的[受信任發布](packages/02-trusted-publishing.html)，以及如何用 `#[deprecated]`、`#[non_exhaustive]` 和 `#[sealed]` [保持 API 穩定](packages/03-stable-api.html)。
+發布在本指南中有獨立的一節，[發布套件](../../learn/packages/index.html)：說明套件需要什麼、[`nabi login` 與 `nabi publish`](../../learn/packages/01-publishing.html)、從 GitHub Actions 進行的[受信任發布](../../learn/packages/02-trusted-publishing.html)，以及如何用 `#[deprecated]`、`#[non_exhaustive]` 和 `#[sealed]` [保持 API 穩定](../../learn/packages/03-stable-api.html)。
 
 > [!IMPORTANT]
 > 目前只有登錄庫的維護者可以發布。任何人都可以登入並使用套件，但 `nabi login` 會拒絕還不能發布的帳戶。
@@ -150,10 +150,10 @@ nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
 - 用 `--features`、`--no-default-features`、`--all-features` 選擇功能特性，對個別相依套件則用 `features:` / `default_features: false`。功能特性在整個建置中會被統一，所以只能增加東西。
 - 程式碼用 `#[cfg(feature = "..")]` 和 `cfg!(feature = "..")` 檢查它們。
 - Nabi 專案的套件在登錄庫上標示為 Official。
-- 用 `nabi login`、`nabi publish --dry-run` 和 `nabi publish` 發布，用 `nabi yank` 撤回；詳細內容請見[發布套件](packages/index.html)。目前只開放維護者發布。
+- 用 `nabi login`、`nabi publish --dry-run` 和 `nabi publish` 發布，用 `nabi yank` 撤回；詳細內容請見[發布套件](../../learn/packages/index.html)。目前只開放維護者發布。
 
 ## 延伸閱讀
 
 - 規格：[9.10.4c 功能特性](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104c-features)、[9.10.4a 登錄庫套件](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-registry-packages)、[`nabi search` / `publish` / `yank` / `login`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-search--publish--yank--login--logout)、[`nabi.nabion`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)
-- [發布套件](packages/index.html)，以及套件登錄庫 [packages.nabi-lang.org](https://packages.nabi-lang.org)
+- [發布套件](../../learn/packages/index.html)，以及套件登錄庫 [packages.nabi-lang.org](https://packages.nabi-lang.org)
 - 下一章：[19. 密碼學與 TLS](19-crypto-and-tls.html)

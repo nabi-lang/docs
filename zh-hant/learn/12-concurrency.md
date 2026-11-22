@@ -691,7 +691,7 @@ tick 30
 
 存放在變數（或欄位）中的串流會在原地輪詢，而不是透過複本：以 `break` 提前停止的迴圈，會讓串流停在它停下的地方，之後對它的下一個 `for await` 會從那裡繼續。擁有資源（檔案、socket）的串流只有一個擁有者，所以 `let t = s` 會移動它，之後就不能再走訪 `s`。
 
-`Stream` trait 有 `map`、`filter`、`take` 和 `throttle` 等組合子（[`Stream` API](../std/core/stream.html#trait.Stream)）。
+`Stream` trait 有 `map`、`filter`、`take` 和 `throttle` 等組合子（[`Stream` API](../../std/core/stream.html#trait.Stream)）。
 
 ## 常見陷阱
 
@@ -845,5 +845,5 @@ println(f"{compute()}");
 
 - 規格：[非同步（`async` / `await`）](../spec/refs-lang/004-functions/412-async.html)、[運算子優先順序](../spec/refs-lang/003-expressions/302-precedence-and-associativity.html)、[串流](../spec/refs-lang/004-functions/413-stream.html)、[`using`](../spec/refs-lang/003-expressions/317-using-expression.html)、[跨執行緒的擷取](../spec/refs-lang/004-functions/406-capture-semantics.html)、[`static`](../spec/refs-lang/005-modules/503-static.html)
 - 標準函式庫規格：[sync](../spec/refs-standard-libraries/200-core/216-sync.html)、[channel](../spec/refs-standard-libraries/200-core/217-channel.html)、[task](../spec/refs-standard-libraries/200-core/218-task.html)、[par](../spec/refs-standard-libraries/200-core/219-par.html)
-- API：[`thread::spawn`](../std/std/thread.html#fn.spawn)、[`task::spawn`](../std/core/task.html#fn.spawn)、[`task::join`](../std/core/task.html#fn.join)、[`channel`](../std/core/channel.html#fn.channel)、[`Mutex`](../std/core/sync.html#struct.Mutex)、[`Atomic`](../std/core/sync.html#struct.Atomic)、[`par::map`](../std/core/par.html#fn.map)、[`par::scope`](../std/core/par.html#fn.scope)
+- API：[`thread::spawn`](../../std/std/thread.html#fn.spawn)、[`task::spawn`](../../std/core/task.html#fn.spawn)、[`task::join`](../../std/core/task.html#fn.join)、[`channel`](../../std/core/channel.html#fn.channel)、[`Mutex`](../../std/core/sync.html#struct.Mutex)、[`Atomic`](../../std/core/sync.html#struct.Atomic)、[`par::map`](../../std/core/par.html#fn.map)、[`par::scope`](../../std/core/par.html#fn.scope)
 - 下一章：[13. 檔案與網路 IO](13-io.html)

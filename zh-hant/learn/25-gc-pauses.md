@@ -13,7 +13,7 @@ Nabi 以垃圾回收器釋放記憶體，大多數程式從來不必想到它。
 
 ## 觀察暫停
 
-`NABIR_GC_LOG=1` 會在每次回收時於 stderr 印出一行，`NABIR_GC_STATS=1` 則在程式結束時印出摘要，列出每種暫停的 p50、p90、p99 與最長值（[工具](16-tools.html#garbage-collector-pauses)）。程式可以用 `bare::gc::stats()` 讀取同樣的計數器：
+`NABIR_GC_LOG=1` 會在每次回收時於 stderr 印出一行，`NABIR_GC_STATS=1` 則在程式結束時印出摘要，列出每種暫停的 p50、p90、p99 與最長值（[工具](16-tools.html#垃圾回收器的暫停)）。程式可以用 `bare::gc::stats()` 讀取同樣的計數器：
 
 ```nabi
 use bare::gc;

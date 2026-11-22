@@ -65,7 +65,7 @@ let next = unsafe {
 println(f"next: {next}");
 ```
 
-在 `unsafe` 之外使用它是錯誤，說明會給出修正方式（`unsafe { optind = 1; }`）。C 的 `errno` 不是這種全域變數（它是每個執行緒各自的巨集）；[來自 C 的錯誤](#errors-from-c-errno)說明如何讀取它。
+在 `unsafe` 之外使用它是錯誤，說明會給出修正方式（`unsafe { optind = 1; }`）。C 的 `errno` 不是這種全域變數（它是每個執行緒各自的巨集）；[來自 C 的錯誤](#來自-c-的錯誤errno)說明如何讀取它。
 
 `unsafe` 區塊的意思是「我保證這裡是安全的」。好的做法是讓這些區塊保持小巧，並把危險的呼叫包裝在安全的 Nabi 函式中，讓外部只看得到安全的 API。
 
@@ -654,7 +654,7 @@ println(f"{unsafe { pow(2.0, 10.0) }}");
 
 要選用靜態函式庫，寫 `#[link(name = "foo", kind = "static")]`。
 
-libc 和 libm 一律會被連結。其他任何函式庫都需要 `#[link]`，例如下面的 zlib。手上有 C 原始碼的函式庫不需要先建置：套件會編譯它（[C 原始檔](#c-sources-nabi-cc)）。
+libc 和 libm 一律會被連結。其他任何函式庫都需要 `#[link]`，例如下面的 zlib。手上有 C 原始碼的函式庫不需要先建置：套件會編譯它（[C 原始檔](#c-原始檔nabi-cc)）。
 
 ```nabi
 use bare::ffi::CStr;
@@ -916,5 +916,5 @@ if n == 0 {
 
 - 規格：[5.9 extern 區塊](../spec/refs-lang/005-modules/509-extern-block.html)、[9.13 C 編譯器](../spec/refs-lang/009-tools/913-c-compiler.html)、[4.15 unsafe](../spec/refs-lang/004-functions/415-unsafe.html)、[4.15.4 unsafe trait](../spec/refs-lang/004-functions/415-unsafe.html#4154-in-traits)、[6.2.3 link 屬性](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#623-link-naming-an-external-library)、[與 C 相容的字元](../spec/refs-lang/001-lexical/108-character-literals.html)
 - 標準函式庫規格：[FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)、[GC 固定](../spec/refs-standard-libraries/100-bare/106-gc-pin.html)、[指標](../spec/refs-standard-libraries/100-bare/101-ptr.html)、[`Pod` trait](../spec/refs-standard-libraries/100-bare/103-mem.html#133-the-pod-trait)、[panic hook](../spec/refs-standard-libraries/300-std/312-panic.html)
-- API：[bare::ffi](../std/bare/ffi.html)、[bare::gc](../std/bare/gc.html)、[bare::ptr](../std/bare/ptr.html)、[bare::alloc](../std/bare/alloc.html)、[bare::mem](../std/bare/mem.html)、[std::panic](../std/std/panic.html)
+- API：[bare::ffi](../../std/bare/ffi.html)、[bare::gc](../../std/bare/gc.html)、[bare::ptr](../../std/bare/ptr.html)、[bare::alloc](../../std/bare/alloc.html)、[bare::mem](../../std/bare/mem.html)、[std::panic](../../std/std/panic.html)
 - 下一章：[15. NABION](15-nabion.html)

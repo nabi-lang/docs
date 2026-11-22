@@ -102,7 +102,7 @@ desserts 2 a+b-c Hello Nabi
 43
 ```
 
-`reversed` 反轉字元順序，`count` 計算不重疊的符合次數，`replacen` 只取代前 `n` 個。`to_str()` 適用於所有 `Display` 值，就像 Python 的 `str(x)`。`parse` 是失敗時會擲回錯誤的函式，所以範例加上了 `try!`。錯誤會在[下一章](10-errors.html)說明。其他方法還有 `lines()`、`split_whitespace()`、`strip_prefix()` 和 `trim_start()`（[`str` API](../std/core/str.html#impl.str)）。
+`reversed` 反轉字元順序，`count` 計算不重疊的符合次數，`replacen` 只取代前 `n` 個。`to_str()` 適用於所有 `Display` 值，就像 Python 的 `str(x)`。`parse` 是失敗時會擲回錯誤的函式，所以範例加上了 `try!`。錯誤會在[下一章](10-errors.html)說明。其他方法還有 `lines()`、`split_whitespace()`、`strip_prefix()` 和 `trim_start()`（[`str` API](../../std/core/str.html#impl.str)）。
 
 ## Unicode 文字：正規化與字素
 
@@ -353,5 +353,5 @@ Circle(1.5) Rect { w: 2.5, h: 3.0 }
 
 - 規格：[字串字面值與 f-string](../spec/refs-lang/001-lexical/107-string-literals.html)、[字元字面值](../spec/refs-lang/001-lexical/108-character-literals.html)、[位元組字串](../spec/refs-lang/001-lexical/107-string-literals.html#175-byte-strings)、[檔案嵌入](../spec/refs-lang/006-meta-system/611-include.html)
 - 標準函式庫規格：[fmt](../spec/refs-standard-libraries/200-core/210-fmt.html)、[字串](../spec/refs-standard-libraries/200-core/215-string.html)
-- API：[`str` 方法](../std/core/str.html#impl.str)、[`StrBuf`](../std/core/str.html#struct.StrBuf)、[`Display`](../std/core/fmt.html#trait.Display)、[`Formatter`](../std/core/fmt.html#struct.Formatter)
+- API：[`str` 方法](../../std/core/str.html#impl.str)、[`StrBuf`](../../std/core/str.html#struct.StrBuf)、[`Display`](../../std/core/fmt.html#trait.Display)、[`Formatter`](../../std/core/fmt.html#struct.Formatter)
 - 下一章：[10. 錯誤處理](10-errors.html)

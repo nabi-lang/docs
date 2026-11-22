@@ -87,7 +87,7 @@ host:      aarch64-apple-darwin
 |------------|--------------|
 | `nabic`     | 編譯器。建置、檢查、測試和基準測試框架（[9.1](../spec/refs-lang/009-tools/901-nabic-cli.html)） |
 | `nabi`      | 套件／建置前端與工具。`nabi.nabion`、相依套件、環境、執行、lint、格式化、文件、REPL、Jupyter（[9.10](../spec/refs-lang/009-tools/910-nabi-frontend.html)） |
-| `nabicc`    | C 編譯器，也可用 `nabi cc` 執行（[9.13](../spec/refs-lang/009-tools/913-c-compiler.html)、[第 14 章](14-ffi.html#c-sources-nabi-cc)） |
+| `nabicc`    | C 編譯器，也可用 `nabi cc` 執行（[9.13](../spec/refs-lang/009-tools/913-c-compiler.html)、[第 14 章](14-ffi.html#c-原始檔nabi-cc)） |
 | `nabils`    | 語言伺服器（LSP） |
 
 ### 管理工具鏈
@@ -250,7 +250,7 @@ nabi run hi.nabi
 hi
 ```
 
-指令碼也能使用相依套件：`nabi add json hi.nabi` 會把它們寫進檔案開頭的 `//!` 註解（請見[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-inline-manifest-for-single-file-scripts)和[第 11 章](11-modules-packages.html#single-file-scripts-and-environments)）。
+指令碼也能使用相依套件：`nabi add json hi.nabi` 會把它們寫進檔案開頭的 `//!` 註解（請見[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-inline-manifest-for-single-file-scripts)和[第 11 章](11-modules-packages.html#單檔指令碼與環境)）。
 
 ## REPL
 
@@ -270,7 +270,7 @@ List<i64>
 >>> :exit
 ```
 
-`:type expr` 會回報運算式的型別而不執行它。閱讀本指南時，只要對某個型別有疑問，就可以在 REPL 中確認。一個儲存格最後的 `let` 不需要 `;`。其餘內容請見[第 16 章](16-tools.html#repl-and-jupyter)（[JIT 儲存格](../spec/refs-lang/009-tools/907-jit-cells.html)）。
+`:type expr` 會回報運算式的型別而不執行它。閱讀本指南時，只要對某個型別有疑問，就可以在 REPL 中確認。一個儲存格最後的 `let` 不需要 `;`。其餘內容請見[第 16 章](16-tools.html#repl-與-jupyter)（[JIT 儲存格](../spec/refs-lang/009-tools/907-jit-cells.html)）。
 
 ## 小結
 

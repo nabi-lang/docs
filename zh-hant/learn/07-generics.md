@@ -452,4 +452,4 @@ show_sum(1.5, 2.0);   // 3.5
 - [2.8.3. 關聯型別](../spec/refs-lang/002-types/208-trait.html#283-associated-types)
 - [2.11. `const` 泛型](../spec/refs-lang/002-types/211-const-generics.html)
 - [2.2. `any` 槽位](../spec/refs-lang/002-types/202-any-slot.html)
-- 下一章：[8. 集合與迭代器](08-collections-iterators.html)
+- 下一章：[8. 集合型別與迭代器](08-collections-iterators.html)

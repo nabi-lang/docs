@@ -372,7 +372,7 @@ error: could not build hello (1 error, 0 warnings)
 
 ## `nabi doc`：文件註解與 API 文件
 
-`///` 說明緊接在它下方的項目，`//!` 則說明包含該註解的模組（檔案）。在上面的套件中，第一行 `//! Small math helpers.` 會成為模組的說明，`gcd` 和 `fib` 上方的 `///` 則成為函式的說明。一般的 `//` 註解永遠不是文件，即使位在檔案開頭也一樣：當函式庫的根檔案或 `pub` 模組的檔案以 `//` 行開頭卻沒有 `//!` 時，`nabi lint` 會發出警告（`plain_module_doc`），help 會顯示應該寫的 `//!` 行。文件文字可以使用 markdown，例如標題、清單、行內程式碼、程式碼區塊和連結。其中的 ```` ```nabi ```` 範例會由 `nabi test` 測試（請見[文件測試](#doc-tests)）。
+`///` 說明緊接在它下方的項目，`//!` 則說明包含該註解的模組（檔案）。在上面的套件中，第一行 `//! Small math helpers.` 會成為模組的說明，`gcd` 和 `fib` 上方的 `///` 則成為函式的說明。一般的 `//` 註解永遠不是文件，即使位在檔案開頭也一樣：當函式庫的根檔案或 `pub` 模組的檔案以 `//` 行開頭卻沒有 `//!` 時，`nabi lint` 會發出警告（`plain_module_doc`），help 會顯示應該寫的 `//!` 行。文件文字可以使用 markdown，例如標題、清單、行內程式碼、程式碼區塊和連結。其中的 ```` ```nabi ```` 範例會由 `nabi test` 測試（請見[文件測試](#文件測試)）。
 
 ```text
 $ nabi doc
@@ -383,7 +383,7 @@ $ nabi doc
 
 `nabi doc --open` 還會在瀏覽器中開啟該頁面。
 
-`target/doc/` 會產生套件及其相依套件的公開（`pub`）項目的 HTML，外加一份搜尋索引：套件本身是 `target/doc/<package>/index.html`，每個公開模組各一頁（`<package>/geo.html`、`<package>/geo/shapes.html`）。每頁的側邊欄會列出套件的相依套件，並連結到它們的頁面，搜尋則能找到所有已產生文件的套件中的項目。透過 `pub use` 從私有模組引入的項目，會顯示在重新匯出它的頁面上，就像是在那裡宣告的一樣；重新匯出某個公開模組已顯示的項目時，則會連結到該模組的頁面。這些頁面的外觀與本站的[標準函式庫 API](../std/core/index.html) 相同，也遵循相同的規則，而且可以離線使用，直接從磁碟開啟即可。
+`target/doc/` 會產生套件及其相依套件的公開（`pub`）項目的 HTML，外加一份搜尋索引：套件本身是 `target/doc/<package>/index.html`，每個公開模組各一頁（`<package>/geo.html`、`<package>/geo/shapes.html`）。每頁的側邊欄會列出套件的相依套件，並連結到它們的頁面，搜尋則能找到所有已產生文件的套件中的項目。透過 `pub use` 從私有模組引入的項目，會顯示在重新匯出它的頁面上，就像是在那裡宣告的一樣；重新匯出某個公開模組已顯示的項目時，則會連結到該模組的頁面。這些頁面的外觀與本站的[標準函式庫 API](../../std/core/index.html) 相同，也遵循相同的規則，而且可以離線使用，直接從磁碟開啟即可。
 
 ## 編輯器：`nabils`
 
@@ -710,5 +710,5 @@ run `nabi help` for usage
 - [錯誤碼](../errors/index.html)
 - 在執行時載入程式碼：[23. 外掛](23-plugins.html)
 - 在程式執行期間套用修改：[26. 熱重載](26-hot-reload.html)
-- API：[core 中的 assert 函式](../std/core/panic.html)
+- API：[core 中的 assert 函式](../../std/core/panic.html)
 - 下一章：[17. 條件式編譯](17-conditional-compilation.html)

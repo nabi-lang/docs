@@ -330,7 +330,7 @@ error[E0135]: method `name` comes from trait `zoo::Animal`, which is not in scop
 
 ## 用 derive 自動實作
 
-比較、雜湊、除錯輸出這類機械式的實作，可以用 `#[derive(...)]` 產生。內建的 derive 有 `Clone`、`Copy`、`Debug`、`Default`、`PartialEq`、`Eq`、`PartialOrd`、`Ord` 和 `Hash`；標準函式庫另外加上用於錯誤型別的 `Error`（[第 10 章](10-errors.html#your-own-error-types)）以及用於 NABION 序列化的 `Nabion`（[第 15 章](15-nabion.html)）。`Default` 對有宣告預設值（`= value`）的欄位使用該預設值，其他欄位則使用欄位型別的 `default()`。
+比較、雜湊、除錯輸出這類機械式的實作，可以用 `#[derive(...)]` 產生。內建的 derive 有 `Clone`、`Copy`、`Debug`、`Default`、`PartialEq`、`Eq`、`PartialOrd`、`Ord` 和 `Hash`；標準函式庫另外加上用於錯誤型別的 `Error`（[第 10 章](10-errors.html#自訂錯誤型別)）以及用於 NABION 序列化的 `Nabion`（[第 15 章](15-nabion.html)）。`Default` 對有宣告預設值（`= value`）的欄位使用該預設值，其他欄位則使用欄位型別的 `default()`。
 
 ```nabi
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
@@ -356,7 +356,7 @@ false
 
 `Ord` 依宣告順序比較欄位，因此 `sort` 會依版本排序。`Display` 不能 derive，因為人類可讀的格式由型別作者決定：在型別上寫 `#[display("..")]`，內容是引用 `self` 的 f-string（`#[display("v{self.major}.{self.minor}")]`），或是手動實作（見下方的運算子一節）。
 
-手寫相等比較時，`Hash` 也必須手寫，而且餵給 hasher 的內容必須正好是相等比較所看的部分，這樣相等的值才會有相同的雜湊。`Hash` 實作不是計算出一個數字，而是把各個部分寫進它收到的 `Hasher`。`Hasher` 不在 prelude 中，所以實作要從 `core::hash` 匯入它：
+手寫相等比較時，`Hash` 也必須手寫，而且餵給 hasher 的內容必須正好是相等比較所看的部分，這樣相等的值才會有相同的雜湊。`Hash` 實作不是計算出一個數字，而是把各個部分寫進它收到的 `Hasher`。`Hasher` 不在預載模組中，所以實作要從 `core::hash` 匯入它：
 
 ```nabi
 use core::hash::Hasher;
@@ -514,5 +514,5 @@ v = (11, 22)
 - [2.8. `trait`](../spec/refs-lang/002-types/208-trait.html)、[2.9. `impl`](../spec/refs-lang/002-types/209-impl.html)、[4.9. 方法](../spec/refs-lang/004-functions/409-method.html)
 - [6.2.1. `#[derive(...)]`](../spec/refs-lang/006-meta-system/602-built-in-attributes.html#621-derive-automatic-trait-implementation)
 - [2.12. 禁止將 trait 作為型別](../spec/refs-lang/002-types/212-trait-as-type-banned.html)、[2.2.10. `any Trait`](../spec/refs-lang/002-types/202-any-slot.html#2210-constrained-any-any-trait)
-- [3.1. 運算子分派](../spec/refs-lang/003-expressions/301-operator-dispatch.html)、API：[`Add`](../std/core/ops.html#trait.Add)、[`Display`](../std/core/fmt.html#trait.Display)、[NABION](../std/std/nabion.html)
+- [3.1. 運算子分派](../spec/refs-lang/003-expressions/301-operator-dispatch.html)、API：[`Add`](../../std/core/ops.html#trait.Add)、[`Display`](../../std/core/fmt.html#trait.Display)、[NABION](../../std/std/nabion.html)
 - 下一章：[7. 泛型](07-generics.html)

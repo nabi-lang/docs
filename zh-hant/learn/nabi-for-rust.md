@@ -88,7 +88,7 @@ Point { x: 0, y: 0 }
 [Point { x: 10, y: 0 }, Point { x: 20, y: 0 }]
 ```
 
-在 Rust 要你在 `&` 和 `&mut` 之間做選擇的地方，Nabi 改為把錯誤用法變成編譯錯誤：對一份之後沒有人讀取的複本設定欄位（`fn inc(self) { self.n += 1; }` 或 `for p in ps { p.x = 0; }`）無法通過編譯，help 會指出要用 `ref self` 或 `for ref`（[第 6 章](06-structs-enums-traits.html#changing-the-callers-value-ref)）。
+在 Rust 要你在 `&` 和 `&mut` 之間做選擇的地方，Nabi 改為把錯誤用法變成編譯錯誤：對一份之後沒有人讀取的複本設定欄位（`fn inc(self) { self.n += 1; }` 或 `for p in ps { p.x = 0; }`）無法通過編譯，help 會指出要用 `ref self` 或 `for ref`（[第 6 章](06-structs-enums-traits.html#改變呼叫端的值ref)）。
 
 和鎖或其他執行緒共用的控制代碼也會受到檢查。`Mutex` 守衛的 `g.get()` 回傳的是受保護物件的檢視，所以它不能離開持有鎖的 `using` 區塊（[E0106](../errors/E0106.html)）；請改用 `g.get_clone()`。像 `r.lines()` 這樣的串流檢視會經由 `r` 讀取，並停留在 `r` 的作用域內（[E0139](../errors/E0139.html)）；請回傳擁有資料的形式 `r.into_lines()`。Nabi 只在這少數幾個地方追蹤類似借用的東西，而且每個錯誤都會告訴你該怎麼寫。
 
@@ -302,7 +302,7 @@ println(big.pow(100));
 
 - 串連比較：`0 <= i < n`。
 - 用 `in` 和 `!in` 檢查成員：`x in xs`、`k !in dict`。
-- 逐元素的「點」運算子 `.+`、`.*`、`.>` 等，會把運算子套用到串列或 `Array` 的每個元素上，還有就地形式 `.=` 和 `.+=`（[第 8 章](08-collections-iterators.html#advanced-broadcast-operators)、[第 21 章](21-arrays-and-numerics.html)）。
+- 逐元素的「點」運算子 `.+`、`.*`、`.>` 等，會把運算子套用到串列或 `Array` 的每個元素上，還有就地形式 `.=` 和 `.+=`（[第 8 章](08-collections-iterators.html#進階廣播運算子)、[第 21 章](21-arrays-and-numerics.html)）。
 - 用 `**` 計算乘冪：`2 ** 10`、`x ** 0.5`。
 - `??` 提供預設值，`?.` 可穿過 `none` 串連。
 - 在 `Path` 上的 `/` 會連接路徑：`dir / "file.txt"`。
@@ -343,7 +343,7 @@ println(geo::dist_sq(unit::origin(), Point { x: 3.0, y: 4.0 }));
 25
 ```
 
-`println`、`List`、`Dict`、`Mutex`、`channel`、`task` 和 `par` 都在 prelude 中；`std` 中與作業系統互動的模組（`fs`、`env`、`process`、`thread`、`net`）則用 `use std::fs;` 匯入。
+`println`、`List`、`Dict`、`Mutex`、`channel`、`task` 和 `par` 都在預載模組（prelude）中；`std` 中與作業系統互動的模組（`fs`、`env`、`process`、`thread`、`net`）則用 `use std::fs;` 匯入。
 
 ## 屬性與巨集
 
@@ -365,7 +365,7 @@ assert(a == b, "same value");
 
 ## 並行
 
-執行緒和 Rust 相同：`thread::spawn` 接受一個閉包，`join` 回傳它的值（若該執行緒觸發 panic 則擲回錯誤）。`Send` 和 `Sync` 都存在，而集合型別不是 `Sync`：要把串列交給另一個執行緒的閉包，需用 `[move rows]` 取得它。`Mutex`、`RwLock`、`Atomic` 和 `channel` 都在 prelude 中，交給鎖或通道的值之後就不能再使用，這項交付檢查取代了 Rust 中移入 `Mutex` 的做法。
+執行緒和 Rust 相同：`thread::spawn` 接受一個閉包，`join` 回傳它的值（若該執行緒觸發 panic 則擲回錯誤）。`Send` 和 `Sync` 都存在，而集合型別不是 `Sync`：要把串列交給另一個執行緒的閉包，需用 `[move rows]` 取得它。`Mutex`、`RwLock`、`Atomic` 和 `channel` 都在預載模組（prelude）中，交給鎖或通道的值之後就不能再使用，這項交付檢查取代了 Rust 中移入 `Mutex` 的做法。
 
 `async fn` 和 `await` 內建了執行環境，所以不需要 Tokio：`task::spawn` 啟動一個任務，`task::join` 等待多個任務，而含有頂層 `await` 的指令碼會以 `async fn main` 的形式執行。`await` 是前置運算子：寫 `await f()`，而不是 `f().await`。`par::map`、`par::filter` 和 `par::for_each` 會把工作分散到執行緒池上，就像 Rayon。
 

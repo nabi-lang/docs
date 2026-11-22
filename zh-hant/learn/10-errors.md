@@ -36,7 +36,7 @@ error: age -1 is negative
 
 `catch e { .. }` 當場處理錯誤，並以其區塊的值取而代之。`try` 涵蓋它右邊的整個運算式：`try a(b())` 會同時標示兩個呼叫，`try { .. }` 則涵蓋區塊內的所有呼叫。
 
-單純的 `throws` 表示函式可以擲回任何錯誤型別（是 `throws (any Error)` 的簡寫）；`s.parse()` 擲回 `ParseError`，而 `parse_age` 原封不動地把它傳下去。如何明確列出錯誤型別，請見[下文](#your-own-error-types)。
+單純的 `throws` 表示函式可以擲回任何錯誤型別（是 `throws (any Error)` 的簡寫）；`s.parse()` 擲回 `ParseError`，而 `parse_age` 原封不動地把它傳下去。如何明確列出錯誤型別，請見[下文](#自訂錯誤型別)。
 
 ### 指令碼頂層的錯誤
 
@@ -217,7 +217,7 @@ println(f"{try! total(["1", "2", "3"])} {try? total(["1", "x"]) ?? -1}");
 
 ## 自訂錯誤型別
 
-呼叫端需要區分不同的失敗時，就定義一個錯誤型別：一個具有 `Debug` 和 `Display`、並實作 `Error` trait 的結構或列舉。`#[derive(Debug, Error)]` 提供其中兩者，`#[display("..")]` 則從一個由欄位組成的 f-string 寫出 `Display`；手寫的 `impl Display` 形式請見[第 6 章](06-structs-enums-traits.html#operator-traits)。這樣一來，簽章就能明確列出它擲回的型別 `throws (E)`，或以和型別列出好幾種 `throws (A | B)`。編譯器會檢查每個列出的型別都有被處理或傳下去。
+呼叫端需要區分不同的失敗時，就定義一個錯誤型別：一個具有 `Debug` 和 `Display`、並實作 `Error` trait 的結構或列舉。`#[derive(Debug, Error)]` 提供其中兩者，`#[display("..")]` 則從一個由欄位組成的 f-string 寫出 `Display`；手寫的 `impl Display` 形式請見[第 6 章](06-structs-enums-traits.html#運算子-trait)。這樣一來，簽章就能明確列出它擲回的型別 `throws (E)`，或以和型別列出好幾種 `throws (A | B)`。編譯器會檢查每個列出的型別都有被處理或傳下去。
 
 ```nabi
 #[derive(Debug, Error)]
@@ -457,5 +457,5 @@ for n in [4, 5] {
 
 - 規格：[錯誤控制流程](../spec/refs-lang/003-expressions/314-error-control-flow.html)、[`throws` 簽章](../spec/refs-lang/004-functions/414-throws.html)、[`using` 運算式](../spec/refs-lang/003-expressions/317-using-expression.html)、[panic 與致命錯誤](../spec/refs-lang/003-expressions/314-error-control-flow.html#3148-panics-and-fatal-errors)
 - 標準函式庫規格：[error](../spec/refs-standard-libraries/200-core/214-error.html)
-- API：[`Error`](../std/core/error.html#trait.Error)、[`ValueError`](../std/core/error.html#struct.ValueError)、[`Result`](../std/core/error.html#enum.Result)、[`Drop`](../std/core/marker.html#trait.Drop)
+- API：[`Error`](../../std/core/error.html#trait.Error)、[`ValueError`](../../std/core/error.html#struct.ValueError)、[`Result`](../../std/core/error.html#enum.Result)、[`Drop`](../../std/core/marker.html#trait.Drop)
 - 下一章：[11. 模組與套件](11-modules-packages.html)

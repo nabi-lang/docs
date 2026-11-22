@@ -295,7 +295,7 @@ println("");
 1 4 9 16
 ```
 
-產生器可以在 yield 的同時持有資源。當 `for` 迴圈走訪的是它自己持有的產生器（例如 `for r in rows()` 這樣的呼叫），並且因為 `break`、`return` 或錯誤而提前離開時，產生器會當場結束：它的 `using` 區塊（[第 10 章](10-errors.html#using-cleaning-up-resources)）和 `finally` 區塊會在迴圈的下一個陳述式之前執行。存在變數裡的產生器則保持開啟，之後的迴圈可以接著使用它。
+產生器可以在 yield 的同時持有資源。當 `for` 迴圈走訪的是它自己持有的產生器（例如 `for r in rows()` 這樣的呼叫），並且因為 `break`、`return` 或錯誤而提前離開時，產生器會當場結束：它的 `using` 區塊（[第 10 章](10-errors.html#using清理資源)）和 `finally` 區塊會在迴圈的下一個陳述式之前執行。存在變數裡的產生器則保持開啟，之後的迴圈可以接著使用它。
 
 ```nabi
 struct Conn { name: str; }
@@ -384,5 +384,5 @@ println(f"{c:?} {d:?} {r:?}");
 - [3.6. 索引與切片](../spec/refs-lang/003-expressions/306-indexing-and-slicing.html)
 - [stdlib 2.7. iter](../spec/refs-standard-libraries/200-core/207-iter.html)、[4.11. 產生器](../spec/refs-lang/004-functions/411-generators.html)
 - [3.3. 廣播運算子](../spec/refs-lang/003-expressions/303-broadcast-operators.html)、[stdlib 2.6. broadcast](../spec/refs-standard-libraries/200-core/206-broadcast.html)
-- API：[`List`](../std/core/collections/list.html#struct.List)、[`Dict`](../std/core/collections/dict.html#struct.Dict)、[`Set`](../std/core/collections/set.html#struct.Set)、[`Deque`](../std/core/collections/deque.html#struct.Deque)、[`Slice`](../std/core/collections/slice.html#struct.Slice)、[`Iterator`](../std/core/iter.html#trait.Iterator)、[`GenIter`](../std/core/iter.html#struct.GenIter)
+- API：[`List`](../../std/core/collections/list.html#struct.List)、[`Dict`](../../std/core/collections/dict.html#struct.Dict)、[`Set`](../../std/core/collections/set.html#struct.Set)、[`Deque`](../../std/core/collections/deque.html#struct.Deque)、[`Slice`](../../std/core/collections/slice.html#struct.Slice)、[`Iterator`](../../std/core/iter.html#trait.Iterator)、[`GenIter`](../../std/core/iter.html#struct.GenIter)
 - 下一章：[9. 字串與 f-string](09-strings.html)

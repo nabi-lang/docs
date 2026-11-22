@@ -176,7 +176,7 @@ geom/
 
 ## 套件與 `nabi.nabion`
 
-`nabi new` 會建立一個套件：執行檔會有 `src/main.nabi`；加上 `--lib` 時則有 `src/lib.nabi`，裡面有一個範例函式和一個 `#[test]`。清單 `nabi.nabion` 採用 [NABION](../spec/refs-standard-libraries/300-std/308-nabion.html) 格式。除了名稱和版本之外，它還記錄 `nabi_version`，也就是建立它的 nabi 版本，因此也是已知能建置它的最舊版本（這是已發布套件的使用者需要的資訊，[第 18 章](18-features-and-publishing.html)），以及 `toolchain: "0.1"`，也就是建立套件時的工具鏈系列，讓之後另一個系列的工具鏈不會出乎意料地建置它（[第 1 章](01-getting-started.html#managing-toolchains)）。標準函式庫不是相依套件：`std`、`core` 和 `bare` 隨工具鏈提供，`deps` 中若有 `"std": ..` 這一行，會出現要你移除它的錯誤。
+`nabi new` 會建立一個套件：執行檔會有 `src/main.nabi`；加上 `--lib` 時則有 `src/lib.nabi`，裡面有一個範例函式和一個 `#[test]`。清單 `nabi.nabion` 採用 [NABION](../spec/refs-standard-libraries/300-std/308-nabion.html) 格式。除了名稱和版本之外，它還記錄 `nabi_version`，也就是建立它的 nabi 版本，因此也是已知能建置它的最舊版本（這是已發布套件的使用者需要的資訊，[第 18 章](18-features-and-publishing.html)），以及 `toolchain: "0.1"`，也就是建立套件時的工具鏈系列，讓之後另一個系列的工具鏈不會出乎意料地建置它（[第 1 章](01-getting-started.html#管理工具鏈)）。標準函式庫不是相依套件：`std`、`core` 和 `bare` 隨工具鏈提供，`deps` 中若有 `"std": ..` 這一行，會出現要你移除它的錯誤。
 
 ```bash
 nabi new --lib geom
@@ -353,9 +353,9 @@ help: `c` 0.4.0 gets along with the other requirements on `b`: change the root p
 nabi audit
 ```
 
-沒有適用的公告時，結束碼為 0；有適用的公告時為 1（因此 CI 工作會失敗）；無法檢查時為 2。`--ignore <id>` 會在你讀過某則公告之後接受它，`--json` 會為工具輸出紀錄。詳細內容以及如何回報漏洞，請見[安全性公告](packages/04-security-advisories.html)。
+沒有適用的公告時，結束碼為 0；有適用的公告時為 1（因此 CI 工作會失敗）；無法檢查時為 2。`--ignore <id>` 會在你讀過某則公告之後接受它，`--json` 會為工具輸出紀錄。詳細內容以及如何回報漏洞，請見[安全性公告](../../learn/packages/04-security-advisories.html)。
 
-函式庫可以提供讓使用者開啟或關閉的**功能特性**（feature），你也可以用 `nabi login` 和 `nabi publish` 把自己的函式庫發布為套件。功能特性在[第 18 章](18-features-and-publishing.html)中說明，該章也介紹 Nabi 專案維護的套件（`json`、`toml`、`csv`、`http`、`markdown`、`spatial`、`nabi-syntax`）；發布則請見[發布套件](packages/index.html)。
+函式庫可以提供讓使用者開啟或關閉的**功能特性**（feature），你也可以用 `nabi login` 和 `nabi publish` 把自己的函式庫發布為套件。功能特性在[第 18 章](18-features-and-publishing.html)中說明，該章也介紹 Nabi 專案維護的套件（`json`、`toml`、`csv`、`http`、`markdown`、`spatial`、`nabi-syntax`）；發布則請見[發布套件](../../learn/packages/index.html)。
 
 ## 工作區
 
