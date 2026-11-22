@@ -87,7 +87,7 @@ server echoed 6 lines and stopped
 
 - 把 `TcpListener` 繫結到連接埠 0，讓作業系統挑選空閒的連接埠，`local_addr()` 回報實際的位址，所以不會和其他程式衝突。`bind` 和 `connect` 接受文字、`SocketAddr`，或其他任何實作 `ToSocketAddrs` 的值（[3.2 net](../spec/refs-standard-libraries/300-std/302-net.html)、[`TcpListener`](../../std/std/net.html#struct.TcpListener)）。
 - 伺服器執行緒為每個連線啟動一個處理執行緒，然後 `join` 全部的執行緒，並加總處理過的行數。閉包擷取 `listener` 和 `conn`，把它們帶到其他執行緒（[並行](../learn/12-concurrency.html)、[`thread::spawn`](../../std/std/thread.html#fn.spawn)）。
-- 為了在寫入的同時逐行讀取，socket 經由 `split()` 分成包在 `BufReader` 中的讀取半部，以及寫入半部：每一半各自擁有自己的方向（[拆成兩半](../spec/refs-standard-libraries/300-std/302-net.html#拆成兩半)、[`BufReader`](../../std/core/io.html#struct.BufReader)）。
+- 為了在寫入的同時逐行讀取，socket 經由 `split()` 分成包在 `BufReader` 中的讀取半部，以及寫入半部：每一半各自擁有自己的方向（[拆成兩半](../spec/refs-standard-libraries/300-std/302-net.html#拆分的兩半)、[`BufReader`](../../std/core/io.html#struct.BufReader)）。
 - 每個 socket 都由它的擁有者關閉：伺服器的處理執行緒關閉兩個半部（`r.into_inner().close()`、`w.close()`），用戶端關閉寫入半部並離開 `using` 區塊，listener 則在服務完所有用戶端後關閉。留下任何一個沒關會是編譯錯誤，因為關閉可能失敗。
 - 關閉的順序很重要。用戶端送完所有資料後，關閉寫入半部表示「沒有更多了」（即 `shutdown(Write)`，讀取半部仍保持開啟），伺服器的 `lines()` 收到這個訊號就結束迴圈。伺服器關閉兩個半部後，socket 隨之關閉，用戶端的 `read_line` 讀到 0 位元組。
 - 同一個伺服器也可以用 `accept_async` / `read_async` 和任務來寫，而不使用阻塞式 API（[3.2.0 共通規則](../spec/refs-standard-libraries/300-std/302-net.html#320-共通規則)）。

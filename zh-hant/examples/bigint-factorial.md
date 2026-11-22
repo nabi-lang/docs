@@ -77,7 +77,7 @@ gcd(100!, 2^200) = 2^97
 
 ## 說明
 
-- `int` 是沒有大小限制的整數。小的值存放在單一個 `i64` 中，只有溢位時才改用數字陣列，所以對小數字而言，它的速度和固定寬度的整數差不多（[2.1.2 `int`](../spec/refs-standard-libraries/200-core/201-numbers.html#212-int-任意精度整數)、[`Int`](../../std/core/num/bigint.html#struct.Int)）。
+- `int` 是沒有大小限制的整數。小的值存放在單一個 `i64` 中，只有溢位時才改用數字陣列，所以對小數字而言，它的速度和固定寬度的整數差不多（[2.1.2 `int`](../spec/refs-standard-libraries/200-core/201-numbers.html#212-int任意精度整數)、[`Int`](../../std/core/num/bigint.html#struct.Int)）。
 - `int` 和 `i64` 不能混合運算。你要明確轉換，例如 `int::from(k)`，這樣程式碼一眼就能看出哪些運算可能溢位（[2.1.6 算術結果型別](../spec/refs-standard-libraries/200-core/201-numbers.html#216-算術結果型別)）。
 - 在 `i64` 這一側，`checked_mul` 溢位時回傳 `none`。結尾的 `?` 會把這個 `none` 直接從函式回傳出去，所以 `factorial_i64` 以 `i64 | none` 回報結果（[和型別](../learn/05-sum-types.html)）。
 - 超出 `i64` 範圍的整數字面值，可以直接寫在 `int` 的位置上（`let big: int = 123_456_...`）。
