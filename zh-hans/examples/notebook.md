@@ -88,7 +88,7 @@ histogram:
 
 ## 运行
 
-先在 Jupyter 中注册 Nabi 内核。`nabi jupyter install` 把 kernelspec（`kernels/nabi/kernel.json`）写入 Jupyter 的数据目录（macOS 上是 `~/Library/Jupyter`，Windows 上是 `%APPDATA%\jupyter`，其他系统上是 `~/.local/share/jupyter`）（[9.8.3 安装 kernelspec](../spec/refs-lang/009-tools/908-jupyter-integration.html#983-kernelspec-installation)）。
+先在 Jupyter 中注册 Nabi 内核。`nabi jupyter install` 把 kernelspec（`kernels/nabi/kernel.json`）写入 Jupyter 的数据目录（macOS 上是 `~/Library/Jupyter`，Windows 上是 `%APPDATA%\jupyter`，其他系统上是 `~/.local/share/jupyter`；见 [9.8.3 安装 kernelspec](../spec/refs-lang/009-tools/908-jupyter-integration.html#983-kernelspec-installation)）。
 
 ```bash
 nabi jupyter install

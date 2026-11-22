@@ -153,7 +153,7 @@ mgrep: option '--max' needs a value
 - `env::args()` 是一个 `[0]` 处为程序名的 `List<str>`，所以用 `skip(1).to_list()` 只保留其余部分（[`env::args`](../../std/std/env.html#fn.args)）。
 - 选项存放在带字段默认值的 `Options` 结构体中。有默认值的字段可以省略，例如 `Options { pattern: "" }`（[结构体、枚举与 trait](../learn/06-structs-enums-traits.html)，[2.3.3 字段默认值](../spec/refs-lang/002-types/203-struct.html#233-field-default-values)）。
 - 用 `|` 连接的字符串字面量模式，例如 `match a { "-i" | "--ignore-case" => ... }`，可以同时接受短形式和长形式。赋值是语句而不是表达式，所以这些分支的主体包在 `{ ...; }` 块中（[控制流](../learn/04-control-flow.html)）。
-- 错误的参数以 `ArgError` 枚举抛出。`run` 声明了 `throws (ArgError | IoError)`，`main` 为每种类型使用一个 `catch` 来选择退出码（2 或 1）（[错误处理](../learn/10-errors.html)，[3.14.4 `catch`](../spec/refs-lang/003-expressions/314-error-control-flow.html#3144-catch-postfix-handling-expression)）。
+- 错误的参数以 `ArgError` 枚举抛出。`run` 声明了 `throws (ArgError | IoError)`，`main` 为每种类型使用一个 `catch` 来选择退出码 2 或 1（[错误处理](../learn/10-errors.html)，[3.14.4 `catch`](../spec/refs-lang/003-expressions/314-error-control-flow.html#3144-catch-postfix-handling-expression)）。
 - `-m` 之后的数字用 `parse::<usize>()` 读取；失败时，`catch _ { throw ...; }` 把它变成更友好的错误。`opts.max` 是 `usize | none`，所以比较时用 `?? usize::MAX` 提供默认值。
 
 ## 运行
