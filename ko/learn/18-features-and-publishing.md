@@ -89,17 +89,7 @@ lockfile은 선택 의존성까지 그래프의 모든 패키지를 고정하므
 
 ## Nabi 프로젝트의 패키지
 
-Nabi 프로젝트는 몇몇 라이브러리를 표준 라이브러리 밖의 독립된 패키지로 관리합니다. 모두 순수 Nabi로 짰고 `std` 밖의 의존성이 없습니다.
-
-| 패키지      | 무엇인가                                                                      |
-|------------|-------------------------------------------------------------------------------|
-| `json`     | JSON (RFC 8259): `Value` 트리, `line:col` 에러를 내는 엄격한 파서, 스트리밍 토크나이저, `#[derive(json::Json)]`으로 하는 타입 있는 encode / decode, JSON Pointer |
-| `toml`     | TOML 1.1.0: 타입 있는 날짜-시각이 들어가는 `Value` 트리, `line:col` 에러를 내는 파서, 라이터, `#[derive(toml::Toml)]`로 하는 타입 있는 encode / decode |
-| `csv`      | CSV (RFC 4180과 방언들): `Read`, `str`, 바이트를 읽는 스트리밍 리더, `#[derive(Csv)]`로 하는 타입 있는 행, 인용 방식을 고르는 라이터, 줄과 열을 알려 주는 에러 |
-| `http`     | HTTP/1.1과 HTTP/2 클라이언트와 서버: 엄격한 파싱, HPACK, 스트리밍 body, 연결 풀링, std의 TLS 위의 `https`. feature는 `http1`, `http2`, `tls`이며 모두 기본으로 켜짐 |
-| `markdown` | CommonMark와 GitHub 확장(표, 콜아웃, 각주, 제목 앵커)을 HTML로 변환. 이 사이트를 렌더링함 |
-| `spatial`  | 게임과 그래픽스 수학: `f32`와 `f64`에 제네릭한 `Vec2/3/4`, `Quat`, `Mat2/3/4`, 아핀 변환, 투영, 도형. 모든 타입이 `#[repr(C)]`이고 `Mat4` 곱은 SIMD로 계산함 |
-| `nabi-syntax` | Nabi와 NABION 소스의 토크나이저와 HTML 강조기. 이 사이트의 코드를 강조함 |
+Nabi 프로젝트는 여러 라이브러리를 표준 라이브러리 밖의 독립된 패키지로 공개합니다. 데이터 형식(`json`, `toml`, `csv`), `http`, `markdown`, `regex`, `spatial`, `nabi-syntax`, 그리고 [22장](22-science.html)의 과학 패키지입니다. 모두 순수 Nabi로 짰습니다. 레지스트리에서는 **Official** 표시가 붙고, [전체 목록](https://packages.nabi-lang.org/packages?q=official:yes)이 있으며, 각 패키지의 문서는 쓰는 법으로 시작합니다.
 
 `json`과 `toml`은 std의 [`nabion`](15-nabion.html) 모듈과 같은 모양을 따릅니다. `parse` / `to_str` / `from_str`, 여기에 `to_value` / `from_value`, 그리고 자기 타입을 위한 derive입니다.
 
@@ -188,7 +178,7 @@ note: dry run; `nabi publish` sends it to the registry API of https://github.com
 
 항목에는 의존성 해소에 필요한 것만 들어갑니다. HEAD 커밋과 그 트리 해시, 의존성, `nabi_version`입니다. 그러니 그 커밋을 먼저 원격 저장소에 올리세요(push). 설명, 라이선스 같은 나머지 메타데이터는 항목과 함께 레지스트리로 가고, 레지스트리는 버전마다 누가 공개했는지와 함께 이를 보여 줍니다. `nabi publish`는 토큰과 함께 둘을 레지스트리에 보냅니다(`Published textwrap 0.1.0 to https://packages.nabi-lang.org`). index에 항목이 들어가면 그 버전이 공개됩니다. 한 버전은 두 번 공개할 수 없습니다. 기존 패키지와 대소문자나 `-` / `_`만 다른 이름은 이미 쓰인 것으로 봅니다.
 
-레지스트리는 그 커밋의 소스로 버전의 API 문서도 만듭니다. 소스는 읽기만 하고 빌드하거나 실행하지 않습니다. 문서는 [packages.nabi-lang.org/packages/textwrap/0.1.0/docs](https://packages.nabi-lang.org/packages/textwrap/0.1.0/docs)에 있고, 최신 버전의 문서는 `/packages/textwrap/latest/docs`입니다. 페이지 구성은 `nabi doc`과 같습니다. 루트 모듈은 `docs`에, 다른 public 모듈은 각자의 페이지(`docs/<module>`)에 있고, 앵커도 같습니다(`docs#fn.wrap`). private 모듈의 항목을 `pub use`로 다시 내보내면, 그 항목은 다시 내보낸 곳에 선언된 것처럼 보입니다. 문서를 만들지 못해도 버전은 공개됩니다. `nabi publish`가 이유를 경고로 출력하고, 문서 페이지에도 그 이유가 나옵니다.
+레지스트리는 그 커밋의 소스로 버전의 API 문서도 만듭니다. 소스는 읽기만 하고 빌드하거나 실행하지 않습니다. 문서는 [packages.nabi-lang.org/docs/textwrap/0.1.0](https://packages.nabi-lang.org/docs/textwrap/0.1.0)에 있고, 최신 버전의 문서는 `/docs/textwrap/latest`입니다. 페이지 구성은 `nabi doc`과 같습니다. 루트 모듈은 `docs`에, 다른 public 모듈은 각자의 페이지(`docs/<module>`)에 있고, 앵커도 같습니다(`docs#fn.wrap`). private 모듈의 항목을 `pub use`로 다시 내보내면, 그 항목은 다시 내보낸 곳에 선언된 것처럼 보입니다. 문서를 만들지 못해도 버전은 공개됩니다. `nabi publish`가 이유를 경고로 출력하고, 문서 페이지에도 그 이유가 나옵니다.
 
 ### `nabi yank`
 
@@ -244,7 +234,7 @@ let textwrap::WrapOptions { width, .. } = o;
 - 선택 의존성(`optional: true`)은 feature가 켤 때만 빌드됩니다.
 - feature는 `--features`, `--no-default-features`, `--all-features`로, 의존성마다는 `features:` / `default_features: false`로 고릅니다. feature는 빌드 전체에서 합쳐지므로 더하기만 해야 합니다.
 - 코드는 `#[cfg(feature = "..")]`와 `cfg!(feature = "..")`로 feature를 검사합니다.
-- `json`, `toml`, `csv`, `http`, `markdown`, `spatial`, `nabi-syntax`가 Nabi 프로젝트의 패키지입니다.
+- Nabi 프로젝트의 패키지는 레지스트리에서 Official 표시가 붙습니다.
 - 공개는 `nabi login`(레지스트리 토큰), `nabi publish --dry-run`, `nabi publish` 순서로 하고, 철회는 `nabi yank name@version --message <이유>`로 합니다. API를 없앨 때는 먼저 `#[deprecated]`를 붙입니다. `#[non_exhaustive]`와 `#[sealed]`는 변형, 필드, 구현을 더할 여지를 남깁니다. 지금은 관리자만 공개할 수 있습니다.
 
 ## 더 읽을거리

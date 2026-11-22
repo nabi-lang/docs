@@ -19,4 +19,4 @@
 
 ## Versions
 
-Each release series has its own docs: `docs.nabi-lang.org/0.1/` for Nabi 0.1.x, and so on; `latest/` is the newest release and `dev/` follows the main branch. Only the latest series gets fixes. The [spec introduction](spec/index.html) gives the motivation and philosophy of the language. Packages are on the package registry, [packages.nabi-lang.org](https://packages.nabi-lang.org).
+Each release series has its own docs: `docs.nabi-lang.org/0.1/` for Nabi 0.1.x, and so on; `latest/` is the newest release and `dev/` follows the main branch. Only the latest series gets fixes. The [spec introduction](spec/index.html) gives the motivation and philosophy of the language. Packages are on the package registry, [packages.nabi-lang.org](https://packages.nabi-lang.org); [Publishing Packages](learn/packages/index.html) says how to put yours there.

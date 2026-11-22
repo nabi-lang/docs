@@ -10,4 +10,4 @@ Small, well-known programming tasks solved in Nabi, in the spirit of [Rosetta Co
 | [Algorithms](algorithms.html) | binary search, quicksort, Towers of Hanoi, permutations, eight queens, a shortest path, matrix products |
 | [Files and data](files-and-data.html) | `wc`, CSV, a configuration file, JSON, walking a directory, environment variables, running a program |
 
-For numerical and data work, the [science path](../science/index.html) has tutorials for the science packages. Each task links back to the guide only where it uses something new; the guide's [How Do I...](../20-cookbook.html) chapter has short answers to everyday system tasks.
+For numerical and data work, [Science with Nabi](../22-science.html) points to a tutorial for each science package. Each task links back to the guide only where it uses something new; the guide's [How Do I...](../20-cookbook.html) chapter has short answers to everyday system tasks.
