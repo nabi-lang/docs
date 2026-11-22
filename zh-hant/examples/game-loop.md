@@ -85,7 +85,7 @@ collected between frames: true
 ## 說明
 
 - `gc::set_pause_goal(2.0)` 依據最近幾次 minor 回收的成本調整年輕世代的大小，讓一次 minor 回收大約花 2 ms（[垃圾回收器暫停](../learn/25-gc-pauses.html#暫停目標)）。
-- 一個影格的粒子存放在 `Arena<Particle>` 中：`alloc` 就地附加每個粒子，`parts.reset()` 一次全部丟棄。使用先前影格的 `ArenaRef` 會觸發 panic，所以過期的參考不會讀到這個影格的粒子（[`Arena`](../learn/25-gc-pauses.html#一個影格的值)）。
+- 一個影格的粒子存放在 `Arena<Particle>` 中：`alloc` 就地附加每個粒子，`parts.reset()` 一次全部丟棄。使用先前影格的 `ArenaRef` 會觸發 panic，所以過期的參考不會讀到這個影格的粒子（[`Arena`](../learn/25-gc-pauses.html#單一影格的值)）。
 - 實體透過 `for ref e in ents` 就地修改，它把每個元素繫結為位置而不是複本（[集合型別與迭代器](../learn/08-collections-iterators.html)）。
 - 偵錯用的文字行是一般字串：到下一個影格就成了垃圾，由 minor 回收釋放。
 - 繪製在 `gc::no_collect` 中執行：在這裡，任何執行緒上的配置都不會啟動回收；如果年輕世代的額度用完，堆積會成長，回收則等到區域結束後才進行。
