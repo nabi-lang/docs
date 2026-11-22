@@ -417,3 +417,8 @@ When a term is missing, take the one the Chinese editions of the Rust or Go docs
 | FAQ | 常见问题 | 常見問題 | |
 | brand, mark, wordmark | 品牌，标志，文字标志 | 品牌，標誌，文字標誌 | |
 | slogan | 标语 | 標語 | the slogan stays in English and Korean, with a translation in parentheses |
+| code point | 码位 | 碼位 | Unicode code point |
+| clamp | 钳制 | 夾限 | to clamp a value into a range |
+| stop-the-world (pause) | 全局停顿（stop-the-world） | stop-the-world 暫停 | zh-Hant keeps the English term |
+| trust store | 信任存储 | 信任存放區 | the OS root certificates |
+| desugar, desugaring | 脱糖 | 去語法糖 | |
