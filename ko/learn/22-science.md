@@ -8,19 +8,19 @@ Nabi의 수치 계산 핵심은 표준 라이브러리에 있습니다. `Array<T
 
 | 패키지 | 하는 일 | Python의 대응 |
 |--------|---------|---------------|
-| [`linalg`](https://packages.nabi-lang.org/docs/linalg/latest) | 밀집 행렬: 곱, LU, Cholesky, QR, SVD, 고윳값, 연립방정식, `expm` | `numpy.linalg`, `scipy.linalg` |
-| [`sparse`](https://packages.nabi-lang.org/docs/sparse/latest) | CSR / CSC / COO 행렬, CG, GMRES, BiCGSTAB, 희소 Cholesky와 LU | `scipy.sparse`, `scipy.sparse.linalg` |
-| [`spatial`](https://packages.nabi-lang.org/docs/spatial/latest) | 게임과 그래픽스용 고정 크기 벡터, 쿼터니언, 행렬, 변환, 도형; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
-| [`autodiff`](https://packages.nabi-lang.org/docs/autodiff/latest) | 직접 쓴 함수의 도함수: 이중수, 역방향 테이프, 헤세 행렬, 테일러 급수 | `jax.grad`, `autograd` |
-| [`stats`](https://packages.nabi-lang.org/docs/stats/latest) | 기술 통계, 19가지 분포, 검정, 회귀 | `scipy.stats`, `statsmodels`(기본) |
-| [`signal`](https://packages.nabi-lang.org/docs/signal/latest) | 임의 길이 FFT, 창 함수, FIR / IIR 필터, 스펙트럼, 피크 | `numpy.fft`, `scipy.signal` |
-| [`interpolate`](https://packages.nabi-lang.org/docs/interpolate/latest) | 스플라인, 다항식, 격자, 흩어진 점, 수치 적분 | `scipy.interpolate`, `scipy.integrate.quad` |
-| [`optimize`](https://packages.nabi-lang.org/docs/optimize/latest) | 최소화, 최소제곱, 근 찾기, 선형 계획법 | `scipy.optimize` |
-| [`ode`](https://packages.nabi-lang.org/docs/ode/latest) | 초깃값 문제와 경곗값 문제, 강성 솔버, 심플렉틱 적분기 | `scipy.integrate.solve_ivp` |
-| [`special`](https://packages.nabi-lang.org/docs/special/latest) | 감마, 베셀, erf, 제타, 타원 함수, 복소 초등 함수 | `scipy.special` |
-| [`table`](https://packages.nabi-lang.org/docs/table/latest) | 열 기반 데이터 프레임, CSV, JSONL, Arrow와 Parquet 파일, 지연 쿼리 | `pandas`, `polars`, `pyarrow` |
-| [`units`](https://packages.nabi-lang.org/docs/units/latest) | 단위가 붙은 양, 컴파일할 때 검사 | `pint` |
-| [`plot`](https://packages.nabi-lang.org/docs/plot/latest) | SVG, PNG, 터미널 그래프, 노트북 표시 | `matplotlib` |
+| [`linalg`](https://docs.nabi-lang.org/packages/linalg/latest) | 밀집 행렬: 곱, LU, Cholesky, QR, SVD, 고윳값, 연립방정식, `expm` | `numpy.linalg`, `scipy.linalg` |
+| [`sparse`](https://docs.nabi-lang.org/packages/sparse/latest) | CSR / CSC / COO 행렬, CG, GMRES, BiCGSTAB, 희소 Cholesky와 LU | `scipy.sparse`, `scipy.sparse.linalg` |
+| [`spatial`](https://docs.nabi-lang.org/packages/spatial/latest) | 게임과 그래픽스용 고정 크기 벡터, 쿼터니언, 행렬, 변환, 도형; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
+| [`autodiff`](https://docs.nabi-lang.org/packages/autodiff/latest) | 직접 쓴 함수의 도함수: 이중수, 역방향 테이프, 헤세 행렬, 테일러 급수 | `jax.grad`, `autograd` |
+| [`stats`](https://docs.nabi-lang.org/packages/stats/latest) | 기술 통계, 19가지 분포, 검정, 회귀 | `scipy.stats`, `statsmodels`(기본) |
+| [`signal`](https://docs.nabi-lang.org/packages/signal/latest) | 임의 길이 FFT, 창 함수, FIR / IIR 필터, 스펙트럼, 피크 | `numpy.fft`, `scipy.signal` |
+| [`interpolate`](https://docs.nabi-lang.org/packages/interpolate/latest) | 스플라인, 다항식, 격자, 흩어진 점, 수치 적분 | `scipy.interpolate`, `scipy.integrate.quad` |
+| [`optimize`](https://docs.nabi-lang.org/packages/optimize/latest) | 최소화, 최소제곱, 근 찾기, 선형 계획법 | `scipy.optimize` |
+| [`ode`](https://docs.nabi-lang.org/packages/ode/latest) | 초깃값 문제와 경곗값 문제, 강성 솔버, 심플렉틱 적분기 | `scipy.integrate.solve_ivp` |
+| [`special`](https://docs.nabi-lang.org/packages/special/latest) | 감마, 베셀, erf, 제타, 타원 함수, 복소 초등 함수 | `scipy.special` |
+| [`table`](https://docs.nabi-lang.org/packages/table/latest) | 열 기반 데이터 프레임, CSV, JSONL, Arrow와 Parquet 파일, 지연 쿼리 | `pandas`, `polars`, `pyarrow` |
+| [`units`](https://docs.nabi-lang.org/packages/units/latest) | 단위가 붙은 양, 컴파일할 때 검사 | `pint` |
+| [`plot`](https://docs.nabi-lang.org/packages/plot/latest) | SVG, PNG, 터미널 그래프, 노트북 표시 | `matplotlib` |
 
 쓰는 패키지는 `nabi add`로 `nabi.nabion`에 추가합니다(파일 하나짜리 스크립트라면 `nabi add <패키지> file.nabi`).
 
@@ -29,7 +29,7 @@ nabi add linalg
 nabi add table
 ```
 
-튜토리얼과 API가 담긴 각 패키지의 문서는 레지스트리에 있습니다. 표에서 패키지 이름을 따라가세요. 이 페이지의 코드는 이 패키지들이 필요하므로, 이 가이드의 다른 코드와 달리 사이트를 빌드할 때 실행하지 않습니다. 모든 블록은 패키지의 현재 버전으로 확인했습니다.
+튜토리얼과 API가 담긴 각 패키지의 문서는 [패키지 문서](https://docs.nabi-lang.org/packages)에 있습니다. 표에서 패키지 이름을 따라가세요. 이 페이지의 코드는 이 패키지들이 필요하므로, 이 가이드의 다른 코드와 달리 사이트를 빌드할 때 실행하지 않습니다. 모든 블록은 패키지의 현재 버전으로 확인했습니다.
 
 ## 입력은 한 가지 방식으로: 배열 같은 값
 
@@ -105,18 +105,18 @@ try ax.save("tea.svg");
 
 ## 튜토리얼
 
-레지스트리에 있는 각 패키지 문서는 튜토리얼로 시작합니다. 작은 문제 하나를 단계별로 풀고, 그 코드는 패키지의 테스트가 실행합니다. 튜토리얼은 영어로 되어 있습니다.
+각 패키지의 문서는 튜토리얼로 시작합니다. 작은 문제 하나를 단계별로 풀고, 그 코드는 패키지의 테스트가 실행합니다. 튜토리얼은 영어로 되어 있습니다.
 
 | 튜토리얼 | 패키지 | 하는 일 |
 |----------|--------|---------|
-| [처음 해 보는 데이터 분석](https://packages.nabi-lang.org/docs/table/latest) | `table`, `stats`, `plot` | CSV 파일 읽기, 정리, 그룹 묶기, 차이 검정, 그래프 |
-| [선형대수](https://packages.nabi-lang.org/docs/linalg/latest) | `linalg` | 연립방정식, 최소제곱, 고윳값 |
-| [희소 시스템](https://packages.nabi-lang.org/docs/sparse/latest) | `sparse` | 미지수 10 000개짜리 희소 시스템, 반복법과 직접법 |
-| [통계](https://packages.nabi-lang.org/docs/stats/latest) | `stats` | 분포, 난수 표본, 검정, 회귀, 부트스트랩 |
-| [신호와 스펙트럼](https://packages.nabi-lang.org/docs/signal/latest) | `signal` | FFT, 잡음 속 파워 스펙트럼, 필터, 피크, 합성곱 |
-| [피팅과 최적화](https://packages.nabi-lang.org/docs/optimize/latest) | `optimize` | 근, 최솟값, 곡선 피팅, 선형 계획법 |
-| [미분방정식](https://packages.nabi-lang.org/docs/ode/latest) | `ode` | 초깃값 문제, 이벤트, 강성 시스템, 경곗값 문제 |
-| [도함수](https://packages.nabi-lang.org/docs/autodiff/latest) | `autodiff` | 직접 만든 함수의 정확한 기울기, 야코비안, 테일러 급수 |
+| [처음 해 보는 데이터 분석](https://docs.nabi-lang.org/packages/table/latest) | `table`, `stats`, `plot` | CSV 파일 읽기, 정리, 그룹 묶기, 차이 검정, 그래프 |
+| [선형대수](https://docs.nabi-lang.org/packages/linalg/latest) | `linalg` | 연립방정식, 최소제곱, 고윳값 |
+| [희소 시스템](https://docs.nabi-lang.org/packages/sparse/latest) | `sparse` | 미지수 10 000개짜리 희소 시스템, 반복법과 직접법 |
+| [통계](https://docs.nabi-lang.org/packages/stats/latest) | `stats` | 분포, 난수 표본, 검정, 회귀, 부트스트랩 |
+| [신호와 스펙트럼](https://docs.nabi-lang.org/packages/signal/latest) | `signal` | FFT, 잡음 속 파워 스펙트럼, 필터, 피크, 합성곱 |
+| [피팅과 최적화](https://docs.nabi-lang.org/packages/optimize/latest) | `optimize` | 근, 최솟값, 곡선 피팅, 선형 계획법 |
+| [미분방정식](https://docs.nabi-lang.org/packages/ode/latest) | `ode` | 초깃값 문제, 이벤트, 강성 시스템, 경곗값 문제 |
+| [도함수](https://docs.nabi-lang.org/packages/autodiff/latest) | `autodiff` | 직접 만든 함수의 정확한 기울기, 야코비안, 테일러 급수 |
 
 ## NumPy, SciPy, pandas에서 오는 경우
 

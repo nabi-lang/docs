@@ -178,7 +178,7 @@ note: dry run; `nabi publish` sends it to the registry API of https://github.com
 
 항목에는 의존성 해소에 필요한 것만 들어갑니다. HEAD 커밋과 그 트리 해시, 의존성, `nabi_version`입니다. 그러니 그 커밋을 먼저 원격 저장소에 올리세요(push). 설명, 라이선스 같은 나머지 메타데이터는 항목과 함께 레지스트리로 가고, 레지스트리는 버전마다 누가 공개했는지와 함께 이를 보여 줍니다. `nabi publish`는 토큰과 함께 둘을 레지스트리에 보냅니다(`Published textwrap 0.1.0 to https://packages.nabi-lang.org`). index에 항목이 들어가면 그 버전이 공개됩니다. 한 버전은 두 번 공개할 수 없습니다. 기존 패키지와 대소문자나 `-` / `_`만 다른 이름은 이미 쓰인 것으로 봅니다.
 
-레지스트리는 그 커밋의 소스로 버전의 API 문서도 만듭니다. 소스는 읽기만 하고 빌드하거나 실행하지 않습니다. 문서는 [packages.nabi-lang.org/docs/textwrap/0.1.0](https://packages.nabi-lang.org/docs/textwrap/0.1.0)에 있고, 최신 버전의 문서는 `/docs/textwrap/latest`입니다. 페이지 구성은 `nabi doc`과 같습니다. 루트 모듈은 `docs`에, 다른 public 모듈은 각자의 페이지(`docs/<module>`)에 있고, 앵커도 같습니다(`docs#fn.wrap`). private 모듈의 항목을 `pub use`로 다시 내보내면, 그 항목은 다시 내보낸 곳에 선언된 것처럼 보입니다. 문서를 만들지 못해도 버전은 공개됩니다. `nabi publish`가 이유를 경고로 출력하고, 문서 페이지에도 그 이유가 나옵니다.
+레지스트리는 그 커밋의 소스로 버전의 API 문서도 만듭니다. 소스는 읽기만 하고 빌드하거나 실행하지 않습니다. 문서는 docs.rs가 crates.io에 하듯 문서 사이트가 보여 줍니다. [docs.nabi-lang.org/packages/textwrap/0.1.0](https://docs.nabi-lang.org/packages/textwrap/0.1.0)에 있고, 최신 버전의 문서는 `/packages/textwrap/latest`입니다. 페이지 구성은 `nabi doc`과 같습니다. 루트 모듈은 그 주소에, 다른 public 모듈은 각자의 페이지(`/packages/textwrap/0.1.0/<module>`)에 있고, 앵커도 같습니다(`#fn.wrap`). private 모듈의 항목을 `pub use`로 다시 내보내면, 그 항목은 다시 내보낸 곳에 선언된 것처럼 보입니다. 문서를 만들지 못해도 버전은 공개됩니다. `nabi publish`가 이유를 경고로 출력하고, 문서 페이지에도 그 이유가 나옵니다.
 
 ### `nabi yank`
 

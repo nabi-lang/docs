@@ -8,19 +8,19 @@ This chapter maps the packages, shows the one rule they share for input data, wo
 
 | Package | What it does | Python counterpart |
 |---------|--------------|--------------------|
-| [`linalg`](https://packages.nabi-lang.org/docs/linalg/latest) | dense matrices: products, LU, Cholesky, QR, SVD, eigen, solvers, `expm` | `numpy.linalg`, `scipy.linalg` |
-| [`sparse`](https://packages.nabi-lang.org/docs/sparse/latest) | CSR / CSC / COO matrices, CG, GMRES, BiCGSTAB, sparse Cholesky and LU | `scipy.sparse`, `scipy.sparse.linalg` |
-| [`spatial`](https://packages.nabi-lang.org/docs/spatial/latest) | small fixed-size vectors, quaternions, matrices, transforms and shapes for games and graphics; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
-| [`autodiff`](https://packages.nabi-lang.org/docs/autodiff/latest) | derivatives of your own functions: dual numbers, a reverse-mode tape, Hessians, Taylor series | `jax.grad`, `autograd` |
-| [`stats`](https://packages.nabi-lang.org/docs/stats/latest) | descriptive statistics, 19 distributions, tests, regression | `scipy.stats`, `statsmodels` (basics) |
-| [`signal`](https://packages.nabi-lang.org/docs/signal/latest) | FFT of any length, windows, FIR / IIR filters, spectra, peaks | `numpy.fft`, `scipy.signal` |
-| [`interpolate`](https://packages.nabi-lang.org/docs/interpolate/latest) | splines, polynomials, grids, scattered data, quadrature | `scipy.interpolate`, `scipy.integrate.quad` |
-| [`optimize`](https://packages.nabi-lang.org/docs/optimize/latest) | minimization, least squares, root finding, linear programming | `scipy.optimize` |
-| [`ode`](https://packages.nabi-lang.org/docs/ode/latest) | initial and boundary value problems, stiff solvers, symplectic integrators | `scipy.integrate.solve_ivp` |
-| [`special`](https://packages.nabi-lang.org/docs/special/latest) | gamma, Bessel, erf, zeta, elliptic functions; complex elementary functions | `scipy.special` |
-| [`table`](https://packages.nabi-lang.org/docs/table/latest) | columnar data frames, CSV, JSONL, Arrow and Parquet files, lazy queries | `pandas`, `polars`, `pyarrow` |
-| [`units`](https://packages.nabi-lang.org/docs/units/latest) | quantities with units, checked when you compile | `pint` |
-| [`plot`](https://packages.nabi-lang.org/docs/plot/latest) | SVG, PNG and terminal plots, notebook display | `matplotlib` |
+| [`linalg`](https://docs.nabi-lang.org/packages/linalg/latest) | dense matrices: products, LU, Cholesky, QR, SVD, eigen, solvers, `expm` | `numpy.linalg`, `scipy.linalg` |
+| [`sparse`](https://docs.nabi-lang.org/packages/sparse/latest) | CSR / CSC / COO matrices, CG, GMRES, BiCGSTAB, sparse Cholesky and LU | `scipy.sparse`, `scipy.sparse.linalg` |
+| [`spatial`](https://docs.nabi-lang.org/packages/spatial/latest) | small fixed-size vectors, quaternions, matrices, transforms and shapes for games and graphics; `#[repr(C)]`, SIMD `Mat4` | `pyglm`, `scipy.spatial.transform` |
+| [`autodiff`](https://docs.nabi-lang.org/packages/autodiff/latest) | derivatives of your own functions: dual numbers, a reverse-mode tape, Hessians, Taylor series | `jax.grad`, `autograd` |
+| [`stats`](https://docs.nabi-lang.org/packages/stats/latest) | descriptive statistics, 19 distributions, tests, regression | `scipy.stats`, `statsmodels` (basics) |
+| [`signal`](https://docs.nabi-lang.org/packages/signal/latest) | FFT of any length, windows, FIR / IIR filters, spectra, peaks | `numpy.fft`, `scipy.signal` |
+| [`interpolate`](https://docs.nabi-lang.org/packages/interpolate/latest) | splines, polynomials, grids, scattered data, quadrature | `scipy.interpolate`, `scipy.integrate.quad` |
+| [`optimize`](https://docs.nabi-lang.org/packages/optimize/latest) | minimization, least squares, root finding, linear programming | `scipy.optimize` |
+| [`ode`](https://docs.nabi-lang.org/packages/ode/latest) | initial and boundary value problems, stiff solvers, symplectic integrators | `scipy.integrate.solve_ivp` |
+| [`special`](https://docs.nabi-lang.org/packages/special/latest) | gamma, Bessel, erf, zeta, elliptic functions; complex elementary functions | `scipy.special` |
+| [`table`](https://docs.nabi-lang.org/packages/table/latest) | columnar data frames, CSV, JSONL, Arrow and Parquet files, lazy queries | `pandas`, `polars`, `pyarrow` |
+| [`units`](https://docs.nabi-lang.org/packages/units/latest) | quantities with units, checked when you compile | `pint` |
+| [`plot`](https://docs.nabi-lang.org/packages/plot/latest) | SVG, PNG and terminal plots, notebook display | `matplotlib` |
 
 Add the ones you use to `nabi.nabion` with `nabi add` (or, for a single-file script, `nabi add <package> file.nabi`):
 
@@ -29,7 +29,7 @@ nabi add linalg
 nabi add table
 ```
 
-Each package's docs, a tutorial and its API, are on the registry: follow the package's name in the table. The code on this page needs those packages, so unlike the rest of this guide it is not run when the site is built; every block was checked with the packages' current versions.
+Each package's docs, a tutorial and its API, are under [Package docs](https://docs.nabi-lang.org/packages): follow the package's name in the table. The code on this page needs those packages, so unlike the rest of this guide it is not run when the site is built; every block was checked with the packages' current versions.
 
 ## One way in: array-like input
 
@@ -105,18 +105,18 @@ Each step is one call into one package, and the values between them are plain `V
 
 ## The tutorials
 
-Each package's docs on the registry start with a tutorial: a small problem worked step by step, with code that its tests run.
+Each package's docs start with a tutorial: a small problem worked step by step, with code that its tests run.
 
 | Tutorial | Package | What it does |
 |----------|---------|--------------|
-| [A first data analysis](https://packages.nabi-lang.org/docs/table/latest) | `table`, `stats`, `plot` | read a CSV file, clean, group, test a difference, plot |
-| [Linear algebra](https://packages.nabi-lang.org/docs/linalg/latest) | `linalg` | solve systems, least squares, eigenvalues |
-| [Sparse systems](https://packages.nabi-lang.org/docs/sparse/latest) | `sparse` | a 10 000-unknown sparse system, iterative and direct solvers |
-| [Statistics](https://packages.nabi-lang.org/docs/stats/latest) | `stats` | distributions, random samples, tests, regression, the bootstrap |
-| [Signals and spectra](https://packages.nabi-lang.org/docs/signal/latest) | `signal` | FFT, power spectra in noise, filters, peaks, convolution |
-| [Fitting and optimization](https://packages.nabi-lang.org/docs/optimize/latest) | `optimize` | roots, minima, curve fitting, linear programming |
-| [Differential equations](https://packages.nabi-lang.org/docs/ode/latest) | `ode` | initial value problems, events, stiff systems, boundary value problems |
-| [Derivatives](https://packages.nabi-lang.org/docs/autodiff/latest) | `autodiff` | exact gradients, Jacobians and Taylor series of your own functions |
+| [A first data analysis](https://docs.nabi-lang.org/packages/table/latest) | `table`, `stats`, `plot` | read a CSV file, clean, group, test a difference, plot |
+| [Linear algebra](https://docs.nabi-lang.org/packages/linalg/latest) | `linalg` | solve systems, least squares, eigenvalues |
+| [Sparse systems](https://docs.nabi-lang.org/packages/sparse/latest) | `sparse` | a 10 000-unknown sparse system, iterative and direct solvers |
+| [Statistics](https://docs.nabi-lang.org/packages/stats/latest) | `stats` | distributions, random samples, tests, regression, the bootstrap |
+| [Signals and spectra](https://docs.nabi-lang.org/packages/signal/latest) | `signal` | FFT, power spectra in noise, filters, peaks, convolution |
+| [Fitting and optimization](https://docs.nabi-lang.org/packages/optimize/latest) | `optimize` | roots, minima, curve fitting, linear programming |
+| [Differential equations](https://docs.nabi-lang.org/packages/ode/latest) | `ode` | initial value problems, events, stiff systems, boundary value problems |
+| [Derivatives](https://docs.nabi-lang.org/packages/autodiff/latest) | `autodiff` | exact gradients, Jacobians and Taylor series of your own functions |
 
 ## From NumPy, SciPy and pandas
 
