@@ -158,7 +158,7 @@ shortest path: 15 steps
 
 ## 행렬 곱셈
 
-평범한 리스트 위의 세 겹 반복문입니다. 실제 수치 계산에는 core의 `Matrix<f64>`와 `linalg` 패키지의 `@`가 훨씬 빠릅니다([선형대수](https://packages.nabi-lang.org/docs/linalg/latest)).
+평범한 리스트 위의 세 겹 반복문입니다. 실제 수치 계산에는 core의 `Matrix<f64>`와 `linalg` 패키지의 `@`가 훨씬 빠릅니다([선형대수](https://docs.nabi-lang.org/packages/linalg/latest)).
 
 ```nabi
 fn matmul(a: List<List<f64>>, b: List<List<f64>>) -> List<List<f64>> {

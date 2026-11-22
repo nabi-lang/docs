@@ -25,7 +25,7 @@ try fs::remove_file(path);
 
 ## Write and read a CSV file
 
-For a few columns, joining and splitting by hand is enough. Quote any field that may contain a comma; for real data with quotes, nulls and types, use the `table` package ([A first data analysis](https://packages.nabi-lang.org/docs/table/latest)).
+For a few columns, joining and splitting by hand is enough. Quote any field that may contain a comma; for real data with quotes, nulls and types, use the `table` package ([A first data analysis](https://docs.nabi-lang.org/packages/table/latest)).
 
 ```nabi
 use std::{env, fs, process};

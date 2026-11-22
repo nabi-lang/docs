@@ -8,7 +8,7 @@ Python을 써 왔다면 [Python 사용자를 위한 Nabi](nabi-for-python.html)�
 
 Rust를 써 왔다면 [Rust 사용자를 위한 Nabi](nabi-for-rust.html)에서 소유권, 에러, `Option`에 대해 버려야 할 습관과 Cargo 명령이 Nabi의 어디에 있는지 볼 수 있습니다.
 
-과학 계산이나 데이터 분석을 한다면 [Nabi로 하는 과학 계산](22-science.html)이 과학 패키지를 정리하고, 레지스트리에 있는 각 패키지 문서가 튜토리얼로 시작합니다. 처음 해 보는 CSV 분석에서 시작해 선형대수, 통계, 신호, 피팅, 미분방정식, 도함수까지 다룹니다. [Rosetta](rosetta/index.html) 페이지는 FizzBuzz, 소수 체, 여덟 퀸, 단어 세기처럼 잘 알려진 작은 문제를 Nabi로 풉니다.
+과학 계산이나 데이터 분석을 한다면 [Nabi로 하는 과학 계산](22-science.html)이 과학 패키지를 정리하고, 각 패키지의 [문서](https://docs.nabi-lang.org/packages)가 튜토리얼로 시작합니다. 처음 해 보는 CSV 분석에서 시작해 선형대수, 통계, 신호, 피팅, 미분방정식, 도함수까지 다룹니다. [Rosetta](rosetta/index.html) 페이지는 FizzBuzz, 소수 체, 여덟 퀸, 단어 세기처럼 잘 알려진 작은 문제를 Nabi로 풉니다.
 
 전체 규칙은 [언어 참조](../spec/refs-lang/index.html)와 [표준 라이브러리 사양](../spec/refs-standard-libraries/index.html)에 있습니다. 함수와 타입은 [표준 라이브러리 API](../../std/index.html)에 정리해 두었습니다. 작고 완결된 프로그램은 [예제](../examples/index.html)에 모아 두었습니다. 파일 읽기, 시간 재기, 스레드, JSON, HTTP 같은 흔한 작업은 [어떻게 하나요](20-cookbook.html)에서 바로 답을 찾을 수 있습니다. 컴파일러가 에러를 내면 그 에러 코드를 [에러 코드 색인](../errors/index.html)에서 찾아보세요.
 

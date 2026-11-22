@@ -25,7 +25,7 @@ try fs::remove_file(path);
 
 ## CSV 파일 쓰고 읽기
 
-열이 몇 개뿐이라면 손으로 잇고 나누는 것으로 충분합니다. 쉼표가 들어갈 수 있는 필드는 따옴표로 감싸세요. 따옴표, null, 타입이 있는 실제 데이터에는 `table` 패키지를 쓰세요([처음 해 보는 데이터 분석](https://packages.nabi-lang.org/docs/table/latest)).
+열이 몇 개뿐이라면 손으로 잇고 나누는 것으로 충분합니다. 쉼표가 들어갈 수 있는 필드는 따옴표로 감싸세요. 따옴표, null, 타입이 있는 실제 데이터에는 `table` 패키지를 쓰세요([처음 해 보는 데이터 분석](https://docs.nabi-lang.org/packages/table/latest)).
 
 ```nabi
 use std::{env, fs, process};

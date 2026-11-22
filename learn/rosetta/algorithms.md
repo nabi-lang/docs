@@ -158,7 +158,7 @@ shortest path: 15 steps
 
 ## Matrix multiplication
 
-Three nested loops over plain lists. For real numerical work, core's `Matrix<f64>` and the `linalg` package's `@` are much faster ([Linear algebra](https://packages.nabi-lang.org/docs/linalg/latest)).
+Three nested loops over plain lists. For real numerical work, core's `Matrix<f64>` and the `linalg` package's `@` are much faster ([Linear algebra](https://docs.nabi-lang.org/packages/linalg/latest)).
 
 ```nabi
 fn matmul(a: List<List<f64>>, b: List<List<f64>>) -> List<List<f64>> {
