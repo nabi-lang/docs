@@ -306,6 +306,8 @@ Package { name: "app", version: "0.1.0", deps: {
 } }
 ```
 
+A package sees only its own dependencies, under the names it gives them. Here `j5::..` is `json5`, and `json5::..` is nothing, even when another package in the build depends on `json5` under that name. When a dependency's name is also the name of a child module, `name::..` would mean both, so it is an error: write `::name::..` for the dependency or `pkg::name::..` for the module, or rename the dependency with `package:`.
+
 A bare requirement always means the default registry's index. To fetch that index from a mirror, put the mirror in `~/.nabi/sources.nabion`; `nabi.lock` still names the default registry's index, so the lock stays the same with or without the mirror.
 
 ```nabion
