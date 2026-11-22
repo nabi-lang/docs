@@ -153,7 +153,7 @@ mgrep: option '--max' needs a value
 - `env::args()` 是一個 `List<str>`，`[0]` 是程式名稱，所以 `skip(1).to_list()` 保留其餘部分（[`env::args`](../../std/std/env.html#fn.args)）。
 - 選項存放在帶有欄位預設值的 `Options` 結構中。有預設值的欄位可以省略，例如 `Options { pattern: "" }`（[結構、列舉與 trait](../learn/06-structs-enums-traits.html)、[2.3.3 欄位預設值](../spec/refs-lang/002-types/203-struct.html#233-欄位預設值)）。
 - 以 `|` 連接的字串字面值模式，例如 `match a { "-i" | "--ignore-case" => ... }`，可同時接受短形式與長形式。指派是陳述式而不是運算式，所以這些分支的主體包在 `{ ...; }` 區塊中（[控制流程](../learn/04-control-flow.html)）。
-- 錯誤的引數以 `ArgError` 列舉擲回。`run` 宣告了 `throws (ArgError | IoError)`，`main` 則對每個型別各用一個 `catch` 來選擇結束碼（2 或 1）（[錯誤](../learn/10-errors.html)、[3.14.4 `catch`](../spec/refs-lang/003-expressions/314-error-control-flow.html#3144-catch-後綴處理運算式)）。
+- 錯誤的引數以 `ArgError` 列舉擲回。`run` 宣告了 `throws (ArgError | IoError)`，`main` 則對每個型別各用一個 `catch` 來選擇結束碼（2 或 1）（[錯誤](../learn/10-errors.html)、[3.14.4 `catch`](../spec/refs-lang/003-expressions/314-error-control-flow.html#3144-catch後綴處理運算式)）。
 - `-m` 後面的數字以 `parse::<usize>()` 讀取；失敗時，`catch _ { throw ...; }` 把它轉成更友善的錯誤。`opts.max` 是 `usize | none`，所以比較時以 `?? usize::MAX` 提供預設值。
 
 ## 執行

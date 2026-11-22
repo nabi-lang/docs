@@ -190,7 +190,7 @@ The lamp reveals a pile of gold. You win!
 ## 說明
 
 - 玩家的輸入先剖析成 `Command` 列舉，遊戲邏輯只處理這個列舉。字串處理與狀態變更彼此分開，所以新增指令很容易，而編譯器會檢查 `match` 是否涵蓋每個變體（[和型別](../learn/05-sum-types.html)、[3.12 match](../spec/refs-lang/003-expressions/312-match-expression.html)）。
-- `"n" | "north" => ...` 這類 or 模式把別名歸為一組，`"go"` 則對剩下的字再呼叫一次 `parse`，所以 `go west` 和 `west` 會成為同一個指令（[3.11 模式](../spec/refs-lang/003-expressions/311-patterns.html#or-模式)）。
+- `"n" | "north" => ...` 這類 or 模式把別名歸為一組，`"go"` 則對剩下的字再呼叫一次 `parse`，所以 `go west` 和 `west` 會成為同一個指令（[3.11 模式](../spec/refs-lang/003-expressions/311-patterns.html#或模式)）。
 - `Dict::get` 回傳 `usize | none`。分成 `next: usize => ...` 和 `none => ...` 兩個分支，自然就處理了「那個方向沒有出口」的情況（[`Dict`](../../std/core/collections/dict.html#struct.Dict)）。
 - 遊戲狀態 `Game` 透過 `step(ref self, ...)` 就地改變。房間的 `items` 是 `List`，所以用 `let items = self.rooms[self.here].items;` 取出後呼叫 `remove`，也會改變房間本身的串列（[集合型別與迭代器](../learn/08-collections-iterators.html)）。
 - `script` 串列一次送入一行，代替標準輸入。想做成真正的遊戲，可以把這個迴圈換成 `while let line = try io::input("> ") { .. }`，它會一直讀取行，直到輸入結束（[I/O](../learn/13-io.html)）。

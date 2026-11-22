@@ -380,7 +380,7 @@ println(f"{c:?} {d:?} {r:?}");
 
 ## 延伸閱讀
 
-- [stdlib 2.9. Collections](../spec/refs-standard-libraries/200-core/209-collections.html)、[參考控制代碼](../spec/refs-standard-libraries/200-core/209-collections.html#reference-handles)
+- [stdlib 2.9. Collections](../spec/refs-standard-libraries/200-core/209-collections.html)、[參考控制代碼](../spec/refs-standard-libraries/200-core/209-collections.html#參考控制代碼)
 - [3.6. 索引與切片](../spec/refs-lang/003-expressions/306-indexing-and-slicing.html)
 - [stdlib 2.7. iter](../spec/refs-standard-libraries/200-core/207-iter.html)、[4.11. 產生器](../spec/refs-lang/004-functions/411-generators.html)
 - [3.3. 廣播運算子](../spec/refs-lang/003-expressions/303-broadcast-operators.html)、[stdlib 2.6. broadcast](../spec/refs-standard-libraries/200-core/206-broadcast.html)

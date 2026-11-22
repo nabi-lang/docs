@@ -98,7 +98,7 @@ true
 
 ## 日期、時間與時區
 
-日曆功能在 `std::time` 裡。`Date`、`Time` 與 `DateTime` 是日曆和掛鐘上顯示的內容，不帶時區；`Zoned` 則是某個 `TimeZone` 中的一個時間點。`Display` 寫出 ISO 8601 / RFC 3339 格式，`parse` 讀取這種格式，`format` / `parse_with` 則接受 `%d %B %Y` 之類的 strftime 樣式（[時區與樣式](../spec/refs-standard-libraries/300-std/303-time.html#337-offsets-time-zones-and-zoned)、[`time` API](../../std/std/time.html)）。
+日曆功能在 `std::time` 裡。`Date`、`Time` 與 `DateTime` 是日曆和掛鐘上顯示的內容，不帶時區；`Zoned` 則是某個 `TimeZone` 中的一個時間點。`Display` 寫出 ISO 8601 / RFC 3339 格式，`parse` 讀取這種格式，`format` / `parse_with` 則接受 `%d %B %Y` 之類的 strftime 樣式（[時區與樣式](../spec/refs-standard-libraries/300-std/303-time.html#337-時差時區與-zoned)、[`time` API](../../std/std/time.html)）。
 
 ```nabi
 use std::time::{Date, DateTime, TimeZone, Zoned};

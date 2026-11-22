@@ -173,6 +173,6 @@ reload::on_reload("cache", |r| println(f"reloaded v{r.version}"));
 
 ## 延伸閱讀
 
-- 規格：[熱重載](../spec/refs-lang/009-tools/914-hot-reload.html)、[`nabi dev`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-dev-run-with-hot-reload)、[`std::reload`](../spec/refs-standard-libraries/300-std/313-reload.html)
+- 規格：[熱重載](../spec/refs-lang/009-tools/914-hot-reload.html)、[`nabi dev`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-dev以熱重載執行)、[`std::reload`](../spec/refs-standard-libraries/300-std/313-reload.html)
 - 自行載入程式碼：[23. 外掛](23-plugins.html)
 - 工具：[16. 工具](16-tools.html)

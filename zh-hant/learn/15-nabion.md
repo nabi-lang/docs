@@ -277,6 +277,6 @@ missing: NotFound
 
 ## 延伸閱讀
 
-- 規格：[3.8 NABION](../spec/refs-standard-libraries/300-std/308-nabion.html)、[欄位預設值](../spec/refs-lang/002-types/203-struct.html#233-field-default-values)、[nabi.nabion 清單](../spec/refs-lang/009-tools/910-nabi-frontend.html)
+- 規格：[3.8 NABION](../spec/refs-standard-libraries/300-std/308-nabion.html)、[欄位預設值](../spec/refs-lang/002-types/203-struct.html#233-欄位預設值)、[nabi.nabion 清單](../spec/refs-lang/009-tools/910-nabi-frontend.html)
 - API：[std::nabion](../../std/std/nabion.html)
 - 下一章：[16. 工具](16-tools.html)

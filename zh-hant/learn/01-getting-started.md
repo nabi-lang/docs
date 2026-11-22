@@ -6,7 +6,7 @@
 
 ### 事前準備
 
-`nabic` 是自給自足的：它有自己的程式碼產生器和連結器，所以不需要另外安裝 C 編譯器或連結器（[9.2.18](../spec/refs-lang/009-tools/902-aot-pipeline.html#9218-self-contained-toolchain)）。
+`nabic` 是自給自足的：它有自己的程式碼產生器和連結器，所以不需要另外安裝 C 編譯器或連結器（[9.2.18](../spec/refs-lang/009-tools/902-aot-pipeline.html#9218-自給自足的工具鏈)）。
 
 - macOS：Xcode Command Line Tools（`xcode-select --install`），用於最後連結時需要的 SDK。
 - Linux：不需要任何東西。工具鏈和它建置的程式需要 glibc 2.34 以上（Ubuntu 22.04、Debian 12、RHEL 9 及更新版本）。
@@ -250,7 +250,7 @@ nabi run hi.nabi
 hi
 ```
 
-指令碼也能使用相依套件：`nabi add json hi.nabi` 會把它們寫進檔案開頭的 `//!` 註解（請見[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-inline-manifest-for-single-file-scripts)和[第 11 章](11-modules-packages.html#單檔指令碼與環境)）。
+指令碼也能使用相依套件：`nabi add json hi.nabi` 會把它們寫進檔案開頭的 `//!` 註解（請見[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-單一檔案腳本的行內資訊清單)和[第 11 章](11-modules-packages.html#單檔指令碼與環境)）。
 
 ## REPL
 
@@ -281,7 +281,7 @@ List<i64>
 
 ## 延伸閱讀
 
-- [安裝結構](../spec/refs-lang/009-tools/902-aot-pipeline.html#9219-installation-layout)、[固定工具鏈](../spec/refs-lang/009-tools/910-nabi-frontend.html#9106-toolchain)
+- [安裝結構](../spec/refs-lang/009-tools/902-aot-pipeline.html#9219-安裝配置)、[固定工具鏈](../spec/refs-lang/009-tools/910-nabi-frontend.html#9106-toolchain)
 - [`nabi` 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[`nabic` CLI](../spec/refs-lang/009-tools/901-nabic-cli.html)
 - [進入點](../spec/refs-lang/004-functions/416-entry-point.html)
 - [JIT 儲存格與 REPL](../spec/refs-lang/009-tools/907-jit-cells.html)

@@ -448,8 +448,8 @@ show_sum(1.5, 2.0);   // 3.5
 
 ## 延伸閱讀
 
-- [2.10. 泛型](../spec/refs-lang/002-types/210-generics.html)：[2.10.3. trait 約束](../spec/refs-lang/002-types/210-generics.html#2103-trait-bounds)、[2.10.4. where 子句](../spec/refs-lang/002-types/210-generics.html#2104-where-clauses)、[2.10.9. 主體檢查](../spec/refs-lang/002-types/210-generics.html#2109-body-checking)、[2.10.7. 與漸進型別的互動](../spec/refs-lang/002-types/210-generics.html#2107-combination-with-gradual-typing)、[2.10.13. 對型別參數的型別測試](../spec/refs-lang/002-types/210-generics.html#21013-type-tests-on-type-parameters)
-- [2.8.3. 關聯型別](../spec/refs-lang/002-types/208-trait.html#283-associated-types)
+- [2.10. 泛型](../spec/refs-lang/002-types/210-generics.html)：[2.10.3. trait 約束](../spec/refs-lang/002-types/210-generics.html#2103-trait-約束)、[2.10.4. where 子句](../spec/refs-lang/002-types/210-generics.html#2104-where-子句)、[2.10.9. 主體檢查](../spec/refs-lang/002-types/210-generics.html#2109-主體檢查)、[2.10.7. 與漸進型別的互動](../spec/refs-lang/002-types/210-generics.html#2107-與漸進式型別結合)、[2.10.13. 對型別參數的型別測試](../spec/refs-lang/002-types/210-generics.html#21013-對型別參數的型別測試)
+- [2.8.3. 關聯型別](../spec/refs-lang/002-types/208-trait.html#283-關聯型別)
 - [2.11. `const` 泛型](../spec/refs-lang/002-types/211-const-generics.html)
 - [2.2. `any` 槽位](../spec/refs-lang/002-types/202-any-slot.html)
 - 下一章：[8. 集合型別與迭代器](08-collections-iterators.html)

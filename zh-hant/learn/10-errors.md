@@ -253,7 +253,7 @@ missing: b
 invalid: empty key
 ```
 
-`lookup` 的錯誤種類封閉為 `NotFound | Invalid`，所以涵蓋這兩種型別的 `describe` 就成為不再擲回錯誤的函式。編譯器會檢查這一點。當錯誤種類的集合難以封閉時，例如在公開 API 中，請用單純的 `throws`；接收端用 `catch e` 接住所有錯誤，或先收窄型別，例如 `catch e: ValueError`（[4.14.3](../spec/refs-lang/004-functions/414-throws.html#4143-untyped-throws)）。
+`lookup` 的錯誤種類封閉為 `NotFound | Invalid`，所以涵蓋這兩種型別的 `describe` 就成為不再擲回錯誤的函式。編譯器會檢查這一點。當錯誤種類的集合難以封閉時，例如在公開 API 中，請用單純的 `throws`；接收端用 `catch e` 接住所有錯誤，或先收窄型別，例如 `catch e: ValueError`（[4.14.3](../spec/refs-lang/004-functions/414-throws.html#4143-未定型的-throws)）。
 
 `catch` 後面可以接任何模式，所以結構模式可以直接取出欄位。
 
@@ -455,7 +455,7 @@ for n in [4, 5] {
 
 ## 延伸閱讀
 
-- 規格：[錯誤控制流程](../spec/refs-lang/003-expressions/314-error-control-flow.html)、[`throws` 簽章](../spec/refs-lang/004-functions/414-throws.html)、[`using` 運算式](../spec/refs-lang/003-expressions/317-using-expression.html)、[panic 與致命錯誤](../spec/refs-lang/003-expressions/314-error-control-flow.html#3148-panics-and-fatal-errors)
+- 規格：[錯誤控制流程](../spec/refs-lang/003-expressions/314-error-control-flow.html)、[`throws` 簽章](../spec/refs-lang/004-functions/414-throws.html)、[`using` 運算式](../spec/refs-lang/003-expressions/317-using-expression.html)、[panic 與致命錯誤](../spec/refs-lang/003-expressions/314-error-control-flow.html#3148-panic-與致命錯誤)
 - 標準函式庫規格：[error](../spec/refs-standard-libraries/200-core/214-error.html)
 - API：[`Error`](../../std/core/error.html#trait.Error)、[`ValueError`](../../std/core/error.html#struct.ValueError)、[`Result`](../../std/core/error.html#enum.Result)、[`Drop`](../../std/core/marker.html#trait.Drop)
 - 下一章：[11. 模組與套件](11-modules-packages.html)

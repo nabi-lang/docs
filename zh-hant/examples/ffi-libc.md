@@ -88,7 +88,7 @@ qsort descending: [88, 56, 42, 21, 19, 7, 3]
 ## 說明
 
 - `extern "C" { ... }` 區塊只包含沒有主體的簽章。在其中宣告的函式隱含為 `unsafe`，所以每次呼叫都要寫在 `unsafe { ... }` 中（[5.9 `extern` 區塊](../spec/refs-lang/005-modules/509-extern-block.html)、[4.15 unsafe](../spec/refs-lang/004-functions/415-unsafe.html)）。
-- `str` 參數以 NUL 結尾的 `char*` 傳給 C。所以 `strlen("naïve")` 回傳的是 UTF-8 位元組數 6，而不是 5 個字元（[5.9.4 FFI 相容型別](../spec/refs-lang/005-modules/509-extern-block.html#594-ffi-相容型別)）。
+- `str` 參數以 NUL 結尾的 `char*` 傳給 C。所以 `strlen("naïve")` 回傳的是 UTF-8 位元組數 6，而不是 5 個字元（[5.9.4 FFI 相容型別](../spec/refs-lang/005-modules/509-extern-block.html#594-與-ffi-相容的型別)）。
 - 可能為 NULL 的 C 指標以 [`CPtr`](../../std/bare/ptr.html#struct.CPtr) 接收。`as_const()` 回傳非 null 的 [`ConstPtr`](../../std/bare/ptr.html#struct.ConstPtr) 或 `none`，所以只要一個 `?`，就能把 `getenv` 包成回傳 `str | none` 的安全函式（[和型別](../learn/05-sum-types.html)）。
 - 記憶體以 [`Layout`](../../std/bare/alloc.html#struct.Layout) 和 `alloc` / `dealloc` 手動配置，並透過 [`ManyPtr`](../../std/bare/ptr.html#struct.ManyPtr) 的 `read(i)` / `write(i, v)` 像 C 陣列一樣存取。GC 不管理這塊記憶體，所以要自己釋放。
 - `extern "C" fn descending` 是以 C ABI 編譯的 Nabi 函式。把它當作函式指標傳給 `qsort`，C 就能在排序時回呼 Nabi 程式碼（[5.9.10 定義 `extern fn`](../spec/refs-lang/005-modules/509-extern-block.html#5910-extern-fn-定義對外公開)）。

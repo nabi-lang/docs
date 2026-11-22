@@ -124,7 +124,7 @@ false true true
 ["can't", "stop", "3.14"]
 ```
 
-`grapheme_slice(0, n)` 保留前 `n` 個字素，所以截短的標題絕不會把重音符號或國旗切成兩半。正規化形式、大小寫摺疊與分段規則請見 [`str` 參考](../spec/refs-standard-libraries/200-core/215-string.html#21510-unicode-text---normalization-case-folding-segmentation)。
+`grapheme_slice(0, n)` 保留前 `n` 個字素，所以截短的標題絕不會把重音符號或國旗切成兩半。正規化形式、大小寫摺疊與分段規則請見 [`str` 參考](../spec/refs-standard-libraries/200-core/215-string.html#21510-unicode-文字正規化大小寫摺疊分段)。
 
 ## `StrBuf`：一段一段地建構
 
@@ -145,7 +145,7 @@ println(f"{s} ({s.len()} bytes)");
 1, 4, 9, 16, 25! (16 bytes)
 ```
 
-只串接一次兩個字串時，用 `+` 就夠了；它也能接上一個 `char`（`s + '!'`），`s += '!'` 也一樣。不過，和 C 或 Python 不同，相鄰的字串字面值（`"abc" "def"`）不會自動串接。這樣寫會產生編譯錯誤；想串接時，請寫 `+`（[1.7.4](../spec/refs-lang/001-lexical/107-string-literals.html#174-automatic-concatenation-of-adjacent-strings)）。
+只串接一次兩個字串時，用 `+` 就夠了；它也能接上一個 `char`（`s + '!'`），`s += '!'` 也一樣。不過，和 C 或 Python 不同，相鄰的字串字面值（`"abc" "def"`）不會自動串接。這樣寫會產生編譯錯誤；想串接時，請寫 `+`（[1.7.4](../spec/refs-lang/001-lexical/107-string-literals.html#174-相鄰字串的自動串接)）。
 
 ```nabi
 let greeting = "hello, " + "world" + '!';
@@ -175,7 +175,7 @@ she said "hi"
 one long line
 ```
 
-如最後一個範例所示，行尾的 `\` 會同時移除換行和下一行開頭的空白。這條規則在原始字串中同樣不適用（[1.7.2](../spec/refs-lang/001-lexical/107-string-literals.html#172-raw-strings)）。
+如最後一個範例所示，行尾的 `\` 會同時移除換行和下一行開頭的空白。這條規則在原始字串中同樣不適用（[1.7.2](../spec/refs-lang/001-lexical/107-string-literals.html#172-原始字串)）。
 
 ## 位元組字串 `b"..."`
 
@@ -291,7 +291,7 @@ n=1234567 1,234,567 1_234_567 25.6% n + 1 = 1234568
 
 `g` 型別是 C 和 Python 的通用格式：精確度計算的是有效位數（預設為 6），很大或很小的數字會改用指數表示。`{1234.5678:.3g}` 是 `1.23e+03`，`{1e20:g}` 是 `1e+20`，`{0.5:g}` 是 `0.5`。
 
-要在執行時決定寬度或精確度，就在格式規範裡再放一個插值欄位。`{..}` 和 `${..}` 兩種寫法都可以（[動態格式規範](../spec/refs-lang/001-lexical/107-string-literals.html#dynamic-format-specifiers)）。
+要在執行時決定寬度或精確度，就在格式規範裡再放一個插值欄位。`{..}` 和 `${..}` 兩種寫法都可以（[動態格式規範](../spec/refs-lang/001-lexical/107-string-literals.html#動態格式規範)）。
 
 ```nabi
 let x = 2.0 / 3.0;
@@ -351,7 +351,7 @@ Circle(1.5) Rect { w: 2.5, h: 3.0 }
 
 ## 延伸閱讀
 
-- 規格：[字串字面值與 f-string](../spec/refs-lang/001-lexical/107-string-literals.html)、[字元字面值](../spec/refs-lang/001-lexical/108-character-literals.html)、[位元組字串](../spec/refs-lang/001-lexical/107-string-literals.html#175-byte-strings)、[檔案嵌入](../spec/refs-lang/006-meta-system/611-include.html)
+- 規格：[字串字面值與 f-string](../spec/refs-lang/001-lexical/107-string-literals.html)、[字元字面值](../spec/refs-lang/001-lexical/108-character-literals.html)、[位元組字串](../spec/refs-lang/001-lexical/107-string-literals.html#175-位元組字串)、[檔案嵌入](../spec/refs-lang/006-meta-system/611-include.html)
 - 標準函式庫規格：[fmt](../spec/refs-standard-libraries/200-core/210-fmt.html)、[字串](../spec/refs-standard-libraries/200-core/215-string.html)
 - API：[`str` 方法](../../std/core/str.html#impl.str)、[`StrBuf`](../../std/core/str.html#struct.StrBuf)、[`Display`](../../std/core/fmt.html#trait.Display)、[`Formatter`](../../std/core/fmt.html#struct.Formatter)
 - 下一章：[10. 錯誤處理](10-errors.html)

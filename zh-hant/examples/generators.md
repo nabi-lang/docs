@@ -96,7 +96,7 @@ leaves: ["a", "b", "c", "d", "e"]
 ## 說明
 
 - 呼叫 `yield fn` 不會立刻執行它的主體，而是回傳一個迭代器 `GenIter<T>`。`-> i64` 不是回傳值，而是產出項目的型別（[4.11.3 具名產生器函式](../spec/refs-lang/004-functions/411-generators.html#4113-具名產生器函式)）。
-- `fibonacci()` 和 `primes()` 是無窮產生器。它們的區域變數（`a`、`b`、`found`）在兩次 `yield` 之間會保留下來，使用端只用 `take`、`nth` 之類的方法取出需要的項目數（[4.11.9 無窮產生器](../spec/refs-lang/004-functions/411-generators.html#4119-無窮產生器)）。
+- `fibonacci()` 和 `primes()` 是無窮產生器。它們的區域變數（`a`、`b`、`found`）在兩次 `yield` 之間會保留下來，使用端只用 `take`、`nth` 之類的方法取出需要的項目數（[4.11.9 無窮產生器](../spec/refs-lang/004-functions/411-generators.html#4119-無限產生器)）。
 - 產生器實作了 [`Iterator`](../../std/core/iter.html#trait.Iterator)，所以能和 `filter`、`sum`、`to_list` 等配接器組合。自己動手寫的 `take_while`（標準迭代器也有一個）只是一個泛型的 `yield fn`，用 `return;` 結束迭代（[集合型別與迭代器](../learn/08-collections-iterators.html)、[泛型](../learn/07-generics.html)）。
 - `yield { ... }` 是行內產生器區塊，在需要運算式的地方直接建立迭代器（[4.11.4](../spec/refs-lang/004-functions/411-generators.html#4114-行內-yield-區塊值)）。
 - `leaves` 呼叫自己，並把每棵子樹的值再次產出。遞迴產生器是攤平巢狀結構的常見做法（[和型別](../learn/05-sum-types.html)）。
