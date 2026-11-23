@@ -39,7 +39,7 @@ let o = textwrap::WrapOptions { width: 60 };
 let textwrap::WrapOptions { width, .. } = o;
 ```
 
-trait 上的 `#[sealed]` 表示只有你的包实现它。其他包仍然可以在约束中使用它、调用它的方法，但在别处为它写 `impl` 是错误，所以你可以依赖于知道它的全部实现。
+trait 上的 `#[sealed]` 表示只有你的包实现它。其他包仍然可以在约束中使用它、调用它的方法，但在别处为它写 `impl` 是错误，因此你可以确信自己掌握了它的全部实现。
 
 ## 延伸阅读
 

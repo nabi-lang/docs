@@ -65,9 +65,9 @@ jobs:
         run: nabi publish
 ```
 
-之后用 `git tag v0.3.1 && git push origin v0.3.1` 发布新版本。对于工作流加入仓库之前就已推送的标签，可以在 Actions 标签页手动运行它（或用 `gh workflow run publish.yml -f tag=v0.3.1`）：它运行默认分支上的工作流，并发布该标签的提交。除了 `nabi login`，这一步也可以把令牌放进 `NABI_REGISTRY_TOKEN` 供发布步骤使用（`echo "NABI_REGISTRY_TOKEN=$tok" >> "$GITHUB_ENV"`）。
+之后用 `git tag v0.3.1 && git push origin v0.3.1` 发布新版本。对于工作流加入仓库之前就已推送的标签，可以在 Actions 标签页手动运行它（或用 `gh workflow run publish.yml -f tag=v0.3.1`）：它运行默认分支上的工作流，并发布该标签的提交。这一步也可以不用 `nabi login`，而是把令牌放进 `NABI_REGISTRY_TOKEN` 供发布步骤使用（`echo "NABI_REGISTRY_TOKEN=$tok" >> "$GITHUB_ENV"`）。
 
-指定的工作流文件在任何 ref 上运行都可以发布。因此请给发布者指定一个环境：创建一个带有必需审阅者和 `v*` 标签部署规则的 GitHub 环境（`release`），在任务上设置 `environment: release`，并在这里填写它的名称；之后注册表会拒绝来自该环境之外的运行的令牌。如果不用环境，而其他人可以向仓库推送，请保护你的 `v*` 标签。版本页面会写明发布它的工作流。
+指定的工作流文件在任何 ref 上运行都可以发布。因此请给发布者指定一个环境：创建一个带有必需审阅者和 `v*` 标签部署规则的 GitHub 环境（`release`），在任务上设置 `environment: release`，并在这里填写它的名称；之后注册表会拒绝该环境之外的工作流运行所带的令牌。如果不用环境，而其他人可以向仓库推送，请保护你的 `v*` 标签。版本页面会写明发布它的工作流。
 
 已在索引中但没有元数据的版本（注册表维护者用 `nabi publish --index-dir` 直接写入的版本）也用同一个命令补上元数据：对同一棵树运行 `nabi publish`，会补全描述、许可证、README 等内容，不改变其他任何东西。
 

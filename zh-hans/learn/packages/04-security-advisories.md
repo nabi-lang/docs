@@ -18,7 +18,7 @@ nabi audit
 | 1 | 至少有一条适用。 |
 | 2 | 无法检查：没有网络也没有缓存的列表、锁文件无法读取，或注册表返回错误。消息会说明是哪种情况。 |
 
-列表每个注册表只请求一次获取，并在 `$NABI_HOME/cache/advisories` 下保留一小时。`--offline` 不论新旧都使用这份副本，获取失败时也会退回到它。
+列表只获取一次（每个注册表一次请求），并在 `$NABI_HOME/cache/advisories` 下缓存一小时。`--offline` 不论新旧都使用这份副本，获取失败时也会退回到它。
 
 | 标志 | 作用 |
 |------|--------|
@@ -43,7 +43,7 @@ nabi audit
 - **严重程度**：报告者给出时，为一个 CVSS 向量；
 - **参考与致谢**：修复、报告，以及同一缺陷的其他 id。
 
-撤销的公告仍然列出，并标为已撤销，`nabi audit` 会跳过它。
+已撤销的公告仍会列出，并标为已撤销，`nabi audit` 会跳过它。
 
 整个列表也是一个供其他工具使用的 API：`GET https://packages.nabi-lang.org/api/v1/advisories?format=json` 以 OSV JSON 给出所有公告，`/api/v1/packages/<name>/advisories` 给出一个包的公告。字段见 [API 参考](https://packages.nabi-lang.org/api)。
 

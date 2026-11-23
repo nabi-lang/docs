@@ -9,15 +9,15 @@
 `nabic` 是自包含的：它有自己的代码生成器和链接器，所以不需要安装 C 编译器或链接器（[9.2.18](../spec/refs-lang/009-tools/902-aot-pipeline.html#9218-自包含的工具链)）。
 
 - macOS：Xcode Command Line Tools（`xcode-select --install`），提供最终链接所需的 SDK。
-- Linux：不需要任何东西。工具链及其构建的程序需要 glibc 2.34 或更高版本（Ubuntu 22.04、Debian 12、RHEL 9 及更新版本）。
-- Windows：不需要任何东西。
-- FreeBSD：不需要任何东西。工具链及其构建的程序需要 FreeBSD 14 或更高版本。
+- Linux：无需额外安装。工具链及其构建的程序需要 glibc 2.34 或更高版本（Ubuntu 22.04、Debian 12、RHEL 9 及更新版本）。
+- Windows：无需额外安装。
+- FreeBSD：无需额外安装。工具链及其构建的程序需要 FreeBSD 14 或更高版本。
 
 发布包为以下平台构建：macOS arm64，Linux x86_64 和 arm64（glibc 与静态 musl 两种），Windows x86_64 和 arm64，以及 FreeBSD x86_64。其他主机没有发布包，需要从源代码构建 Nabi。
 
 ### 安装脚本
 
-安装脚本从 [GitHub releases](https://github.com/nabi-lang/nabi/releases) 下载适合你平台的工具链，用该版本的 `SHA256SUMS` 校验后解压到 `~/.nabi`。如果 `PATH` 上有 `minisign`，它会先用发布密钥验证 `SHA256SUMS.minisig`；没有时，`SHA256SUMS` 只经由 HTTPS 获取，脚本会说明如何手动验证签名。任何一项不符都不会安装。
+安装脚本从 [GitHub releases](https://github.com/nabi-lang/nabi/releases) 下载适合你平台的工具链，用该版本的 `SHA256SUMS` 校验后解压到 `~/.nabi`。如果 `PATH` 中有 `minisign`，它会先用发布密钥验证 `SHA256SUMS.minisig`；没有时，`SHA256SUMS` 只经由 HTTPS 获取，脚本会说明如何手动验证签名。任何一项不符都不会安装。
 
 ```bash
 curl -fsSL https://nabi.sh | sh
@@ -102,7 +102,7 @@ nabi toolchain update                   # download the newest release and make i
 nabi toolchain update 0.1.1             # exactly 0.1.1 instead
 ```
 
-`nabi toolchain update` 接受确切版本，而不是系列。`nabi toolchain install` 下载一个工具链但不改变默认值（`--from <archive>` 安装你已有的文件）。下载内容会用公布的 SHA-256 校验，任何一步失败，原来的默认工具链都保持不变。旧工具链会保留。更新跨入新系列时会附上一条提示：只有最新系列会得到修复，所以请把项目迁移过去。项目迁移之前，可以固定旧系列，例如 `toolchain: "0.1"` 固定到 0.1，或者运行 `nabi +0.1 ..`。不要把它和 `nabi update` 混淆，后者更新包的 `nabi.lock` 中固定的版本（[第 11 章](11-modules-packages.html)）。
+`nabi toolchain update` 接受确切版本，而不是系列。`nabi toolchain install` 下载一个工具链但不改变默认值（`--from <archive>` 安装你已有的文件）。下载内容会用公布的 SHA-256 校验，任何一步失败，原来的默认工具链都保持不变。旧工具链会保留。更新跨入新系列时会附上一条提示：只有最新系列会获得修复，所以请把项目迁移过去。项目迁移之前，可以固定旧系列，例如 `toolchain: "0.1"` 固定到 0.1，或者运行 `nabi +0.1 ..`。不要把它和 `nabi update` 混淆，后者更新包的 `nabi.lock` 中固定的版本（[第 11 章](11-modules-packages.html)）。
 
 同一系列中较新的工具链能构建较旧工具链能构建的代码。1.0 之前，系列是 `0.y`：0.1.7 能构建 0.1.3 构建过的代码，0.2.0 则不一定。从 1.0 起系列是 `x`：1.9.0 能构建 1.4.2 构建过的代码，2.0.0 则不一定。包的 `nabi_version` 遵循这条规则：`"0.1.3"` 表示 nabi 0.1.3 或更高的 0.1.x。
 
@@ -124,7 +124,7 @@ sh install.sh --archive dist/nabi-*.tar.gz  # into ~/.nabi
 
 脚本还会用 `targets/build.sh` 构建每个目标的运行时和 C 库，这需要 `curl`、`python3` 和支持 xz 的 `tar`，下载的内容放在 `~/.cache/nabi`（可用 `NABI_CACHE` 改变位置）。在 Linux 上，`scripts/dist/gnu.sh`（podman 或 docker）在容器中构建同样的压缩包，使其能在 glibc 2.34 及更高版本上运行；发布包就是这样构建的。详情见仓库的 README。
 
-如果你在开发编译器，可以不安装、直接使用构建输出。`cargo build` 生成可执行文件和主机的运行时。`targets/build.sh <triple>` 构建某个目标的 C 库和运行时文件：Linux 主机需要它自己的这些文件才能链接程序，每个交叉编译目标也都需要；在 macOS 和 Windows 上，主机不需要额外的东西。
+如果你在开发编译器，可以不安装、直接使用构建输出。`cargo build` 生成可执行文件和主机的运行时。`targets/build.sh <triple>` 构建某个目标的 C 库和运行时文件：Linux 主机需要它自己的这些文件才能链接程序，每个交叉编译目标也都需要；在 macOS 和 Windows 上，主机无需额外准备。
 
 ```bash
 cargo build --release
@@ -134,7 +134,7 @@ export PATH="$PWD/target/release:$PATH"
 
 ## 你的第一个包
 
-`nabi new` 创建一个包目录，并初始化一个 git 仓库，其中的 `.gitignore` 排除 `target/`。包名由小写字母、数字、`-` 和 `_` 组成，以字母开头，最长 64 个字符。Windows 保留给设备的名字（`con`、`nul`、`com1` 等）会被拒绝，因为在那里没有文件能叫这个名字。`nabi` 这个名字被标准库占用，所以包不能叫 `nabi`。在代码中，`-` 变成 `_`（`nabi new my-lib` 以 `use my_lib::..` 导入）。
+`nabi new` 创建一个包目录，并初始化一个 git 仓库，其中的 `.gitignore` 排除 `target/`。包名由小写字母、数字、`-` 和 `_` 组成，以字母开头，最长 64 个字符。Windows 保留给设备的名字（`con`、`nul`、`com1` 等）会被拒绝，因为在 Windows 上文件不能使用这些名字。`nabi` 这个名字被标准库占用，所以包不能叫 `nabi`。在代码中，`-` 变成 `_`（`nabi new my-lib` 以 `use my_lib::..` 导入）。
 
 ```bash
 nabi new hello
