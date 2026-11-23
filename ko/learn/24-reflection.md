@@ -157,3 +157,7 @@ hp in 0..100
 ## 언제 쓰나
 
 코드가 모르는 타입을 다뤄야 할 때 리플렉션을 씁니다. 에디터, 디버거, 저장 형식, 테스트 데이터 로더가 그렇습니다. 아는 타입 하나라면 `#[derive(Nabion)]`이나 평범한 함수가 더 짧고 빠릅니다. 전체 API는 표준 라이브러리 사양([2.12](../spec/refs-standard-libraries/200-core/212-reflect.html))에, 규칙은 언어 레퍼런스([6.10](../spec/refs-lang/006-meta-system/610-reflection.html))에 있습니다.
+
+## 더 읽을거리
+
+- 다음 장: [25. 가비지 컬렉터 일시 정지](25-gc-pauses.html)

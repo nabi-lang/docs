@@ -561,4 +561,5 @@ for i in 1..=8 {
 ## 延伸閱讀
 
 - 標準函式庫規格：[Objective-C](../spec/refs-standard-libraries/100-bare/110-objc.html)、[FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)
-- 前面的章節：[14. FFI 基礎](14-ffi.html)、[10. 錯誤處理](10-errors.html)
+- [14. FFI 基礎](14-ffi.html)、[10. 錯誤處理](10-errors.html)
+- 下一章：[28. iOS](28-ios.html)

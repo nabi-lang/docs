@@ -157,3 +157,7 @@ hp in 0..100
 ## When to use it
 
 Reach for reflection when code must handle types it does not know, such as an editor, a debugger, a save format or a test fixture loader. For one known type, a `#[derive(Nabion)]` or a plain function is shorter and faster. The full API is in the standard library specification ([2.12](../spec/refs-standard-libraries/200-core/212-reflect.html)) and the rules in the language reference ([6.10](../spec/refs-lang/006-meta-system/610-reflection.html)).
+
+## Further reading
+
+- Next chapter: [25. Garbage Collector Pauses](25-gc-pauses.html)

@@ -136,3 +136,7 @@ heap within the limit: true
 [게임 루프 예제](../examples/game-loop.html)가 이것들을 모읍니다. 일시 정지 목표, 프레임 arena의 particle, `no_collect` 안의 그리기, 프레임마다 남은 시간에 하는 minor 수집입니다.
 
 이 모든 규칙은 표준 라이브러리 명세([bare 1.6.10~1.6.15](../spec/refs-standard-libraries/100-bare/106-gc-pin.html))와 언어 레퍼런스([7.5](../spec/refs-lang/007-runtime/705-concurrent-collection.html))에 있습니다.
+
+## 더 읽을거리
+
+- 다음 장: [26. 핫 리로드](26-hot-reload.html)

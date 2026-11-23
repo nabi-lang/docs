@@ -561,4 +561,5 @@ for i in 1..=8 {
 ## Further reading
 
 - Standard library spec: [Objective-C](../spec/refs-standard-libraries/100-bare/110-objc.html), [FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)
-- Previous chapters: [14. FFI basics](14-ffi.html), [10. Errors](10-errors.html)
+- [14. FFI Basics](14-ffi.html), [10. Error Handling](10-errors.html)
+- Next chapter: [28. iOS](28-ios.html)

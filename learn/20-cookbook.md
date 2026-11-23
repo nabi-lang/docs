@@ -260,3 +260,4 @@ hello from /hi
 
 - [Examples](../examples/index.html): longer complete programs, among them a [command-line tool](../examples/cli-args.html), a [TCP echo server](../examples/tcp-echo.html), and a [JSON parser](../examples/json-parser.html) written from scratch.
 - Standard library API: [`fs`](../std/std/fs.html), [`io`](../std/core/io.html), [`env`](../std/std/env.html), [`time`](../std/std/time.html), [`thread`](../std/std/thread.html), [`task`](../std/core/task.html), [`sync`](../std/core/sync.html)
+- Next chapter: [21. Arrays and Numerics](21-arrays-and-numerics.html)

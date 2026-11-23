@@ -1,4 +1,4 @@
-# 21. Arrays and numerics
+# 21. Arrays and Numerics
 
 Numeric work in Nabi has three layers. Plain numbers have the usual operators plus `**` for powers. `List<T>` and fixed arrays take the element-wise dot operators (`.+`, `.*`, ...) from [chapter 8](08-collections-iterators.html). For data with more than one axis, `core::array::Array<T, N>` is an n-dimensional array with NumPy-style indexing, slicing and broadcasting, built into core so that every library that does linear algebra, statistics or plotting can share one type.
 
@@ -578,3 +578,7 @@ println(f"{d.v}");
 ```
 
 A handler that is not `pub` works only inside its own package. Two dependencies that register the same suffix make its uses ambiguous; give one a `priority`.
+
+## Further reading
+
+- Next chapter: [22. Science with Nabi](22-science.html)

@@ -260,3 +260,4 @@ hello from /hi
 
 - [예제](../examples/index.html): 더 긴 완전한 프로그램들입니다. [명령줄 도구](../examples/cli-args.html), [TCP echo 서버](../examples/tcp-echo.html), 처음부터 작성한 [JSON 파서](../examples/json-parser.html) 등이 있습니다.
 - 표준 라이브러리 API: [`fs`](../../std/std/fs.html), [`io`](../../std/core/io.html), [`env`](../../std/std/env.html), [`time`](../../std/std/time.html), [`thread`](../../std/std/thread.html), [`task`](../../std/core/task.html), [`sync`](../../std/core/sync.html)
+- 다음 장: [21. 배열과 수치 계산](21-arrays-and-numerics.html)

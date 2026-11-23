@@ -84,7 +84,7 @@ collected between frames: true
 
 ## Walkthrough
 
-- `gc::set_pause_goal(2.0)` sizes the young generation so a minor collection takes about 2 ms, from what the last ones cost ([Garbage collector pauses](../learn/25-gc-pauses.html#a-pause-goal)).
+- `gc::set_pause_goal(2.0)` sizes the young generation so a minor collection takes about 2 ms, from what the last ones cost ([Garbage Collector Pauses](../learn/25-gc-pauses.html#a-pause-goal)).
 - The particles of a frame live in an `Arena<Particle>`: `alloc` appends each one in place and `parts.reset()` drops them all at once. An `ArenaRef` from an earlier frame panics when used, so a stale reference cannot read this frame's particle ([`Arena`](../learn/25-gc-pauses.html#values-for-one-frame)).
 - The entities change in place with `for ref e in ents`, which binds each element as a place instead of a copy ([Collections and iterators](../learn/08-collections-iterators.html)).
 - The debug lines are ordinary strings: garbage by the next frame, freed by the minor collection.

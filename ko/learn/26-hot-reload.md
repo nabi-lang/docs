@@ -176,3 +176,4 @@ reload::on_reload("cache", |r| println(f"reloaded v{r.version}"));
 - 사양: [핫 리로드](../spec/refs-lang/009-tools/914-hot-reload.html), [`nabi dev`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-dev-핫-리로드로-실행), [`std::reload`](../spec/refs-standard-libraries/300-std/313-reload.html)
 - 코드를 직접 로드하기: [23. 플러그인](23-plugins.html)
 - 도구: [16. 도구](16-tools.html)
+- 다음 장: [27. Objective-C와 Apple 프레임워크](27-objc.html)

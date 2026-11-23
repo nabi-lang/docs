@@ -260,3 +260,4 @@ hello from /hi
 
 - [示例](../examples/index.html)：更长的完整程序，其中有一个[命令行工具](../examples/cli-args.html)、一个 [TCP 回显服务器](../examples/tcp-echo.html)，以及一个从零写起的 [JSON 解析器](../examples/json-parser.html)。
 - 标准库 API：[`fs`](../../std/std/fs.html)、[`io`](../../std/core/io.html)、[`env`](../../std/std/env.html)、[`time`](../../std/std/time.html)、[`thread`](../../std/std/thread.html)、[`task`](../../std/core/task.html)、[`sync`](../../std/core/sync.html)
+- 下一章：[21. 数组与数值计算](21-arrays-and-numerics.html)

@@ -67,7 +67,7 @@ To change a variable's value, assign without `let`. A redeclaration leaves the o
 
 ## Numeric types and literals
 
-Integers are `i8` `i16` `i32` `i64` `isize` and the unsigned `u8` `u16` `u32` `u64` `usize`; floating-point numbers are `f32` `f64`, and `f16` / `bf16` store 16-bit floats for big arrays ([Arrays and numerics](21-arrays-and-numerics.html#16-bit-floats-f16-and-bf16)). A literal with a type-name suffix has that type; without a suffix it follows the **expected type**. A literal you bind with `let` takes its type from how the variable is used later in the function; only when nothing says, integers default to `i64` and floats to `f64`.
+Integers are `i8` `i16` `i32` `i64` `isize` and the unsigned `u8` `u16` `u32` `u64` `usize`; floating-point numbers are `f32` `f64`, and `f16` / `bf16` store 16-bit floats for big arrays ([Arrays and Numerics](21-arrays-and-numerics.html#16-bit-floats-f16-and-bf16)). A literal with a type-name suffix has that type; without a suffix it follows the **expected type**. A literal you bind with `let` takes its type from how the variable is used later in the function; only when nothing says, integers default to `i64` and floats to `f64`.
 
 ```nabi
 let a = 42;            // i64

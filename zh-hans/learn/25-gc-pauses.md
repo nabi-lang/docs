@@ -136,3 +136,7 @@ heap within the limit: true
 [游戏循环示例](../examples/game-loop.html)把这些组合在一起：停顿目标、放在帧 arena 中的粒子、在 `no_collect` 内绘制，以及在每帧剩余时间内进行的 minor 回收。
 
 这一切背后的规则见标准库规范（[bare 1.6.10 至 1.6.15](../spec/refs-standard-libraries/100-bare/106-gc-pin.html)）和语言参考（[7.5](../spec/refs-lang/007-runtime/705-concurrent-collection.html)）。
+
+## 延伸阅读
+
+- 下一章：[26. 热重载](26-hot-reload.html)

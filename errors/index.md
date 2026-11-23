@@ -2,7 +2,7 @@
 
 Every nabic diagnostic starts with a code: `error[E0040]: mismatched types: ...`. There is one code per kind of error, so one code covers many messages; the message itself says what is wrong and, usually, what to write instead. `nabic --explain E0040` (or `nabi --explain E0040`) prints a short explanation of a code; its page here says the same and shows an example. With `--message-format=json` the code is the `code` field and its area the `kind` field ([9.9.4 Diagnostics](../spec/refs-lang/009-tools/909-debug-tools.html#994-diagnostics--error-messages)).
 
-Codes are numbered in the order they were added, from E0001 up with no gaps. This index describes nabic 0.1.0. Most pages show an example, checked against the real compiler output when the docs are built, and its fix.
+Codes are numbered in the order they were added, from E0001 up with no gaps. This index describes the nabic of this docs version. Most pages show an example, checked against the real compiler output when the docs are built, and its fix.
 
 ## Lexical
 

@@ -561,4 +561,5 @@ for i in 1..=8 {
 ## 延伸阅读
 
 - 标准库规范：[Objective-C](../spec/refs-standard-libraries/100-bare/110-objc.html)、[FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)
-- 前面的章节：[14. FFI 基础](14-ffi.html)、[10. 错误](10-errors.html)
+- [14. FFI 基础](14-ffi.html)、[10. 错误处理](10-errors.html)
+- 下一章：[28. iOS](28-ios.html)

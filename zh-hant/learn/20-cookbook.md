@@ -260,3 +260,4 @@ hello from /hi
 
 - [範例](../examples/index.html)：較長的完整程式，其中包括一個[命令列工具](../examples/cli-args.html)、一個 [TCP echo 伺服器](../examples/tcp-echo.html)，以及一個從零寫起的 [JSON 剖析器](../examples/json-parser.html)。
 - 標準函式庫 API：[`fs`](../../std/std/fs.html)、[`io`](../../std/core/io.html)、[`env`](../../std/std/env.html)、[`time`](../../std/std/time.html)、[`thread`](../../std/std/thread.html)、[`task`](../../std/core/task.html)、[`sync`](../../std/core/sync.html)
+- 下一章：[21. 陣列與數值運算](21-arrays-and-numerics.html)

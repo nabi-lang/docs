@@ -176,3 +176,4 @@ reload::on_reload("cache", |r| println(f"reloaded v{r.version}"));
 - 规范：[热重载](../spec/refs-lang/009-tools/914-hot-reload.html)、[`nabi dev`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-dev带热重载运行)、[`std::reload`](../spec/refs-standard-libraries/300-std/313-reload.html)
 - 自己加载代码：[23. 插件](23-plugins.html)
 - 工具：[16. 工具](16-tools.html)
+- 下一章：[27. Objective-C 与 Apple 框架](27-objc.html)

@@ -145,3 +145,7 @@ Each package's docs start with a tutorial: a small problem worked step by step, 
 ## Speed
 
 The packages are pure Nabi and use every core when the input is large: dense matrix products run at about 30 GFLOP/s on one Apple M-series core and above 100 GFLOP/s on all of them, FFTs of any length are `O(n log n)`, and a sparse matrix-vector product reads several hundred million nonzeros a second. Each package's README has a "Speed" section with its numbers and how they compare with NumPy, SciPy and the reference libraries. Two habits keep code fast: build arrays with `Array::from_fn` or the dot operators instead of pushing to a list in a loop, and pass `Vector<f64>`s between calls rather than converting back and forth.
+
+## Further reading
+
+- Next chapter: [23. Plugins](23-plugins.html)

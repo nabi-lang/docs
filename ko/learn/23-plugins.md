@@ -152,4 +152,4 @@ match p.unload() {
 
 - 사양: [플러그인](../spec/refs-lang/009-tools/912-plugins.html), [모듈 디스크립터 ABI](../spec/refs-lang/008-abi/812-module-abi.html), [`std::plugin`](../spec/refs-standard-libraries/300-std/311-plugin.html)
 - API: [std::plugin](../../std/std/plugin.html)
-- 이전 장: [22. Nabi로 하는 과학 계산](22-science.html)
+- 다음 장: [24. 리플렉션](24-reflection.html)

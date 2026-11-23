@@ -176,3 +176,4 @@ Your own packages reload: the package you run and its `path` dependencies, inclu
 - Spec: [Hot reload](../spec/refs-lang/009-tools/914-hot-reload.html), [`nabi dev`](../spec/refs-lang/009-tools/910-nabi-frontend.html#nabi-dev-run-with-hot-reload), [`std::reload`](../spec/refs-standard-libraries/300-std/313-reload.html)
 - Loading code yourself: [23. Plugins](23-plugins.html)
 - Tools: [16. Tools](16-tools.html)
+- Next chapter: [27. Objective-C and Apple Frameworks](27-objc.html)

@@ -136,3 +136,7 @@ heap within the limit: true
 [遊戲迴圈範例](../examples/game-loop.html)把這些組合在一起：暫停目標、放在影格 arena 中的粒子、在 `no_collect` 內進行的繪製，以及在每個影格剩餘時間內執行的 minor 回收。
 
 這一切背後的規則記載於標準函式庫規格（[bare 1.6.10 到 1.6.15](../spec/refs-standard-libraries/100-bare/106-gc-pin.html)）與語言參考（[7.5](../spec/refs-lang/007-runtime/705-concurrent-collection.html)）中。
+
+## 延伸閱讀
+
+- 下一章：[26. 熱重載](26-hot-reload.html)

@@ -157,3 +157,7 @@ hp in 0..100
 ## 何时使用
 
 当代码必须处理自己不知道的类型时，就用反射，例如编辑器、调试器、存档格式或测试数据加载器。对于一个已知类型，`#[derive(Nabion)]` 或普通函数更短也更快。完整的 API 见标准库规范（[2.12](../spec/refs-standard-libraries/200-core/212-reflect.html)），规则见语言参考（[6.10](../spec/refs-lang/006-meta-system/610-reflection.html)）。
+
+## 延伸阅读
+
+- 下一章：[25. 垃圾回收器停顿](25-gc-pauses.html)

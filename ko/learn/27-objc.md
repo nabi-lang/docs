@@ -558,7 +558,8 @@ for i in 1..=8 {
 - 배포 타깃보다 새로운 API는 `if objc::available(macos: "..") { .. }` 안에서 부릅니다.
 - `ClassBuilder`는 `extern "C"` 함수로 delegate 클래스를 만들고, `Block`과 `dispatch_async`는 클로저를 dispatch 큐에서 실행합니다.
 
-## 더 읽기
+## 더 읽을거리
 
 - 표준 라이브러리 명세: [Objective-C](../spec/refs-standard-libraries/100-bare/110-objc.html), [FFI](../spec/refs-standard-libraries/100-bare/107-ffi.html)
-- 앞 장: [14. FFI 기초](14-ffi.html), [10. 오류](10-errors.html)
+- [14. FFI 기초](14-ffi.html), [10. 에러 처리](10-errors.html)
+- 다음 장: [28. iOS](28-ios.html)

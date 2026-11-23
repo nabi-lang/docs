@@ -157,3 +157,7 @@ hp in 0..100
 ## 何時使用
 
 當程式碼必須處理它事先不知道的型別時，就用反射，例如編輯器、偵錯工具、存檔格式或測試資料載入器。若只針對一個已知的型別，`#[derive(Nabion)]` 或一般函式會更短也更快。完整的 API 在標準函式庫規格中（[2.12](../spec/refs-standard-libraries/200-core/212-reflect.html)），規則則在語言參考中（[6.10](../spec/refs-lang/006-meta-system/610-reflection.html)）。
+
+## 延伸閱讀
+
+- 下一章：[25. 垃圾回收器的暫停](25-gc-pauses.html)

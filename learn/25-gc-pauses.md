@@ -1,4 +1,4 @@
-# 25. Garbage collector pauses
+# 25. Garbage Collector Pauses
 
 Nabi frees memory with a garbage collector, and most programs never think about it. A program with a time budget, a game drawing 60 frames a second, an audio callback, a server answering within a few milliseconds, wants to know when the collector stops it and how to keep those stops out of the part that must not wait. This chapter shows how the pauses come about, how to watch them, and the controls in `bare::gc` that keep them short or out of the way.
 
@@ -136,3 +136,7 @@ heap within the limit: true
 The [game loop example](../examples/game-loop.html) puts these together: a pause goal, particles in a frame arena, drawing inside `no_collect`, and a minor collection in the time left of each frame.
 
 The rules behind all of this are in the standard library specification ([bare 1.6.10 to 1.6.15](../spec/refs-standard-libraries/100-bare/106-gc-pin.html)) and the language reference ([7.5](../spec/refs-lang/007-runtime/705-concurrent-collection.html)).
+
+## Further reading
+
+- Next chapter: [26. Hot Reload](26-hot-reload.html)

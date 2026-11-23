@@ -152,4 +152,4 @@ Plugins load on macOS (arm64), Linux (glibc, x86-64 and arm64) and Windows (x64 
 
 - Spec: [Plugins](../spec/refs-lang/009-tools/912-plugins.html), [Module descriptor ABI](../spec/refs-lang/008-abi/812-module-abi.html), [`std::plugin`](../spec/refs-standard-libraries/300-std/311-plugin.html)
 - API: [std::plugin](../std/std/plugin.html)
-- Previous chapter: [22. Science with Nabi](22-science.html)
+- Next chapter: [24. Reflection](24-reflection.html)

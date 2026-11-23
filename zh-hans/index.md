@@ -8,7 +8,7 @@
 </div>
 
 <div class="cards">
-<a class="card" href="learn/index.html"><span class="tag">learn/</span><h3>学习 Nabi</h3><p>共二十一章，从安装讲到并发、FFI、包、数组和实用示例。所有代码示例都在构建网站时检查。</p></a>
+<a class="card" href="learn/index.html"><span class="tag">learn/</span><h3>学习 Nabi</h3><p>共二十八章，从安装讲到并发、FFI、包、数组、插件、热重载、Objective-C、iOS 和实用示例。所有代码示例都在构建网站时检查。</p></a>
 <a class="card" href="examples/index.html"><span class="tag">examples/</span><h3>示例</h3><p>小而完整的程序：CLI 工具、文件处理、TCP 回显服务器、并行 map、解释器等。</p></a>
 <a class="card" href="spec/refs-lang/index.html"><span class="tag">spec/</span><h3>语言参考</h3><p>共十章，从词法结构讲到类型、表达式、模块、元系统、运行时和 ABI。</p></a>
 <a class="card" href="spec/refs-standard-libraries/index.html"><span class="tag">std/</span><h3>标准库</h3><p><code>bare</code> / <code>core</code> / <code>std</code> 三个层级的规范。</p></a>

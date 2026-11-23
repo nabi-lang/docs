@@ -8,7 +8,7 @@
 </div>
 
 <div class="cards">
-<a class="card" href="learn/index.html"><span class="tag">learn/</span><h3>學習 Nabi</h3><p>二十一章，從安裝到並行、FFI、套件、陣列，以及實用範例。網站建置時會驗證每一段程式碼範例。</p></a>
+<a class="card" href="learn/index.html"><span class="tag">learn/</span><h3>學習 Nabi</h3><p>二十八章，從安裝到並行、FFI、套件、陣列、外掛、熱重載、Objective-C、iOS，以及實用範例。網站建置時會驗證每一段程式碼範例。</p></a>
 <a class="card" href="examples/index.html"><span class="tag">examples/</span><h3>範例</h3><p>小而完整的程式：CLI 工具、檔案處理、TCP echo 伺服器、平行 map、直譯器等等。</p></a>
 <a class="card" href="spec/refs-lang/index.html"><span class="tag">spec/</span><h3>語言參考</h3><p>十章，從詞法結構到型別、運算式、模組、元系統、執行環境與 ABI。</p></a>
 <a class="card" href="spec/refs-standard-libraries/index.html"><span class="tag">std/</span><h3>標準函式庫</h3><p><code>bare</code> / <code>core</code> / <code>std</code> 三個層級的規格。</p></a>
