@@ -108,7 +108,7 @@ Package { name: "enemies", lib: { kind: "plugin" }, deps: { "engine": Dep::path(
 
 ## 로드되지 않을 때
 
-에러마다 할 일을 알려 줍니다. 파일이 없거나, 플러그인이 아니거나, 다른 툴체인으로 빌드되었거나, 프로그램에 없는 패키지를 쓰거나, 함수가 없거나 타입이 다르면 모두 `PluginError`로 돌아옵니다.
+에러마다 할 일을 알려 줍니다. 파일이 없거나, 플러그인이 아니거나, 다른 toolchain으로 빌드되었거나, 프로그램에 없는 패키지를 쓰거나, 함수가 없거나 타입이 다르면 모두 `PluginError`로 돌아옵니다.
 
 ```nabi norun
 let p = try plugin::load("plugins/missing.so") catch e {
@@ -121,7 +121,7 @@ let p = try plugin::load("plugins/missing.so") catch e {
 no plugin at plugins/missing.so; build its package with `nabi build` and give the file it writes under target/<profile>/ (`plugin::file(name)` gives the file name)
 ```
 
-플러그인과 프로그램은 같은 툴체인에서 나와야 합니다. `nabi toolchain`이 바뀌면 플러그인을 다시 빌드하십시오. 툴체인 버전 사이에 안정적인 플러그인 ABI는 없습니다.
+플러그인과 프로그램은 같은 toolchain에서 나와야 합니다. `nabi toolchain`이 바뀌면 플러그인을 다시 빌드하십시오. toolchain 버전 사이에 안정적인 플러그인 ABI는 없습니다.
 
 ## 언로드
 

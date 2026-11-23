@@ -156,7 +156,7 @@ kim: 500
 
 `balance` 필드와 `check` 함수는 `bank` 밖에서 보이지 않으므로 잔액은 `bank`의 함수로만 바꿀 수 있습니다. 같은 이유로 `bank` 밖의 코드는 `bank::Account { owner: "kim" }`라고 쓸 수 없습니다. struct 리터럴은 기본값이 있는 비공개 필드만 생략할 수 있기 때문입니다. 그래서 계좌는 `bank::open`이 만듭니다.
 
-표준 라이브러리의 `pub` 항목 가운데 몇 개에는 `#[internal]`이 붙어 있습니다. 툴체인의 패키지끼리만 나눠 쓰는 항목이어서, 다른 패키지에서 쓰면 "internal to the Nabi toolchain" 에러가 납니다. API 문서와 편집기에도 나오지 않습니다.
+표준 라이브러리의 `pub` 항목 가운데 몇 개에는 `#[internal]`이 붙어 있습니다. toolchain의 패키지끼리만 나눠 쓰는 항목이어서, 다른 패키지에서 쓰면 "internal to the Nabi toolchain" 에러가 납니다. API 문서와 편집기에도 나오지 않습니다.
 
 ## 파일로 나누기
 

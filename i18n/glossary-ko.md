@@ -22,7 +22,7 @@ When a term is missing, take the one most pages use, add it here in the same cha
 | parameter | 매개변수 | not 파라미터 |
 | argument | 인자 | |
 | panic | panic | not 패닉; "it panics": panic이 납니다, "makes it panic": panic을 일으킵니다 |
-| toolchain | toolchain | kept in English on most pages; not 툴체인 |
+| toolchain | toolchain | kept in English; not 툴체인 |
 | publish | 공개 | `nabi publish`: 공개합니다; not 게시, 배포 |
 | error | 에러 | not 오류 |
 | feature (package) | feature | `features` in `nabi.nabion` |
