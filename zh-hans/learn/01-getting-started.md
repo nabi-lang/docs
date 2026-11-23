@@ -17,7 +17,7 @@
 
 ### 安装脚本
 
-安装脚本从 [GitHub releases](https://github.com/nabi-lang/nabi/releases) 下载适合你平台的工具链，用 SHA-256 校验后解压到 `~/.nabi`。
+安装脚本从 [GitHub releases](https://github.com/nabi-lang/nabi/releases) 下载适合你平台的工具链，用该版本的 `SHA256SUMS` 校验后解压到 `~/.nabi`。如果 `PATH` 上有 `minisign`，它会先用发布密钥验证 `SHA256SUMS.minisig`；没有时，`SHA256SUMS` 只经由 HTTPS 获取，脚本会说明如何手动验证签名。任何一项不符都不会安装。
 
 ```bash
 curl -fsSL https://nabi.sh | sh
@@ -37,7 +37,7 @@ powershell -ExecutionPolicy Bypass -c "irm https://nabi.sh/install.ps1 | iex"
 ~/.nabi/
 ├── bin/                        # nabi, nabic, nabicc, nabils proxy
 └── toolchains/
-    └── 0.1.0-aarch64-apple-darwin/
+    └── 0.1.3-aarch64-apple-darwin/
         ├── bin/{nabi, nabic, nabicc, nabils}
         └── lib/                # runtime and standard library sources
 ```
@@ -47,8 +47,8 @@ powershell -ExecutionPolicy Bypass -c "irm https://nabi.sh/install.ps1 | iex"
 脚本还会把 `~/.nabi/bin` 加入 `PATH`。它写入 `~/.nabi/env`（以及 `~/.nabi/env.fish`），在 `~/.zshenv`、`~/.bashrc` 或 `~/.profile` 等 shell 启动文件中加载它，并为 fish 添加 `~/.config/fish/conf.d/nabi.fish`。它会列出修改过的每个文件：
 
 ```text
- Downloading nabi 0.1.0 (aarch64-apple-darwin)
-   Installed nabi 0.1.0 to ~/.nabi
+ Downloading nabi 0.1.3 (aarch64-apple-darwin)
+   Installed nabi 0.1.3 to ~/.nabi
 
     Modified ~/.zshenv (PATH)
 
@@ -74,10 +74,10 @@ nabi toolchain list
 
 ```text
 $ nabi --version -v
-nabi 0.1.0 (<commit> <date>)
-binary:    /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabi
-toolchain: 0.1.0-aarch64-apple-darwin (the default)
-nabic:     /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabic
+nabi 0.1.3 (<commit> <date>)
+binary:    /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabi
+toolchain: 0.1.3-aarch64-apple-darwin (the default)
+nabic:     /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabic
 host:      aarch64-apple-darwin
 ```
 
@@ -149,7 +149,7 @@ cd hello
 第二行是接下来要运行的命令。包里有两个文件。清单 `nabi.nabion` 记录包名、版本、能构建它的最旧 nabi 版本（`nabi_version`）、创建它时所用的工具链系列，以及依赖。
 
 ```nabion
-Package { name: "hello", version: "0.1.0", nabi_version: "0.1.0", toolchain: "0.1", deps: {} }
+Package { name: "hello", version: "0.1.0", nabi_version: "0.1.3", toolchain: "0.1", deps: {} }
 ```
 
 源代码放在 `src/` 中；`src/main.nabi` 只有一行，打印一句问候。
@@ -258,7 +258,7 @@ hi
 
 ```text
 $ nabi
-Nabi 0.1.0 (<commit> <date>) on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [1, 2, 3]
 >>> xs.len() * 2

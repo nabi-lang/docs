@@ -389,7 +389,13 @@ $ nabi doc
 
 `nabils`는 LSP(Language Server Protocol) 서버입니다. 진단, 호버, 정의로 이동, 참조 찾기, 이름 바꾸기, 문서 심볼, 자동 완성, 시그니처 도움말, 빠른 수정, 포맷 기능이 있습니다. 자동 완성은 범위 안의 지역 변수, 값의 멤버(`xs.`는 `List`의 공개 메서드를 보여 줍니다), `use` 뒤의 경로를 제안합니다. 호버와 정의로 이동은 표준 라이브러리 안까지 따라갑니다. 빠른 수정은 진단이 제안한 수정을 적용하고, 빠진 `;`나 `use`를 넣고, 없는 패키지에는 `nabi add`를 실행합니다. 이름 바꾸기는 라이브러리 항목, 키워드, 다른 파일의 이름이면 거절하고 이유를 알려 줍니다. 진단은 저장할 때가 아니라 입력할 때마다 갱신됩니다. 편집할 때마다 백그라운드에서 다시 검사하고, 그동안 호버, 자동 완성, 정의로 이동은 마지막으로 통과한 검사로 바로 답합니다. 편집할 때마다 다시 검사하므로, 웹 페이지에서 딸려 온 문자(폭 없는 공백, `-` 자리의 `−`, 둥근 따옴표), 홀로 쓴 결합 부호, 잘못된 숫자, 잘못된 이스케이프, 처리기가 없는 리터럴 접미사(`hz`가 등록돼 있는데 쓴 `10Hz`)가 바로 표시됩니다. 메시지는 컴파일러의 것과 같고, 고칠 방법이 분명하면 그대로 써 주는 빠른 수정이 함께 옵니다. 각 파일은 그 파일이 속한 패키지의 의존성으로 검사하므로 패키지 여러 개를 담은 폴더를 열어도 되고, 빠른 수정으로, 또는 `nabi.nabion`을 고쳐 저장해서 추가한 의존성도 서버를 다시 시작하지 않고 찾습니다. `nabi lsp`도 같은 서버입니다. 표준 입출력으로 통신하므로 LSP를 지원하는 에디터라면 실행할 명령만 알려 주면 됩니다(에디터가 붙이는 `--stdio`도 받습니다). 파일에 타입 에러가 있어도 호버는 계속 답합니다. 그 검사가 타입을 정한 부분에서, 아니면 마지막으로 통과한 검사에서 답합니다. 터미널에서 직접 실행하면 `nabils`는 에디터가 실행하는 서버라고만 알려 줍니다.
 
-Neovim(0.11 이상)에서는 `init.lua`에 다음을 넣습니다.
+공식 확장은 `nabils`를 알아서 실행하고 구문 강조를 더합니다.
+
+- VS Code: [nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode). 아직 Marketplace에 없으니 클론한 저장소에서 `npm ci && npm run package`로 `nabi-<version>.vsix`를 만들고 `code --install-extension nabi-<version>.vsix`로 설치합니다.
+- Vim과 Neovim: [nabi-lang/nabi.vim](https://github.com/nabi-lang/nabi.vim). 플러그인 관리자에 이 저장소를 지정합니다(vim-plug라면 `Plug 'nabi-lang/nabi.vim'`). Neovim에서는 `nabils`도 실행합니다.
+- Zed: [nabi-lang/nabi.zed](https://github.com/nabi-lang/nabi.zed). 아직 Zed 확장 레지스트리에 없으니 rustup으로 Rust를 설치하고, 저장소를 클론한 뒤 명령 팔레트에서 `zed: install dev extension`을 실행해 클론한 디렉터리를 고릅니다.
+
+플러그인 없이 Neovim(0.11 이상)을 쓴다면 `init.lua`에 다음을 넣습니다.
 
 ```text
 vim.filetype.add({ extension = { nabi = "nabi", nabion = "nabion" } })
@@ -415,7 +421,7 @@ roots = ["nabi.nabion"]
 language-servers = ["nabils"]
 ```
 
-VS Code 같은 다른 에디터에서는 범용 LSP 클라이언트 확장에 `nabils`를 등록합니다. `nabils`는 `PATH`에 있어야 합니다.
+다른 에디터에서는 에디터의 LSP 클라이언트나 범용 LSP 클라이언트 확장에 `nabils`를 등록합니다. `nabils`는 `PATH`에 있어야 합니다.
 
 ## REPL과 Jupyter
 
@@ -423,7 +429,7 @@ VS Code 같은 다른 에디터에서는 범용 LSP 클라이언트 확장에 `n
 
 ```text
 $ nabi repl
-Nabi 0.1.0 on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [3, 1, 2]
 >>> xs.len()
@@ -550,7 +556,7 @@ $ nabi build -v
     Finished in 0.14s
 ```
 
-`--emit`은 중간 산출물을 `target/debug/build/`에 씁니다. 종류는 `source`(메타 전개와 디슈거링을 마친 패키지 전체를 Nabi 소스로 쓴 것), `hir`, `mir`(코드 생성기가 컴파일하는 것, `-O0`보다 높으면 최적화한 것), `obj`(오브젝트 파일), `asm`(오브젝트를 어셈블리 소스로 쓴 것, 아래 참고), `listing`(기계어를 오프셋, 바이트와 함께 쓴 것, 아래 참고), `expansions`(메타 전개 하나하나의 출력)입니다. `nabi emit`만 쓰면 `mir`을 씁니다.
+`--emit`은 중간 산출물을 `target/debug/build/`에 씁니다. 종류는 `source`(메타 전개와 디슈거링을 마친 패키지 전체를 Nabi 소스로 쓴 것), `hir`, `mir`(코드 생성기가 컴파일하는 것, `-O0`보다 높으면 최적화한 것), `obj`(오브젝트 파일), `asm`(오브젝트를 어셈블리 소스로 쓴 것, 아래 참고), `listing`(기계어를 오프셋, 바이트와 함께 쓴 것, 아래 참고), `expansions`(메타 전개 하나하나의 출력), `c-header`(`#[export]` 함수의 C 헤더, [14장](14-ffi.html#c를-위한-공유-라이브러리---crate-typecdylib) 참고)입니다. `nabi emit`만 쓰면 `mir`을 씁니다.
 
 ```text
 $ nabi emit
@@ -698,7 +704,7 @@ run `nabi help` for usage
 - `nabi fmt`는 들여쓰기와 빈 줄만 고칩니다. CI에서는 `nabi fmt --check`를 씁니다. 패키지 밖에서는 경로를 줍니다.
 - `nabi lint`는 린트를 실행하고 `nabi fix`는 그 수정을 적용하며, `nabi check`는 코드 생성까지 갑니다. 린트 수준은 `nabi.nabion` < `-A/-W/-D` < 소스 속성 순으로 정해집니다.
 - `nabi doc`은 `///`와 `//!` 문서 주석으로 `target/doc/`에 HTML을 생성합니다.
-- 에디터에 `nabils`를 LSP 서버로 등록합니다.
+- VS Code, Vim/Neovim, Zed용 공식 확장을 설치하거나, 에디터에 `nabils`를 LSP 서버로 등록합니다.
 - REPL의 프롬프트는 `>>>`이고, 마지막 값을 `it`에 두며, `:type`, `:doc`, `:vars`, `:reset` 같은 명령이 있습니다. `nabi repl .`은 현재 패키지를 로드하고, 노트북에는 `nabi jupyter install`을 씁니다.
 - 문제를 파고들 때는 `-v`, `--emit`, `nabi demangle`, `-g`를 씁니다. 디버거에서는 `nabic --print lldbinit` / `gdbinit` / `natvis`가 로드하는 포매터와 함께 씁니다.
 - `nabi help <command>`는 명령 하나의 사용법과 옵션을 보여 줍니다.

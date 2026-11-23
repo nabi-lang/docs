@@ -17,7 +17,7 @@
 
 ### 설치 스크립트
 
-설치 스크립트는 [GitHub releases](https://github.com/nabi-lang/nabi/releases)에서 플랫폼에 맞는 toolchain을 내려받아 SHA-256으로 검증하고 `~/.nabi`에 풉니다.
+설치 스크립트는 [GitHub releases](https://github.com/nabi-lang/nabi/releases)에서 플랫폼에 맞는 toolchain을 내려받아 릴리스의 `SHA256SUMS`로 검증하고 `~/.nabi`에 풉니다. `PATH`에 `minisign`이 있으면 먼저 `SHA256SUMS.minisig`를 릴리스 키로 검증합니다. 없으면 `SHA256SUMS`는 HTTPS로만 받아 오고, 스크립트가 서명을 직접 검증하는 방법을 알려 줍니다. 하나라도 맞지 않으면 아무것도 설치하지 않습니다.
 
 ```bash
 curl -fsSL https://nabi.sh | sh
@@ -37,7 +37,7 @@ powershell -ExecutionPolicy Bypass -c "irm https://nabi.sh/install.ps1 | iex"
 ~/.nabi/
 ├── bin/                        # nabi, nabic, nabicc, nabils proxy
 └── toolchains/
-    └── 0.1.0-aarch64-apple-darwin/
+    └── 0.1.3-aarch64-apple-darwin/
         ├── bin/{nabi, nabic, nabicc, nabils}
         └── lib/                # runtime and standard library sources
 ```
@@ -47,8 +47,8 @@ powershell -ExecutionPolicy Bypass -c "irm https://nabi.sh/install.ps1 | iex"
 스크립트는 `~/.nabi/bin`을 `PATH`에도 넣습니다. `~/.nabi/env`(와 `~/.nabi/env.fish`)를 만들고, `~/.zshenv`, `~/.bashrc`, `~/.profile` 같은 셸 시작 파일이 이 파일을 읽게 합니다. fish용으로는 `~/.config/fish/conf.d/nabi.fish`를 추가합니다. 바꾼 파일은 모두 이름을 출력합니다.
 
 ```text
- Downloading nabi 0.1.0 (aarch64-apple-darwin)
-   Installed nabi 0.1.0 to ~/.nabi
+ Downloading nabi 0.1.3 (aarch64-apple-darwin)
+   Installed nabi 0.1.3 to ~/.nabi
 
     Modified ~/.zshenv (PATH)
 
@@ -74,10 +74,10 @@ nabi toolchain list
 
 ```text
 $ nabi --version -v
-nabi 0.1.0 (<commit> <date>)
-binary:    /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabi
-toolchain: 0.1.0-aarch64-apple-darwin (the default)
-nabic:     /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabic
+nabi 0.1.3 (<commit> <date>)
+binary:    /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabi
+toolchain: 0.1.3-aarch64-apple-darwin (the default)
+nabic:     /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabic
 host:      aarch64-apple-darwin
 ```
 
@@ -149,7 +149,7 @@ cd hello
 두 번째 줄은 다음에 실행할 명령입니다. 파일은 두 개입니다. 매니페스트인 `nabi.nabion`에는 패키지 이름, 버전, 빌드되는 가장 오래된 nabi(`nabi_version`), 패키지를 만든 toolchain의 시리즈, 의존성이 들어 있습니다.
 
 ```nabion
-Package { name: "hello", version: "0.1.0", nabi_version: "0.1.0", toolchain: "0.1", deps: {} }
+Package { name: "hello", version: "0.1.0", nabi_version: "0.1.3", toolchain: "0.1", deps: {} }
 ```
 
 소스는 `src/`에 있습니다. `src/main.nabi`는 인사를 출력하는 한 줄짜리 코드입니다.
@@ -258,7 +258,7 @@ hi
 
 ```text
 $ nabi
-Nabi 0.1.0 (<commit> <date>) on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [1, 2, 3]
 >>> xs.len() * 2

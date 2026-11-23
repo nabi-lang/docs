@@ -17,7 +17,7 @@ Release archives are built for macOS arm64, Linux x86_64 and arm64 (both glibc a
 
 ### Install script
 
-The install script downloads the toolchain for your platform from the [GitHub releases](https://github.com/nabi-lang/nabi/releases), checks it against its SHA-256, and unpacks it into `~/.nabi`.
+The install script downloads the toolchain for your platform from the [GitHub releases](https://github.com/nabi-lang/nabi/releases), checks it against the release's `SHA256SUMS`, and unpacks it into `~/.nabi`. When `minisign` is on your `PATH`, it first checks `SHA256SUMS.minisig` against the release key; without it, `SHA256SUMS` comes over HTTPS only, and the script says how to check the signature by hand. A mismatch installs nothing.
 
 ```bash
 curl -fsSL https://nabi.sh | sh
@@ -37,7 +37,7 @@ You can change the install location with the `NABI_HOME` environment variable (d
 ~/.nabi/
 ├── bin/                        # nabi, nabic, nabicc, nabils proxy
 └── toolchains/
-    └── 0.1.0-aarch64-apple-darwin/
+    └── 0.1.3-aarch64-apple-darwin/
         ├── bin/{nabi, nabic, nabicc, nabils}
         └── lib/                # runtime and standard library sources
 ```
@@ -47,8 +47,8 @@ The toolchain you just installed becomes the default. The four executables in `~
 The script also puts `~/.nabi/bin` on your `PATH`. It writes `~/.nabi/env` (and `~/.nabi/env.fish`), loads it from your shell's startup files such as `~/.zshenv`, `~/.bashrc` or `~/.profile`, and adds `~/.config/fish/conf.d/nabi.fish` for fish. It names every file it changed:
 
 ```text
- Downloading nabi 0.1.0 (aarch64-apple-darwin)
-   Installed nabi 0.1.0 to ~/.nabi
+ Downloading nabi 0.1.3 (aarch64-apple-darwin)
+   Installed nabi 0.1.3 to ~/.nabi
 
     Modified ~/.zshenv (PATH)
 
@@ -74,10 +74,10 @@ nabi toolchain list
 
 ```text
 $ nabi --version -v
-nabi 0.1.0 (<commit> <date>)
-binary:    /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabi
-toolchain: 0.1.0-aarch64-apple-darwin (the default)
-nabic:     /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabic
+nabi 0.1.3 (<commit> <date>)
+binary:    /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabi
+toolchain: 0.1.3-aarch64-apple-darwin (the default)
+nabic:     /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabic
 host:      aarch64-apple-darwin
 ```
 
@@ -149,7 +149,7 @@ cd hello
 The second line is the command to run next. There are two files. The manifest `nabi.nabion` holds the package name, version, the oldest nabi it builds with (`nabi_version`), the toolchain series it was made with, and dependencies.
 
 ```nabion
-Package { name: "hello", version: "0.1.0", nabi_version: "0.1.0", toolchain: "0.1", deps: {} }
+Package { name: "hello", version: "0.1.0", nabi_version: "0.1.3", toolchain: "0.1", deps: {} }
 ```
 
 The source lives in `src/`; `src/main.nabi` is a single line that prints a greeting.
@@ -258,7 +258,7 @@ Running `nabi` with no arguments opens the REPL. Enter an expression and it prin
 
 ```text
 $ nabi
-Nabi 0.1.0 (<commit> <date>) on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [1, 2, 3]
 >>> xs.len() * 2

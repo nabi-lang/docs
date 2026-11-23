@@ -389,7 +389,13 @@ $ nabi doc
 
 `nabils` 是一个 LSP（Language Server Protocol）服务器。它提供诊断、悬停提示、跳转到定义、查找引用、重命名、文档符号、补全、签名帮助、快速修复和格式化。补全会提供作用域中的局部变量、值的成员（`xs.` 列出 `List` 的公开方法）以及 `use` 之后的路径。悬停提示和跳转到定义也能深入标准库。快速修复会应用诊断建议的修复，补上缺少的 `;` 或 `use`，并为缺少的包运行 `nabi add`。重命名会拒绝库中的项、关键字和来自其他文件的名字，并说明原因。诊断跟随你的输入，而不是你的保存：每次编辑都会在后台重新检查，在此期间，悬停提示、补全和跳转到定义会立即根据上一次成功的检查作答。所以从网页粘贴来的字符（零宽空格、代替 `-` 的 `−`、弯引号）、孤立的组合标记、格式错误的数字、错误的转义，或者没有处理器接受的字面量后缀（注册的是 `hz` 时写的 `10Hz`），都会立即被标出，附带编译器自己的消息；在修复方法明确时，还会提供写好修复的快速修复。每个文件都用它所在包的依赖来检查，所以包含多个包的文件夹也能正常工作；通过快速修复添加的依赖，或者编辑并保存 `nabi.nabion` 添加的依赖，不用重启服务器就能找到。`nabi lsp` 是同一个服务器。它通过标准 IO 通信，所以任何支持 LSP 的编辑器只需告诉它要运行的命令（编辑器附加的 `--stdio` 也能接受）。文件有类型错误时，悬停提示仍会作答：使用那次检查得出的类型，否则使用上一次通过的检查。在终端中手动启动时，`nabils` 只会说明它应由编辑器启动。
 
-对于 Neovim（0.11 或更高版本），把下面的内容加到 `init.lua`：
+官方扩展会替你启动 `nabils`，并提供语法高亮：
+
+- VS Code：[nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode)。它还没有上架 Marketplace：在克隆下来的仓库中用 `npm ci && npm run package` 构建 `nabi-<version>.vsix`，再用 `code --install-extension nabi-<version>.vsix` 安装。
+- Vim 和 Neovim：[nabi-lang/nabi.vim](https://github.com/nabi-lang/nabi.vim)。让插件管理器指向这个仓库（vim-plug 写 `Plug 'nabi-lang/nabi.vim'`）；在 Neovim 中它还会启动 `nabils`。
+- Zed：[nabi-lang/nabi.zed](https://github.com/nabi-lang/nabi.zed)。它还不在 Zed 的扩展注册表中：用 rustup 安装 Rust，克隆仓库，在命令面板中运行 `zed: install dev extension` 并选择克隆下来的目录。
+
+不用这个插件时，对于 Neovim（0.11 或更高版本），把下面的内容加到 `init.lua`：
 
 ```text
 vim.filetype.add({ extension = { nabi = "nabi", nabion = "nabion" } })
@@ -415,7 +421,7 @@ roots = ["nabi.nabion"]
 language-servers = ["nabils"]
 ```
 
-在 VS Code 等其他编辑器中，用通用的 LSP 客户端扩展注册 `nabils`。`nabils` 必须在你的 `PATH` 上。
+在其他编辑器中，用编辑器自带的 LSP 客户端或通用的 LSP 客户端扩展注册 `nabils`。`nabils` 必须在你的 `PATH` 上。
 
 ## REPL 与 Jupyter
 
@@ -423,7 +429,7 @@ language-servers = ["nabils"]
 
 ```text
 $ nabi repl
-Nabi 0.1.0 on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [3, 1, 2]
 >>> xs.len()
@@ -550,7 +556,7 @@ $ nabi build -v
     Finished in 0.14s
 ```
 
-`--emit` 把中间产物写到 `target/debug/build/`。种类有 `source`（元展开和脱糖之后的整个包，以 Nabi 源代码写出）、`hir`、`mir`（代码生成器编译的内容；高于 `-O0` 时是优化后的）、`obj`（目标文件）、`asm`（目标文件的汇编源代码形式，见下文）、`listing`（带偏移和字节的机器码，见下文）以及 `expansions`（每次元展开的输出）。单独的 `nabi emit` 写出 `mir`。
+`--emit` 把中间产物写到 `target/debug/build/`。种类有 `source`（元展开和脱糖之后的整个包，以 Nabi 源代码写出）、`hir`、`mir`（代码生成器编译的内容；高于 `-O0` 时是优化后的）、`obj`（目标文件）、`asm`（目标文件的汇编源代码形式，见下文）、`listing`（带偏移和字节的机器码，见下文）、`expansions`（每次元展开的输出）以及 `c-header`（`#[export]` 函数的 C 头文件，见[第 14 章](14-ffi.html#供-c-使用的共享库--crate-typecdylib)）。单独的 `nabi emit` 写出 `mir`。
 
 ```text
 $ nabi emit
@@ -698,7 +704,7 @@ run `nabi help` for usage
 - `nabi fmt` 只修正缩进和空行。在 CI 中用 `nabi fmt --check`。在包外要给它一个路径。
 - `nabi lint` 运行 lint，`nabi fix` 应用 lint 的修复；`nabi check` 一直执行到代码生成。lint 级别按 `nabi.nabion` < `-A/-W/-D` < 源代码属性的顺序决定。
 - `nabi doc` 根据 `///` 和 `//!` 文档注释在 `target/doc/` 中生成 HTML。
-- 在编辑器中把 `nabils` 注册为 LSP 服务器。
+- 安装 VS Code、Vim/Neovim 或 Zed 的官方扩展，或在编辑器中把 `nabils` 注册为 LSP 服务器。
 - REPL 的提示符是 `>>>`，把最后的值保存在 `it` 中，并有 `:type`、`:doc`、`:vars` 和 `:reset` 等命令。`nabi repl .` 加载当前包；笔记本则用 `nabi jupyter install`。
 - 深入排查问题：`-v`、`--emit`、`nabi demangle`、`-g`（以及 `nabic --print lldbinit` / `gdbinit` / `natvis` 加载的格式化器）。
 - `nabi help <command>` 显示某个命令的用法和选项。

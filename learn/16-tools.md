@@ -389,7 +389,13 @@ $ nabi doc
 
 `nabils` is an LSP (Language Server Protocol) server. It provides diagnostics, hover, go to definition, find references, rename, document symbols, completion, signature help, quick fixes, and formatting. Completion offers the locals in scope, the members of a value (`xs.` lists the public methods of `List`), and paths after `use`. Hover and go to definition reach into the standard library too. Quick fixes apply the fix a diagnostic suggests, add a missing `;` or `use`, and run `nabi add` for a missing package. Rename refuses library items, keywords and names from other files, and says why. Diagnostics follow your typing, not your saves: each edit is checked again in the background, and hover, completion and go to definition answer at once from the last good check meanwhile, so a character pasted from a web page (a zero-width space, `−` for `-`, curly quotes), a lone combining mark, a malformed number, a bad escape or a literal suffix no handler takes (`10Hz` where `hz` is registered) is marked at once, with the compiler's own message and, where the fix is plain, a quick fix that writes it. Each file is checked with the dependencies of its own package, so a folder that holds several packages works, and a dependency added by the quick fix or by editing and saving `nabi.nabion` is found without restarting the server. `nabi lsp` is the same server. It communicates over standard IO, so any editor with LSP support only needs to be told the command to run (a `--stdio` the editor adds is accepted). Hover keeps answering while the file has a type error: from what that check typed, else from the last check that passed. Started by hand in a terminal, `nabils` only says that an editor starts it.
 
-For Neovim (0.11 or later), add this to `init.lua`:
+Official extensions start `nabils` for you and add syntax highlighting:
+
+- VS Code: [nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode). It is not on the Marketplace yet: in a clone, `npm ci && npm run package` builds `nabi-<version>.vsix`, and `code --install-extension nabi-<version>.vsix` installs it.
+- Vim and Neovim: [nabi-lang/nabi.vim](https://github.com/nabi-lang/nabi.vim). Point your plugin manager at it (`Plug 'nabi-lang/nabi.vim'` with vim-plug); on Neovim it also starts `nabils`.
+- Zed: [nabi-lang/nabi.zed](https://github.com/nabi-lang/nabi.zed). It is not in Zed's extension registry yet: install Rust with rustup, clone the repository, run `zed: install dev extension` from the command palette and pick the clone.
+
+For Neovim (0.11 or later) without the plugin, add this to `init.lua`:
 
 ```text
 vim.filetype.add({ extension = { nabi = "nabi", nabion = "nabion" } })
@@ -415,7 +421,7 @@ roots = ["nabi.nabion"]
 language-servers = ["nabils"]
 ```
 
-In other editors such as VS Code, register `nabils` with a generic LSP client extension. `nabils` must be on your `PATH`.
+In other editors, register `nabils` with the editor's LSP client or a generic LSP client extension. `nabils` must be on your `PATH`.
 
 ## REPL and Jupyter
 
@@ -423,7 +429,7 @@ A closer look at the REPL (`nabi` or `nabi repl`) from chapter 1. On a terminal 
 
 ```text
 $ nabi repl
-Nabi 0.1.0 on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [3, 1, 2]
 >>> xs.len()
@@ -550,7 +556,7 @@ $ nabi build -v
     Finished in 0.14s
 ```
 
-`--emit` writes intermediate artifacts to `target/debug/build/`. The kinds are `source` (the whole package after meta expansion and desugaring, written as Nabi source), `hir`, `mir` (what the code generator compiles; optimized above `-O0`), `obj` (the object file), `asm` (the object as assembly source, see below), `listing` (the machine code with offsets and bytes, see below), and `expansions` (the output of each meta expansion). `nabi emit` alone writes `mir`.
+`--emit` writes intermediate artifacts to `target/debug/build/`. The kinds are `source` (the whole package after meta expansion and desugaring, written as Nabi source), `hir`, `mir` (what the code generator compiles; optimized above `-O0`), `obj` (the object file), `asm` (the object as assembly source, see below), `listing` (the machine code with offsets and bytes, see below), `expansions` (the output of each meta expansion), and `c-header` (the C header of the `#[export]` functions, see [chapter 14](14-ffi.html#shared-libraries-for-c---crate-typecdylib)). `nabi emit` alone writes `mir`.
 
 ```text
 $ nabi emit
@@ -698,7 +704,7 @@ Global options such as `-q`, `-v` and `--color` work before or after the command
 - `nabi fmt` only fixes indentation and blank lines. In CI, use `nabi fmt --check`. Outside a package, give it a path.
 - `nabi lint` runs lints, `nabi fix` applies their fixes; `nabi check` goes as far as code generation. Lint levels resolve in the order `nabi.nabion` < `-A/-W/-D` < source attributes.
 - From `///` and `//!` doc comments, `nabi doc` generates HTML in `target/doc/`.
-- Register `nabils` as the LSP server in your editor.
+- Install the official extension for VS Code, Vim/Neovim or Zed, or register `nabils` as the LSP server in your editor.
 - The REPL prompts with `>>>`, keeps the last value in `it`, and has commands such as `:type`, `:doc`, `:vars` and `:reset`. `nabi repl .` loads the current package; for notebooks, `nabi jupyter install`.
 - To dig into problems: `-v`, `--emit`, `nabi demangle`, `-g` (with the formatters `nabic --print lldbinit` / `gdbinit` / `natvis` load).
 - `nabi help <command>` shows one command's usage and options.

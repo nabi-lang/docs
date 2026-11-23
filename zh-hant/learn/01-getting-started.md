@@ -17,7 +17,7 @@
 
 ### 安裝指令碼
 
-安裝指令碼會從 [GitHub releases](https://github.com/nabi-lang/nabi/releases) 下載適合你平台的工具鏈，用 SHA-256 驗證，再解壓縮到 `~/.nabi`。
+安裝指令碼會從 [GitHub releases](https://github.com/nabi-lang/nabi/releases) 下載適合你平台的工具鏈，用該版本的 `SHA256SUMS` 驗證，再解壓縮到 `~/.nabi`。如果 `PATH` 上有 `minisign`，它會先用發行金鑰驗證 `SHA256SUMS.minisig`；沒有的話，`SHA256SUMS` 只經由 HTTPS 取得，指令碼會說明如何手動驗證簽章。任何一項不符都不會安裝。
 
 ```bash
 curl -fsSL https://nabi.sh | sh
@@ -37,7 +37,7 @@ powershell -ExecutionPolicy Bypass -c "irm https://nabi.sh/install.ps1 | iex"
 ~/.nabi/
 ├── bin/                        # nabi, nabic, nabicc, nabils proxy
 └── toolchains/
-    └── 0.1.0-aarch64-apple-darwin/
+    └── 0.1.3-aarch64-apple-darwin/
         ├── bin/{nabi, nabic, nabicc, nabils}
         └── lib/                # runtime and standard library sources
 ```
@@ -47,8 +47,8 @@ powershell -ExecutionPolicy Bypass -c "irm https://nabi.sh/install.ps1 | iex"
 指令碼也會把 `~/.nabi/bin` 加入你的 `PATH`。它會寫入 `~/.nabi/env`（以及 `~/.nabi/env.fish`），從 shell 的啟動檔（例如 `~/.zshenv`、`~/.bashrc` 或 `~/.profile`）載入它，並為 fish 新增 `~/.config/fish/conf.d/nabi.fish`。它會列出每一個修改過的檔案：
 
 ```text
- Downloading nabi 0.1.0 (aarch64-apple-darwin)
-   Installed nabi 0.1.0 to ~/.nabi
+ Downloading nabi 0.1.3 (aarch64-apple-darwin)
+   Installed nabi 0.1.3 to ~/.nabi
 
     Modified ~/.zshenv (PATH)
 
@@ -74,10 +74,10 @@ nabi toolchain list
 
 ```text
 $ nabi --version -v
-nabi 0.1.0 (<commit> <date>)
-binary:    /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabi
-toolchain: 0.1.0-aarch64-apple-darwin (the default)
-nabic:     /Users/me/.nabi/toolchains/0.1.0-aarch64-apple-darwin/bin/nabic
+nabi 0.1.3 (<commit> <date>)
+binary:    /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabi
+toolchain: 0.1.3-aarch64-apple-darwin (the default)
+nabic:     /Users/me/.nabi/toolchains/0.1.3-aarch64-apple-darwin/bin/nabic
 host:      aarch64-apple-darwin
 ```
 
@@ -149,7 +149,7 @@ cd hello
 第二行是接下來要執行的指令。套件裡有兩個檔案。清單 `nabi.nabion` 記錄套件名稱、版本、能建置它的最舊 nabi 版本（`nabi_version`）、建立時使用的工具鏈系列，以及相依套件。
 
 ```nabion
-Package { name: "hello", version: "0.1.0", nabi_version: "0.1.0", toolchain: "0.1", deps: {} }
+Package { name: "hello", version: "0.1.0", nabi_version: "0.1.3", toolchain: "0.1", deps: {} }
 ```
 
 原始碼放在 `src/` 中；`src/main.nabi` 只有一行，會印出一句問候。
@@ -258,7 +258,7 @@ hi
 
 ```text
 $ nabi
-Nabi 0.1.0 (<commit> <date>) on aarch64-apple-darwin
+Nabi 0.1.3 (<commit> <date>) on aarch64-apple-darwin
 Type :help for help, :exit to quit.
 >>> let xs = [1, 2, 3]
 >>> xs.len() * 2
