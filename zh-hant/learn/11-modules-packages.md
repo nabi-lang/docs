@@ -353,9 +353,9 @@ help: `c` 0.4.0 gets along with the other requirements on `b`: change the root p
 nabi audit
 ```
 
-沒有適用的公告時，結束碼為 0；有適用的公告時為 1（因此 CI 工作會失敗）；無法檢查時為 2。`--ignore <id>` 會在你讀過某則公告之後接受它，`--json` 會為工具輸出紀錄。詳細內容以及如何回報漏洞，請見[安全性公告](../../learn/packages/04-security-advisories.html)。
+沒有適用的公告時，結束碼為 0；有適用的公告時為 1（因此 CI 工作會失敗）；無法檢查時為 2。`--ignore <id>` 會在你讀過某則公告之後接受它，`--json` 會為工具輸出紀錄。詳細內容以及如何回報漏洞，請見[安全性公告](packages/04-security-advisories.html)。
 
-函式庫可以提供讓使用者開啟或關閉的**功能特性**（feature），你也可以用 `nabi login` 和 `nabi publish` 把自己的函式庫發布為套件。功能特性在[第 18 章](18-features-and-publishing.html)中說明，該章也介紹 Nabi 專案維護的套件（`json`、`toml`、`csv`、`http`、`markdown`、`spatial`、`nabi-syntax`）；發布則請見[發布套件](../../learn/packages/index.html)。
+函式庫可以提供讓使用者開啟或關閉的**功能特性**（feature），你也可以用 `nabi login` 和 `nabi publish` 把自己的函式庫發布為套件。功能特性在[第 18 章](18-features-and-publishing.html)中說明，該章也介紹 Nabi 專案維護的套件（`json`、`toml`、`csv`、`http`、`markdown`、`spatial`、`nabi-syntax`）；發布則請見[發布套件](packages/index.html)。
 
 ## 工作區
 
