@@ -417,7 +417,7 @@ When a term is missing, take the one the Chinese editions of the Rust or Go docs
 | announcement | 公告 | 公告 | "Announcing Nabi 0.1.0": Nabi 0.1.0 发布 / Nabi 0.1.0 正式發布 |
 | FAQ | 常见问题 | 常見問題 | |
 | brand, mark, wordmark | 品牌，标志，文字标志 | 品牌，標誌，文字標誌 | |
-| slogan | 标语 | 標語 | the slogan stays in English and Korean, with a translation in parentheses |
+| slogan | 标语 | 標語 | "Clear rules, free as a butterfly." is 规则清晰，如蝶般自由。 in zh-Hans and 規則清晰，如蝶般自由。 in zh-Hant |
 | code point | 码位 | 碼位 | Unicode code point |
 | clamp | 钳制 | 夾限 | to clamp a value into a range |
 | stop-the-world (pause) | 全局停顿（stop-the-world） | stop-the-world 暫停 | zh-Hant keeps the English term |
