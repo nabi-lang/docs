@@ -203,7 +203,7 @@ When a term is missing, take the one the Chinese editions of the Rust or Go docs
 | sign-off | 签署（sign-off） | 簽署（sign-off） | DCO |
 | issue | issue | issue | not translated |
 | pull request | pull request | pull request | not translated |
-| fork | 派生 | 分叉 | |
+| fork | 复刻 | 分叉 | GitHub's zh-CN term; 派生 is derive |
 | milestone | 里程碑 | 里程碑 | |
 | roadmap | 路线图 | 路線圖 | |
 | community | 社区 | 社群 | |

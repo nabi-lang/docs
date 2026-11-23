@@ -6,7 +6,7 @@
 
 - 仓库根目录下的 `nabi.nabion`，其中有 `name`、`version` 和 `nabi_version`。
 - 一个 `src/lib.nabi`（库）、一个 `src/main.nabi`（供 `nabi install` 安装的程序）或两者都有，以及一个 readme。
-- 一个干净的 git 工作树，带有远程仓库 `origin`，其 url 是公开主机上的 `https://` 地址，并且提交已推送到它的某个分支或标签（只存在于派生仓库中的提交不算）。
+- 一个干净的 git 工作树，带有远程仓库 `origin`，其 url 是公开主机上的 `https://` 地址，并且提交已推送到它的某个分支或标签（只存在于复刻仓库中的提交不算）。
 - 所有普通依赖都来自注册表。git 依赖会被拒绝；路径依赖也会被拒绝，除非它同时写明发布时用来代替它的版本：`Dep::path("../geom", version: "^0.1")`（先发布 `geom`）。没有 `version:` 的路径和 git `dev_deps` 会被去掉。
 - 清单中没有 `publish: false`。
 
@@ -44,7 +44,7 @@ a token from https://packages.nabi-lang.org/me (not shown; Ctrl-C to cancel):
    Logged in as your-name at https://packages.nabi-lang.org (token in ~/.nabi/tokens.nabion)
 ```
 
-不带参数时，令牌从标准输入读取，不回显。`nabi login` 会向注册表询问令牌属于谁，注册表拒绝的令牌会被拒收，什么也不保存。有效的令牌保存在 `~/.nabi/tokens.nabion`（只有你能读取）中，按创建它的索引归档，并且只发送给那个索引；`nabi login --registry <url>` 为另一个索引保存令牌。`nabi logout` 删除它，`nabi logout --all` 删除所有索引的令牌。在 CI 中改为设置 `NABI_REGISTRY_TOKEN`，它只会发送给 packages.nabi-lang.org。从 GitHub Actions 发布时，[可信发布](02-trusted-publishing.html)完全不需要存储令牌。
+不带参数时，令牌从标准输入读取，不回显。`nabi login` 会向注册表询问令牌属于谁，注册表拒绝的令牌会被拒收，什么也不保存。有效的令牌保存在 `~/.nabi/tokens.nabion`（只有你能读取）中，按签发它的索引分别存放，并且只发送给那个索引；`nabi login --registry <url>` 为另一个索引保存令牌。`nabi logout` 删除它，`nabi logout --all` 删除所有索引的令牌。在 CI 中改为设置 `NABI_REGISTRY_TOKEN`，它只会发送给 packages.nabi-lang.org。从 GitHub Actions 发布时，[可信发布](02-trusted-publishing.html)完全不需要存储令牌。
 
 ## `nabi publish`
 
