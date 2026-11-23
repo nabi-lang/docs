@@ -129,104 +129,19 @@ println(try await r.body.text());
 
 ## 패키지 공개하기
 
-공개는 레지스트리 index에 줄 하나를 더하는 일입니다. 그 줄은 git 저장소의 커밋 하나를 가리킵니다. 소스는 올리지 않습니다. 레지스트리가 그 커밋을 가져와 아카이브로 보관하고 그 SHA-256을 줄에 적으므로(`archive`), 사용자는 아카이브를 받고 그 버전은 저장소가 없어져도 남습니다. 패키지에는 `src/lib.nabi`(라이브러리), `src/main.nabi`(`nabi install`로 설치하는 프로그램) 중 하나나 둘 다와 readme가 있어야 하고, 원격 `origin`이 있는 깨끗한 git 작업 트리의 루트에 있어야 합니다. 일반 의존성도 모두 레지스트리에서 와야 합니다. git 의존성은 거부됩니다. 경로 의존성도 거부되지만, 경로 대신 공개할 버전을 함께 적으면 됩니다: `Dep::path("../geom", version: "^0.1")`(`geom`을 먼저 공개합니다). `version:`이 없는 경로와 git의 `dev_deps`는 빠집니다. `nabi_version`에는 패키지를 빌드해 본 가장 오래된 nabi를 적으세요. `nabi publish`에 필요하고, 해소는 사용자마다 그 toolchain이 빌드하는 가장 새 버전을 줍니다(`"0.1.3"`은 nabi 0.1.3과 그 뒤의 0.1.x를 허용합니다. [1장](01-getting-started.html#toolchain-관리)). `nabi new`는 패키지를 만든 버전을 적습니다. `description`, `license`, `repository`를 채우세요. 이 값이 `nabi search`와 웹사이트에 나타납니다. 패키지 페이지에 나오는 나머지 필드는 Cargo처럼 선택입니다.
+공개는 레지스트리 index에 줄 하나를 더하는 일입니다. 그 줄은 git 저장소의 커밋 하나를 가리키고, 레지스트리가 그 커밋의 아카이브를 보관하므로 그 버전은 저장소가 없어져도 남습니다. 요약하면 다음과 같습니다.
 
-```nabion
-Package {
-    name: "textwrap",
-    version: "0.1.0",
-    nabi_version: "0.1.0",
-    description: "Word wrapping for terminals",
-    license: "MIT OR Apache-2.0",
-    repository: "https://github.com/you/textwrap",
-    authors: ["You <you@example.com>"],
-    homepage: "https://example.com/textwrap",
-    documentation: "https://example.com/textwrap/docs",
-    keywords: ["text", "terminal"],
-    categories: ["text-processing"],
-    exclude: ["bench/**"],
-    deps: {},
-}
+```bash
+nabi login                # a token from packages.nabi-lang.org/me
+nabi publish --dry-run    # print the index entry; nothing leaves your machine
+nabi publish
+nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
 ```
 
-`keywords`와 `categories`는 각각 5개까지 적을 수 있습니다. `include` / `exclude`는 패키지에 담을 파일을 고릅니다. `license_file`, `readme`, `links`, `default_run`, 자유 형식의 `metadata` 테이블도 있습니다. `nabi`가 모르는 필드는 에러가 아니라 경고이고, 레지스트리에는 그대로 보내집니다.
+공개는 가이드의 따로 된 부분인 [패키지 공개](packages/index.html)에서 다룹니다. 패키지에 필요한 것, [`nabi login`과 `nabi publish`](packages/01-publishing.html), GitHub Actions에서 하는 [신뢰할 수 있는 공개](packages/02-trusted-publishing.html), `#[deprecated]`, `#[non_exhaustive]`, `#[sealed]`로 [API를 안정적으로 유지하기](packages/03-stable-api.html)가 있습니다.
 
 > [!IMPORTANT]
 > 지금은 레지스트리 관리자만 패키지를 공개할 수 있습니다. 누구나 로그인해 패키지를 쓸 수 있지만, `nabi login`은 아직 공개 권한이 없는 계정을 거절합니다.
-
-### `nabi login`
-
-[packages.nabi-lang.org/me](https://packages.nabi-lang.org/me)에서 GitHub로 로그인하고 거기서 계정 토큰을 만듭니다. 그런 다음 `nabi`에 넘겨줍니다.
-
-```text
-$ nabi login
-a token from https://packages.nabi-lang.org/me (not shown; Ctrl-C to cancel):
-   Logged in as your-name at https://packages.nabi-lang.org (token in ~/.nabi/tokens.nabion)
-```
-
-인자가 없으면 토큰을 화면에 보이지 않게 표준 입력에서 읽습니다. `nabi login`은 레지스트리에 토큰이 누구의 것인지 묻고, 레지스트리가 거부하는 토큰은 아무것도 저장하지 않고 거절합니다. 올바른 토큰은 `~/.nabi/tokens.nabion`(본인만 읽을 수 있음)에 그 토큰을 만든 index별로 저장되고, 그 index에만 보내집니다. 다른 index의 토큰은 `nabi login --registry <url>`로 저장합니다. `nabi logout`은 그 토큰을 지우고, `nabi logout --all`은 모든 index의 토큰을 지웁니다. CI에서는 대신 `NABI_REGISTRY_TOKEN`을 설정합니다. 이 토큰은 packages.nabi-lang.org에만 보내집니다.
-
-### `nabi publish`
-
-`nabi publish --dry-run`은 시험 실행(dry run)입니다. 더할 index 항목을 출력할 뿐, 아무것도 기계 밖으로 보내지 않습니다. `nabi publish`는 `cargo publish`처럼 바로 게시합니다.
-
-```text
-$ nabi publish --dry-run
-Package { name: "textwrap", version: "0.1.0", deps: [], source: Dep::git("https://github.com/you/textwrap.git", rev: "8e2afb20.."), tree: "823a3592..", yanked: false, nabi_version: "0.1.0" }
-note: dry run; `nabi publish` sends it to the registry API of https://github.com/nabi-lang/packages-index (needs `nabi login`), which adds it as te/xt/textwrap
-```
-
-항목에는 의존성 해소에 필요한 것만 들어갑니다. HEAD 커밋과 그 트리 해시, 의존성, `nabi_version`입니다. 그러니 그 커밋을 먼저 원격 저장소에 올리세요(push). 설명, 라이선스 같은 나머지 메타데이터는 항목과 함께 레지스트리로 가고, 레지스트리는 버전마다 누가 공개했는지와 함께 이를 보여 줍니다. `nabi publish`는 토큰과 함께 둘을 레지스트리에 보냅니다(`Published textwrap 0.1.0 to https://packages.nabi-lang.org`). index에 항목이 들어가면 그 버전이 공개됩니다. 한 버전은 두 번 공개할 수 없습니다. 기존 패키지와 대소문자나 `-` / `_`만 다른 이름은 이미 쓰인 것으로 봅니다.
-
-레지스트리는 그 커밋의 소스로 버전의 API 문서도 만듭니다. 소스는 읽기만 하고 빌드하거나 실행하지 않습니다. 문서는 docs.rs가 crates.io에 하듯 문서 사이트가 보여 줍니다. `docs.nabi-lang.org/packages/textwrap/0.1.0`에 있고(실제 예는 [json의 문서](https://docs.nabi-lang.org/packages/json/latest)), 최신 버전의 문서는 `/packages/textwrap/latest`입니다. 페이지 구성은 `nabi doc`과 같습니다. 루트 모듈은 그 주소에, 다른 public 모듈은 각자의 페이지(`/packages/textwrap/0.1.0/<module>`)에 있고, 앵커도 같습니다(`#fn.wrap`). private 모듈의 항목을 `pub use`로 다시 내보내면, 그 항목은 다시 내보낸 곳에 선언된 것처럼 보입니다. 문서를 만들지 못해도 버전은 공개됩니다. `nabi publish`가 이유를 경고로 출력하고, 문서 페이지에도 그 이유가 나옵니다.
-
-### `nabi yank`
-
-심각한 버그가 있는 버전은 철회(yank)할 수 있습니다. 새로 의존성을 해소할 때는 그 버전을 건너뜁니다. 하지만 `nabi.lock`이 이미 그 버전을 고정한 프로젝트는 계속 빌드되므로 철회가 누군가의 빌드를 깨뜨리는 일은 없습니다. `--undo`로 되돌립니다.
-
-```bash
-nabi yank textwrap@0.1.0 --message "wraps CJK text wrong; use 0.1.1"
-nabi yank textwrap@0.1.0 --undo
-```
-
-`--message`로 이유를 적으면 레지스트리가 패키지 페이지에 보여 줍니다.
-
-### 공개한 API 바꾸기
-
-패키지의 함수, 메서드, 필드, 타입을 없애고 싶다면 바로 지우지 말고 먼저 `#[deprecated]`를 붙이세요. 그것을 쓰는 코드는 계속 빌드되고, 대신 무엇을 쓰면 되는지 알려 주는 경고를 받습니다. 실제로 지우는 것은 다음 호환성이 깨지는 릴리스에서 합니다.
-
-```nabi norun
-#[deprecated(since = "0.3.0", note = "use `wrap_width`")]
-pub fn wrap(s: str) -> str { wrap_width(s, 80) }
-```
-
-```text
-warning[E0131]: use of deprecated function `wrap`
-  --> src/main.nabi:6:9
-   |
- 6 | println(textwrap::wrap("hi"));
-   |         ^^^^^^^^^^^^^^^^^^^^
-   |
-   = note: deprecated since 0.3.0
-   = note: use `wrap_width`
-   = note: `#[warn(deprecated)]` on by default
-```
-
-자랄 여지를 남기는 속성이 둘 있습니다. enum에 `#[non_exhaustive]`를 붙이면 다른 패키지의 `match`는 `_ =>`로 끝나야 하므로 나중에 변형을 더할 수 있습니다. struct에 붙이면 필드를 더할 수 있는 레코드가 됩니다. 다른 패키지는 여전히 리터럴로 값을 만들고 기본값이 있는 필드는 생략할 수 있지만, 그 struct에 대한 패턴은 `..`로 끝나야 합니다. 나중에 더하는 필드에는 모두 기본값을 주어야 그런 리터럴이 계속 컴파일됩니다.
-
-```nabi norun
-#[non_exhaustive]
-pub struct WrapOptions {
-    pub width: i32 = 80;
-    pub break_words: bool = false;
-}
-
-// in another package
-let o = textwrap::WrapOptions { width: 60 };
-let textwrap::WrapOptions { width, .. } = o;
-```
-
-트레잇에 `#[sealed]`를 붙이면 그 트레잇은 내 패키지만 구현합니다. 다른 패키지도 바운드에 쓰고 메서드를 부를 수 있지만, 다른 곳의 `impl`은 에러입니다. 그래서 구현이 무엇무엇인지 다 안다고 믿고 코드를 쓸 수 있습니다.
 
 ## 요약
 
