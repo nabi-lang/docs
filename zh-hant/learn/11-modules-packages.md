@@ -461,6 +461,6 @@ $ nabi install tool@0.2
 ## 延伸閱讀
 
 - 規格：[模組](../spec/refs-lang/005-modules/504-modules.html)、[`use`](../spec/refs-lang/005-modules/505-use.html)、[可見性](../spec/refs-lang/005-modules/506-visibility.html)、[路徑](../spec/refs-lang/005-modules/507-paths.html)、[重新匯出](../spec/refs-lang/005-modules/508-re-export.html)
-- 工具：[`nabi` 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[`nabi.nabion` / `nabi.lock`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)、[登錄庫套件](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-登錄庫套件)、[環境](../spec/refs-lang/009-tools/910-nabi-frontend.html#9105-環境)、[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-單一檔案腳本的行內資訊清單)
+- 工具：[`nabi` 前端](../spec/refs-lang/009-tools/910-nabi-frontend.html)、[`nabi.nabion` / `nabi.lock`](../spec/refs-lang/009-tools/910-nabi-frontend.html#9103-nabinabion--nabilock)、[登錄庫套件](../spec/refs-lang/009-tools/910-nabi-frontend.html#9104a-登錄庫套件)、[環境](../spec/refs-lang/009-tools/910-nabi-frontend.html#9105-環境)、[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-單檔指令碼的行內資訊清單)
 - [1. 入門](01-getting-started.html)
 - 下一章：[12. 並行](12-concurrency.html)
