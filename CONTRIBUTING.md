@@ -1,7 +1,8 @@
 # Contributing to the Nabi docs
 
 This repository holds the guide, the examples, the error pages and the
-cookbook of docs.nabi-lang.org, in English and Korean (`ko/`). It is content
+cookbook of docs.nabi-lang.org, in English, Korean (`ko/`), Simplified
+Chinese (`zh-hans/`) and Traditional Chinese (`zh-hant/`). It is content
 only; the site is built by [nabi-lang.org](https://github.com/nabi-lang/nabi-lang.org).
 
 ## Branches
@@ -12,9 +13,12 @@ released version is fixed on its `vX.Y.Z` branch (and, if it applies, on
 
 ## Keeping the editions in sync
 
-A change to an English page is made to its Korean page under `ko/` in the
-same pull request, with the same headings. If you cannot write the Korean,
-say so in the pull request and a maintainer will add it before merging.
+English is the source. A change to an English page is made to its Korean
+page under `ko/` in the same pull request, with the same headings; the
+same goes for `zh-hans/` and `zh-hant/`, or a maintainer follows up. If you
+cannot write the Korean, say so in the pull request and a maintainer will
+add it before merging. The terms each translation uses are in `i18n/`
+(`glossary-ko.md`, `glossary-zh.md`).
 
 ## Checks
 
