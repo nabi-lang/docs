@@ -355,7 +355,7 @@ nabi audit
 
 해당하는 권고가 없으면 0, 있으면 1(그래서 CI 작업이 실패합니다), 확인하지 못했으면 2로 끝납니다. 권고 목록은 레지스트리마다 한 번 받아 `$NABI_HOME/cache/advisories`에 한 시간 동안 두고, `--offline`은 그 사본만 씁니다. 읽어 보고 받아들이기로 한 권고는 `--ignore <id>`로 건너뛰고, 도구에서 쓸 때는 `--json`으로 레코드를 출력합니다. 경로·git 의존성과 네이티브 패키지는 확인하지 않습니다.
 
-취약점을 찾았다면 먼저 그 패키지의 소유자에게 비공개로 알리세요. 답이 없거나 레지스트리·툴체인의 문제라면 [security@nabi-lang.org](mailto:security@nabi-lang.org)로 보내 주세요. 자세한 내용은 [보안 권고](packages/04-security-advisories.html)(영어)에 있습니다.
+취약점을 찾았다면 먼저 그 패키지의 소유자에게 비공개로 알리세요. 답이 없거나 레지스트리·툴체인의 문제라면 [security@nabi-lang.org](mailto:security@nabi-lang.org)로 보내 주세요. 자세한 내용은 [보안 권고](packages/04-security-advisories.html)에 있습니다.
 
 라이브러리에는 사용자가 켜고 끌 수 있는 **feature**를 둘 수 있습니다. `nabi login`과 `nabi publish`로 내 라이브러리를 패키지로 공개할 수도 있습니다. 둘 다 Nabi 프로젝트가 관리하는 패키지(`json`, `toml`, `csv`, `http`, `markdown`, `spatial`, `nabi-syntax`)와 함께 [18장](18-features-and-publishing.html)에서 다룹니다.
 

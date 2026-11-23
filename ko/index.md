@@ -19,4 +19,4 @@
 
 ## 버전
 
-릴리스 시리즈마다 문서가 따로 있습니다. Nabi 0.1.x는 `docs.nabi-lang.org/0.1/`에 있는 식입니다. `latest/`는 최신 릴리스이고 `dev/`는 main 브랜치를 따라갑니다. 수정은 최신 시리즈에만 나옵니다. 언어의 동기와 철학은 [사양 소개](spec/index.html)에 있습니다. 패키지는 패키지 레지스트리 [packages.nabi-lang.org](https://packages.nabi-lang.org)에 있습니다.
+릴리스 시리즈마다 문서가 따로 있습니다. Nabi 0.1.x는 `docs.nabi-lang.org/0.1/`에 있는 식입니다. `latest/`는 최신 릴리스이고 `dev/`는 main 브랜치를 따라갑니다. 수정은 최신 시리즈에만 나옵니다. 언어의 동기와 철학은 [사양 소개](spec/index.html)에 있습니다. 패키지는 패키지 레지스트리 [packages.nabi-lang.org](https://packages.nabi-lang.org)에 있고, 내 패키지를 거기 올리는 방법은 [패키지 공개](learn/packages/index.html)에 있습니다.
