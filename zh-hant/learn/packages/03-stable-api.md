@@ -43,5 +43,5 @@ trait 上的 `#[sealed]` 表示只有你的套件會實作它。其他套件仍�
 
 ## 延伸閱讀
 
-- 規格：[6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-不建議使用的標記)、[6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-退出外部的窮盡性)、[6.2.15 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6215-sealed-只在定義套件中實作)
+- 規格：[6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-不建議使用的標記)、[6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-退出外部的窮盡性)、[6.2.14 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6214-sealed-只在定義套件中實作)
 - 回到[發布套件](index.html)

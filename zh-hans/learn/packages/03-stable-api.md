@@ -43,5 +43,5 @@ trait 上的 `#[sealed]` 表示只有你的包实现它。其他包仍然可以�
 
 ## 延伸阅读
 
-- 规范：[6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-不推荐使用的标记)、[6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-退出外部穷尽性)、[6.2.15 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6215-sealed-只在定义它的包中实现)
+- 规范：[6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-不推荐使用的标记)、[6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-退出外部穷尽性)、[6.2.14 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6214-sealed-只在定义它的包中实现)
 - 返回[发布包](index.html)

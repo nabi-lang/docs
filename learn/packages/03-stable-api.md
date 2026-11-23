@@ -43,5 +43,5 @@ let textwrap::WrapOptions { width, .. } = o;
 
 ## Further reading
 
-- Spec: [6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-discouraged-use-marker), [6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-opting-out-of-external-exhaustiveness), [6.2.15 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6215-sealed-impls-only-in-the-defining-package)
+- Spec: [6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-discouraged-use-marker), [6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-opting-out-of-external-exhaustiveness), [6.2.14 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6214-sealed-impls-only-in-the-defining-package)
 - Back to [Publishing Packages](index.html)

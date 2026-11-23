@@ -43,5 +43,5 @@ let textwrap::WrapOptions { width, .. } = o;
 
 ## 더 읽을거리
 
-- 사양: [6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-사용-자제-표시), [6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-외부-완전성-검사-회피), [6.2.15 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6215-sealed-정의한-패키지에서만-구현)
+- 사양: [6.2.7 `#[deprecated]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#627-deprecated-사용-자제-표시), [6.2.10 `#[non_exhaustive]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6210-non_exhaustive-외부-완전성-검사-회피), [6.2.14 `#[sealed]`](../../spec/refs-lang/006-meta-system/602-built-in-attributes.html#6214-sealed-정의한-패키지에서만-구현)
 - [패키지 공개](index.html)로 돌아가기
