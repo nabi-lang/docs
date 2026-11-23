@@ -382,6 +382,7 @@ When a term is missing, take the one the Chinese editions of the Rust or Go docs
 | thread-local | 线程局部 | 執行緒區域 | |
 | async, asynchronous | 异步 | 非同步 | |
 | task | 任务 | 任務 | |
+| spawn (a thread, a task) | 启动 | 啟動 | `thread::spawn`, `task::spawn`; not 派生, which is derive |
 | coroutine | 协程 | 協程 | |
 | scheduler | 调度器 | 排程器 | |
 | channel | 通道 | 通道 | |
