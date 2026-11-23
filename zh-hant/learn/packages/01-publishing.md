@@ -44,7 +44,7 @@ a token from https://packages.nabi-lang.org/me (not shown; Ctrl-C to cancel):
    Logged in as your-name at https://packages.nabi-lang.org (token in ~/.nabi/tokens.nabion)
 ```
 
-不帶引數時，權杖會從標準輸入讀取，不會回顯。`nabi login` 會向登錄庫詢問權杖屬於誰，登錄庫拒絕的權杖會被拒收，什麼都不儲存。有效的權杖會存在 `~/.nabi/tokens.nabion`（只有你能讀取）中，依建立它的索引分開存放，並且只會送給那個索引；`nabi login --registry <url>` 會為另一個索引保存權杖。`nabi logout` 會移除它，`nabi logout --all` 會移除所有索引的權杖。在 CI 中則改為設定 `NABI_REGISTRY_TOKEN`，它只會送給 packages.nabi-lang.org。從 GitHub Actions 發布時，[受信任發布](02-trusted-publishing.html)完全不需要儲存權杖。
+不帶引數時，權杖會從標準輸入讀取，不會回顯。`nabi login` 會向登錄庫查詢權杖的擁有者；登錄庫不接受的權杖，`nabi login` 也會拒收，不會儲存任何東西。有效的權杖會存在 `~/.nabi/tokens.nabion`（只有你能讀取）中，依建立它的索引分開存放，並且只會送給那個索引；`nabi login --registry <url>` 會為另一個索引保存權杖。`nabi logout` 會移除它，`nabi logout --all` 會移除所有索引的權杖。在 CI 中則改為設定 `NABI_REGISTRY_TOKEN`，它只會送給 packages.nabi-lang.org。從 GitHub Actions 發布時，[受信任發布](02-trusted-publishing.html)完全不需要儲存權杖。
 
 ## `nabi publish`
 

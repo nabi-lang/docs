@@ -39,7 +39,7 @@ let o = textwrap::WrapOptions { width: 60 };
 let textwrap::WrapOptions { width, .. } = o;
 ```
 
-trait 上的 `#[sealed]` 表示只有你的套件會實作它。其他套件仍可在約束中使用它、呼叫它的方法，但在別處為它寫 `impl` 是錯誤，所以你可以放心依賴自己知道它的所有實作。
+trait 上的 `#[sealed]` 表示只有你的套件會實作它。其他套件仍可在約束中使用它、呼叫它的方法，但在別處為它寫 `impl` 是錯誤，因此你可以確定自己掌握它的所有實作。
 
 ## 延伸閱讀
 

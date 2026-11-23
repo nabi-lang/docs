@@ -190,7 +190,7 @@ error[E0057]: `p.x` is set on a copy of the element, so `ps` does not change
    = help: bind each element as a place with `for ref`: `for ref p in ps { p.x *= 10; }`
 ```
 
-`for ref p in ps` 把每個元素繫結為位置（place）：讀取 `p` 就是讀取元素，寫入 `p` 或其欄位就是寫入元素。在 `p`（或 `ps[i]`、`Dict` 的項目）上呼叫 `ref self` 方法，也會原地改變它。
+`for ref p in ps` 把每個元素繫結為位置（place）：讀取 `p` 就是讀取元素，寫入 `p` 或其欄位就是寫入元素。在 `p`（或 `ps[i]`、`Dict` 的項目）上呼叫 `ref self` 方法，也會就地改變它。
 
 ```nabi
 struct Point { x: i32; y: i32; }
@@ -330,7 +330,7 @@ error[E0135]: method `name` comes from trait `zoo::Animal`, which is not in scop
 
 ## 用 derive 自動實作
 
-比較、雜湊、除錯輸出這類機械式的實作，可以用 `#[derive(...)]` 產生。內建的 derive 有 `Clone`、`Copy`、`Debug`、`Default`、`PartialEq`、`Eq`、`PartialOrd`、`Ord` 和 `Hash`；標準函式庫另外加上用於錯誤型別的 `Error`（[第 10 章](10-errors.html#自訂錯誤型別)）以及用於 NABION 序列化的 `Nabion`（[第 15 章](15-nabion.html)）。`Default` 對有宣告預設值（`= value`）的欄位使用該預設值，其他欄位則使用欄位型別的 `default()`。
+比較、雜湊、偵錯輸出這類機械式的實作，可以用 `#[derive(...)]` 產生。內建的 derive 有 `Clone`、`Copy`、`Debug`、`Default`、`PartialEq`、`Eq`、`PartialOrd`、`Ord` 和 `Hash`；標準函式庫另外加上用於錯誤型別的 `Error`（[第 10 章](10-errors.html#自訂錯誤型別)）以及用於 NABION 序列化的 `Nabion`（[第 15 章](15-nabion.html)）。`Default` 對有宣告預設值（`= value`）的欄位使用該預設值，其他欄位則使用欄位型別的 `default()`。
 
 ```nabi
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Default)]
@@ -383,7 +383,7 @@ true
 
 `Dict` 和 `Set` 使用的 hasher 每個行程有各自的金鑰，因此每次執行的雜湊值都不同；絕對不要儲存雜湊值。
 
-標準函式庫自己的型別也遵循相同的規則。每個公開型別都實作了 `Debug`，所以 `{x:?}` 可以用在範圍（`0..3`）、`File`（`File { path: "a.txt" }`）或迭代器上；存放金鑰的型別會印出 `{ .. }` 而不是秘密內容。`Path`、`Ipv4Addr`、`Ordering` 這類值型別實作了 `Eq` 和 `Hash`，因此可以當作 `Dict` 的鍵和 `Set` 的元素。之後可能新增情況的標準函式庫列舉，例如 `IoErrorKind` 或 `HashAlgorithm`，標有 `#[non_exhaustive]`：對它做 `match` 時需要 `_` 分支。
+標準函式庫自己的型別也遵循相同的規則。每個公開型別都實作了 `Debug`，所以 `{x:?}` 可以用在範圍（`0..3`）、`File`（`File { path: "a.txt" }`）或迭代器上；存放金鑰的型別會印出 `{ .. }` 而不是機密內容。`Path`、`Ipv4Addr`、`Ordering` 這類值型別實作了 `Eq` 和 `Hash`，因此可以當作 `Dict` 的鍵和 `Set` 的元素。之後可能新增情況的標準函式庫列舉，例如 `IoErrorKind` 或 `HashAlgorithm`，標有 `#[non_exhaustive]`：對它做 `match` 時需要 `_` 分支。
 
 你自己的 derive 是一份 Nabi 程式碼樣板：`#[impl_derive(Trait)] @derive { .. }` 用 `@for_fields` 對每個欄位重複某些部分，用 `@field.name` / `@field.type` 指稱它們，並可以用 `@concat` 宣告一個具名的附屬項目。下面在 `Point` 上的 `#[derive(Columns)]` 還會宣告 `PointColumns`，每個欄位各一個串列（[6.9](../spec/refs-lang/006-meta-system/609-template-tokens.html)）：
 

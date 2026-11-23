@@ -6,10 +6,10 @@
 
 用過 Python？[給 Python 使用者的 Nabi](nabi-for-python.html) 列出 Python 的慣用寫法與標準函式庫模組在 Nabi 中對應的寫法。
 
-用過 Rust？[給 Rust 使用者的 Nabi](nabi-for-rust.html) 說明關於所有權、錯誤和 `Option` 有哪些習慣要放下，以及 Cargo 的指令在 Nabi 的哪裡。
+用過 Rust？[給 Rust 使用者的 Nabi](nabi-for-rust.html) 說明關於所有權、錯誤和 `Option` 有哪些習慣要放下，以及 Cargo 的各個指令在 Nabi 中對應什麼。
 
-要做科學計算或資料分析？[用 Nabi 做科學計算](22-science.html) 整理了科學計算套件，每個套件的[文件](https://docs.nabi-lang.org/packages)都從教學開始，從第一次的 CSV 分析，到線性代數、統計、訊號、擬合、微分方程與導數。[Rosetta](rosetta/index.html) 頁面用 Nabi 解決一些知名的小題目（FizzBuzz、質數篩法、八皇后、單字計數）。
+要做科學計算或資料分析？[用 Nabi 做科學計算](22-science.html)整理了科學計算套件，每個套件的[文件](https://docs.nabi-lang.org/packages)都從教學開始，從第一次的 CSV 分析，到線性代數、統計、訊號、擬合、微分方程與導數。[Rosetta](rosetta/index.html) 頁面用 Nabi 解決一些知名的小題目（FizzBuzz、質數篩法、八皇后、單字計數）。
 
-完整的規則定義在[語言參考](../spec/refs-lang/index.html)與[標準函式庫規格](../spec/refs-standard-libraries/index.html)中；函式與型別列在[標準函式庫 API](../../std/index.html) 裡。小而完整的程式收錄在[範例](../examples/index.html)中。日常工作（讀取檔案、計時、執行緒、JSON、HTTP）的快速解答，請見[怎麼做……](20-cookbook.html)。編譯器擋下你時，可以到[錯誤碼索引](../errors/index.html)查它的錯誤碼。
+完整的規則定義在[語言參考](../spec/refs-lang/index.html)與[標準函式庫規格](../spec/refs-standard-libraries/index.html)中；函式與型別列在[標準函式庫 API](../../std/index.html) 裡。小而完整的程式收錄在[範例](../examples/index.html)中。日常工作（讀取檔案、計時、執行緒、JSON、HTTP）的快速解答，請見[怎麼做……](20-cookbook.html)。編譯器回報錯誤時，可以到[錯誤碼索引](../errors/index.html)查它的錯誤碼。
 
 ## 目錄
