@@ -391,7 +391,7 @@ $ nabi doc
 
 공식 확장은 `nabils`를 알아서 실행하고 구문 강조를 더합니다.
 
-- VS Code: [nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode). 아직 Marketplace에 없으니 클론한 저장소에서 `npm ci && npm run package`로 `nabi-<version>.vsix`를 만들고 `code --install-extension nabi-<version>.vsix`로 설치합니다.
+- VS Code: [nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode). [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nabi-lang.nabi)에서 `nabi-lang.nabi`를 설치합니다(확장 보기에서 Nabi를 검색하거나 `code --install-extension nabi-lang.nabi`). VSCodium, Cursor처럼 [Open VSX](https://open-vsx.org/extension/nabi-lang/nabi)를 쓰는 에디터에서도 같은 ID로 찾을 수 있습니다.
 - Vim과 Neovim: [nabi-lang/nabi.vim](https://github.com/nabi-lang/nabi.vim). 플러그인 관리자에 이 저장소를 지정합니다(vim-plug라면 `Plug 'nabi-lang/nabi.vim'`). Neovim에서는 `nabils`도 실행합니다.
 - Zed: [nabi-lang/nabi.zed](https://github.com/nabi-lang/nabi.zed). 아직 Zed 확장 레지스트리에 없으니 rustup으로 Rust를 설치하고, 저장소를 클론한 뒤 명령 팔레트에서 `zed: install dev extension`을 실행해 클론한 디렉터리를 고릅니다.
 

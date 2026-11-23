@@ -391,7 +391,7 @@ $ nabi doc
 
 官方擴充功能會替你啟動 `nabils`，並提供語法標示：
 
-- VS Code：[nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode)。它還沒有上架 Marketplace：在複製下來的儲存庫中以 `npm ci && npm run package` 建置 `nabi-<version>.vsix`，再用 `code --install-extension nabi-<version>.vsix` 安裝。
+- VS Code：[nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode)。從 [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nabi-lang.nabi) 安裝 `nabi-lang.nabi`（在擴充功能檢視中搜尋 Nabi，或執行 `code --install-extension nabi-lang.nabi`）；VSCodium、Cursor 等使用 [Open VSX](https://open-vsx.org/extension/nabi-lang/nabi) 的編輯器也能以同一 ID 找到它。
 - Vim 與 Neovim：[nabi-lang/nabi.vim](https://github.com/nabi-lang/nabi.vim)。讓外掛管理器指向這個儲存庫（vim-plug 寫 `Plug 'nabi-lang/nabi.vim'`）；在 Neovim 中它也會啟動 `nabils`。
 - Zed：[nabi-lang/nabi.zed](https://github.com/nabi-lang/nabi.zed)。它還不在 Zed 的擴充功能登錄庫中：用 rustup 安裝 Rust，複製儲存庫，在指令面板中執行 `zed: install dev extension` 並選擇複製下來的目錄。
 

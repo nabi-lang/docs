@@ -391,7 +391,7 @@ $ nabi doc
 
 Official extensions start `nabils` for you and add syntax highlighting:
 
-- VS Code: [nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode). It is not on the Marketplace yet: in a clone, `npm ci && npm run package` builds `nabi-<version>.vsix`, and `code --install-extension nabi-<version>.vsix` installs it.
+- VS Code: [nabi-lang/nabi.vscode](https://github.com/nabi-lang/nabi.vscode). Install `nabi-lang.nabi` from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=nabi-lang.nabi) (search for Nabi in the Extensions view, or `code --install-extension nabi-lang.nabi`); VSCodium, Cursor and other editors that use [Open VSX](https://open-vsx.org/extension/nabi-lang/nabi) find it there under the same id.
 - Vim and Neovim: [nabi-lang/nabi.vim](https://github.com/nabi-lang/nabi.vim). Point your plugin manager at it (`Plug 'nabi-lang/nabi.vim'` with vim-plug); on Neovim it also starts `nabils`.
 - Zed: [nabi-lang/nabi.zed](https://github.com/nabi-lang/nabi.zed). It is not in Zed's extension registry yet: install Rust with rustup, clone the repository, run `zed: install dev extension` from the command palette and pick the clone.
 
