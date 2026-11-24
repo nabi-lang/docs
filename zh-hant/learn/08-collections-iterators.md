@@ -28,7 +28,7 @@ println(f"{xs:?} first={xs.first():?}");
 [0, 3, 5, 7] first=0
 ```
 
-`List`、`Dict` 和 `Set` 是**參考控制代碼**（reference handle）。`let ys = xs;` 和當作函式引數傳遞時，共用的都是同一個集合；需要獨立的副本時，呼叫 `clone()`。
+`List`、`Dict` 和 `Set` 是**參照控制代碼**（reference handle）。`let ys = xs;` 和當作函式引數傳遞時，共用的都是同一個集合；需要獨立的副本時，呼叫 `clone()`。
 
 ```nabi
 let xs = [1, 2];
@@ -372,7 +372,7 @@ println(f"{c:?} {d:?} {r:?}");
 ## 小結
 
 - `List` 提供 `push` / `pop` / `insert` / `remove` / `sort` / `get`，`Dict` 提供 `d[k]` / `get` / `d[k, default: v]`，`Set` 提供集合運算（`&`、`|`、`-`、`^`）。
-- 集合型別是參考控制代碼。需要副本時呼叫 `clone()`。
+- 集合型別是參照控制代碼。需要副本時呼叫 `clone()`。
 - `xs[a:b:s]` 切片的行為和 Python 一樣，邊界超出範圍時不會觸發 panic（步長為 0 才會）。結果是 `Slice<T>` 檢視；`SliceMut<T>` 則會寫入串列。
 - `Dict` 和 `Set` 保留插入順序；需要雙端佇列時，用 `Deque`。
 - 在集合上或 `iter()` 之後呼叫配接器，再用 `to_list` / `collect` / `sum` / `fold` 消耗。只要實作 `next`，你自己的型別就成為迭代器。
