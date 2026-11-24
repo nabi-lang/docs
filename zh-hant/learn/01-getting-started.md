@@ -250,7 +250,7 @@ nabi run hi.nabi
 hi
 ```
 
-指令碼也能使用相依套件：`nabi add json hi.nabi` 會把它們寫進檔案開頭的 `//!` 註解（請見[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-單檔指令碼的行內資訊清單)和[第 11 章](11-modules-packages.html#單檔指令碼與環境)）。
+指令碼也能使用相依套件：`nabi add json hi.nabi` 會把它們寫進檔案開頭的 `//!` 註解（請見[內嵌清單](../spec/refs-lang/009-tools/910-nabi-frontend.html#9107-單檔指令碼的行內清單)和[第 11 章](11-modules-packages.html#單檔指令碼與環境)）。
 
 ## REPL
 
