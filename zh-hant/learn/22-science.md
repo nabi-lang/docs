@@ -25,8 +25,7 @@ Nabi 的數值核心在標準函式庫中：`Array<T, N>`、點運算子、歸�
 用 `nabi add` 把要用的套件加入 `nabi.nabion`（單檔指令碼則用 `nabi add <package> file.nabi`）：
 
 ```sh
-nabi add linalg
-nabi add table
+nabi add linalg table
 ```
 
 各套件的文件，包括一份教學和 API，都在[套件文件](https://docs.nabi-lang.org/packages)底下：依表中的套件名稱點進去即可。本頁的程式碼需要這些套件，所以和本指南的其他部分不同，網站建置時不會執行它們；每個區塊都已用這些套件目前的版本檢查過。

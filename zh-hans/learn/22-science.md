@@ -25,8 +25,7 @@ Nabi 的数值核心位于标准库中：`Array<T, N>`、点运算符、归约�
 用 `nabi add` 把要用的包添加到 `nabi.nabion`（单文件脚本则用 `nabi add <package> file.nabi`）：
 
 ```sh
-nabi add linalg
-nabi add table
+nabi add linalg table
 ```
 
 每个包的文档，包括教程和 API，都在[包文档](https://docs.nabi-lang.org/packages)中：按表中的包名查找即可。本页的代码需要这些包，因此与本指南的其他部分不同，构建网站时不会运行它们；每个代码块都已用这些包的当前版本检查过。

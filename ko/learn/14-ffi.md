@@ -668,7 +668,7 @@ let v = unsafe { CStr::from_ptr(zlibVersion()) } ?? panic("no version");
 println(f"zlib {try! v.to_str()}");
 ```
 
-C API가 크면 `nabi bindgen libfoo.h > libfoo_sys.nabi`가 헤더에서 선언을 써 줍니다. C 컴파일러는 필요 없습니다. 출력은 한 타깃(`--target`, 기본은 호스트)의 것이고, 각 C 타입은 그 타깃의 크기입니다.
+C API가 크면 `nabi bindgen libfoo.h > libfoo_sys.nabi`가 헤더에서 선언을 써 줍니다. C 컴파일러는 필요 없습니다. 출력은 한 타깃(`--target`, 기본은 호스트)의 것이고, 각 C 타입은 그 타깃의 크기입니다. C의 정수 타입은 C 이름으로 쓰므로(`int`는 `c_int`, `long`은 `c_long`) 크기가 다른 타깃에서도 선언이 맞고, `void *`는 `CPtr<c_void>`로 씁니다.
 
 
 ## 기계에 설치된 라이브러리: `Dep::system`
