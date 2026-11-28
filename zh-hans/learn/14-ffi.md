@@ -668,7 +668,7 @@ let v = unsafe { CStr::from_ptr(zlibVersion()) } ?? panic("no version");
 println(f"zlib {try! v.to_str()}");
 ```
 
-对于大型的 C API，`nabi bindgen libfoo.h > libfoo_sys.nabi` 会根据头文件写出声明；它不需要 C 编译器。输出针对一个目标（`--target`，默认为主机），每个 C 类型采用该目标上的大小。
+对于大型的 C API，`nabi bindgen libfoo.h > libfoo_sys.nabi` 会根据头文件写出声明；它不需要 C 编译器。输出针对一个目标（`--target`，默认为主机），每个 C 类型采用该目标上的大小。C 的整数类型用它们的 C 名称书写（`int` 写作 `c_int`，`long` 写作 `c_long`），因此在大小不同的目标上声明依然匹配；`void *` 写作 `CPtr<c_void>`。
 
 
 ## 机器上安装的库：`Dep::system`

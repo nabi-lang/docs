@@ -668,7 +668,7 @@ let v = unsafe { CStr::from_ptr(zlibVersion()) } ?? panic("no version");
 println(f"zlib {try! v.to_str()}");
 ```
 
-For a large C API, `nabi bindgen libfoo.h > libfoo_sys.nabi` writes the declarations from its header; it needs no C compiler. The output is for one target (`--target`, the host by default), with each C type at that target's size.
+For a large C API, `nabi bindgen libfoo.h > libfoo_sys.nabi` writes the declarations from its header; it needs no C compiler. The output is for one target (`--target`, the host by default), with each C type at that target's size. C's integer types are written with their C names (`int` as `c_int`, `long` as `c_long`), so the declarations keep fitting where sizes differ, and `void *` as `CPtr<c_void>`.
 
 
 ## Libraries installed on the machine: `Dep::system`

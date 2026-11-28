@@ -25,8 +25,7 @@ This chapter maps the packages, shows the one rule they share for input data, wo
 Add the ones you use to `nabi.nabion` with `nabi add` (or, for a single-file script, `nabi add <package> file.nabi`):
 
 ```sh
-nabi add linalg
-nabi add table
+nabi add linalg table
 ```
 
 Each package's docs, a tutorial and its API, are under [Package docs](https://docs.nabi-lang.org/packages): follow the package's name in the table. The code on this page needs those packages, so unlike the rest of this guide it is not run when the site is built; every block was checked with the packages' current versions.

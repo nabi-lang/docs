@@ -25,8 +25,7 @@ Nabi의 수치 계산 핵심은 표준 라이브러리에 있습니다. `Array<T
 쓰는 패키지는 `nabi add`로 `nabi.nabion`에 추가합니다(파일 하나짜리 스크립트라면 `nabi add <패키지> file.nabi`).
 
 ```sh
-nabi add linalg
-nabi add table
+nabi add linalg table
 ```
 
 튜토리얼과 API가 담긴 각 패키지의 문서는 [패키지 문서](https://docs.nabi-lang.org/packages)에 있습니다. 표에서 패키지 이름을 따라가세요. 이 페이지의 코드는 이 패키지들이 필요하므로, 이 가이드의 다른 코드와 달리 사이트를 빌드할 때 실행하지 않습니다. 모든 블록은 패키지의 현재 버전으로 확인했습니다.

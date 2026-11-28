@@ -668,7 +668,7 @@ let v = unsafe { CStr::from_ptr(zlibVersion()) } ?? panic("no version");
 println(f"zlib {try! v.to_str()}");
 ```
 
-對於龐大的 C API，`nabi bindgen libfoo.h > libfoo_sys.nabi` 會從它的標頭檔寫出宣告；這不需要 C 編譯器。輸出只針對一個目標（`--target`，預設為主機），每個 C 型別都採用該目標的大小。
+對於龐大的 C API，`nabi bindgen libfoo.h > libfoo_sys.nabi` 會從它的標頭檔寫出宣告；這不需要 C 編譯器。輸出只針對一個目標（`--target`，預設為主機），每個 C 型別都採用該目標的大小。C 的整數型別以它們的 C 名稱書寫（`int` 寫作 `c_int`，`long` 寫作 `c_long`），因此在大小不同的目標上宣告依然相符；`void *` 寫作 `CPtr<c_void>`。
 
 
 ## 安裝在電腦上的函式庫：`Dep::system`
